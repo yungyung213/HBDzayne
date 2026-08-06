@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Zayne — 축하 방명록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://script.google.com">
+<style>
+  :root{
+    --bg-page:#141F26;
+    --glass-bg:rgba(255,255,255,0.09);
+    --glass-bg-strong:rgba(255,255,255,0.16);
+    --glass-border:rgba(255,255,255,0.24);
+    --glass-border-strong:rgba(255,255,255,0.4);
+    --ink:#F7F9FA;
+    --ink-soft:rgba(247,249,250,0.72);
+    --ink-faint:rgba(247,249,250,0.48);
+    --accent:#8FE3D2;
+    --accent-soft:rgba(143,227,210,0.16);
+    --shadow-lg:0 24px 70px rgba(0,0,0,0.4);
+    --shadow-sm:0 8px 24px rgba(0,0,0,0.22);
+    --serif:'Playfair Display', 'Georgia', serif;
+    --sans:'Inter', -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-page);
+    font-family:var(--sans);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ---------- 배경(생일 배너 이미지 크로스페이드) - 히어로 카드 밖 페이지 톤과 어울리도록 은은하게만 ---------- */
+  .page-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg-page);}
+  .page-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% -10%, rgba(30,50,58,0.4), var(--bg-page) 68%);}
+
+  /* ---------- 히어로 카드 ---------- */
+  .hero-wrap{padding:28px 18px 8px;display:flex;justify-content:center;}
+  .hero-card{
+    position:relative;width:100%;max-width:720px;border-radius:32px;overflow:hidden;
+    min-height:560px;display:flex;flex-direction:column;
+    box-shadow:var(--shadow-lg);
+  }
+  .hero-slides{position:absolute;inset:0;z-index:0;}
+  .hero-slide{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity 1.6s ease;filter:saturate(1.05);
+  }
+  .hero-slide.active{opacity:1;}
+  .hero-overlay{
+    position:absolute;inset:0;z-index:1;
+    background:linear-gradient(185deg, rgba(10,18,24,0.28) 0%, rgba(10,18,24,0.42) 45%, rgba(8,14,19,0.82) 100%);
+  }
+
+  .hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;flex:1;padding:20px;}
+
+  .hero-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .hero-nav .mark{
+    display:flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:12px;
+    letter-spacing:1.6px;color:var(--ink);text-transform:uppercase;
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:999px;
+    padding:9px 16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+  .hero-nav .back-link{
+    font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-soft);text-decoration:none;
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:999px;
+    padding:9px 16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, color .15s;
+  }
+  .hero-nav .back-link:hover{background:var(--glass-bg-strong);color:var(--ink);}
+  .hero-nav .audio-btn{
+    width:38px;height:38px;border-radius:50%;flex:0 0 auto;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--ink);
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, transform .15s;
+  }
+  .hero-nav .audio-btn:hover{background:var(--glass-bg-strong);transform:scale(1.05);}
+  .hero-nav .audio-btn svg{width:16px;height:16px;}
+
+  .hero-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 14px;}
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:12px;font-weight:600;
+    color:var(--ink-soft);letter-spacing:0.3px;
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:999px;
+    padding:8px 18px;margin-bottom:26px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+  .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
+
+  .hero-title{
+    font-family:var(--serif);font-weight:700;line-height:1.12;margin:0 0 16px;
+    font-size:clamp(34px,7vw,60px);color:var(--ink);letter-spacing:-0.5px;
+  }
+  .hero-title em{font-style:italic;font-weight:600;color:var(--accent);}
+
+  .hero-sub{
+    font-family:var(--sans);font-size:clamp(14px,2.2vw,17px);color:var(--ink-soft);
+    margin:0 0 32px;font-weight:500;letter-spacing:0.2px;
+  }
+
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;color:#16232B;font-family:var(--sans);font-weight:700;font-size:14px;
+    border:none;border-radius:999px;padding:14px 26px;cursor:pointer;text-decoration:none;
+    box-shadow:var(--shadow-sm);transition:transform .15s, box-shadow .15s;
+  }
+  .hero-cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,0.3);}
+  .hero-cta svg{width:14px;height:14px;}
+
+  .hero-footer{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+
+  /* ---------- 방명록 (글래스모피즘) ---------- */
+  .content{max-width:640px;margin:0 auto;padding:48px 18px 90px;position:relative;z-index:1;}
+
+  .glass-card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:24px;
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    box-shadow:var(--shadow-sm);padding:26px;margin-bottom:20px;
+  }
+
+  .section-label{
+    font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px;
+  }
+  .section-title{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);margin:0 0 22px;}
+
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:12px;color:var(--ink-faint);margin-bottom:7px;font-weight:600;letter-spacing:0.2px;}
+  .form-row input, .form-row textarea{
+    width:100%;padding:14px 16px;border:1.5px solid var(--glass-border);border-radius:14px;
+    font-size:14px;font-family:var(--sans);background:rgba(255,255,255,0.06);color:var(--ink);
+    resize:vertical;transition:border-color .15s, background .15s;
+  }
+  .form-row input::placeholder, .form-row textarea::placeholder{color:var(--ink-faint);}
+  .form-row input:focus, .form-row textarea:focus{border-color:var(--accent);background:rgba(255,255,255,0.1);outline:none;}
+  .form-row textarea{min-height:96px;line-height:1.6;}
+  .char-count{text-align:right;font-size:10.5px;color:var(--ink-faint);margin-top:4px;}
+
+  .submit-btn{
+    width:100%;padding:15px;border:none;border-radius:14px;
+    background:var(--accent);color:#0E2420;font-size:14px;font-weight:700;font-family:var(--sans);
+    cursor:pointer;transition:filter .15s, opacity .15s;
+  }
+  .submit-btn:hover{filter:brightness(1.08);}
+  .submit-btn:disabled{opacity:0.5;cursor:default;}
+
+  .status-msg{font-size:12px;margin-top:10px;text-align:center;min-height:16px;color:var(--ink-soft);}
+  .status-msg.error{color:#FFB4C6;}
+  .status-msg.ok{color:var(--accent);}
+
+  .list-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;}
+  .list-head .section-title{margin:0;}
+  .list-head .count{font-size:12px;color:var(--ink-faint);font-weight:600;}
+
+  .entry{
+    background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);border-radius:16px;
+    padding:16px 18px;margin-bottom:10px;
+  }
+  .entry-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px;}
+  .entry-name{font-size:13px;font-weight:700;color:var(--ink);}
+  .entry-time{font-size:10.5px;color:var(--ink-faint);flex:0 0 auto;}
+  .entry-msg{font-size:13.5px;line-height:1.65;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;}
+
+  .empty-state{text-align:center;padding:36px 10px;color:var(--ink-faint);font-size:13px;line-height:1.7;}
+  .loading-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin:0 2px;animation:blink 1.2s infinite ease-in-out;}
+  .loading-dot:nth-child(2){animation-delay:.2s;}
+  .loading-dot:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:0.2;}40%{opacity:1;}}
+
+  @media(max-width:480px){
+    .hero-wrap{padding:16px 12px 4px;}
+    .hero-card{min-height:480px;border-radius:24px;}
+    .hero-inner{padding:14px;}
+    .hero-nav .mark span.txt{display:none;}
+    .hero-nav .back-link{padding:9px 12px;}
+    .hero-eyebrow{margin-bottom:18px;padding:7px 14px;}
+    .hero-cta{padding:12px 20px;}
+    .glass-card{padding:20px;border-radius:20px;}
+    .content{padding:36px 14px 70px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-bg"></div>
+
+<div class="hero-wrap">
+  <div class="hero-card">
+    <div class="hero-slides" id="hero-slides">
+      <div class="hero-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_2.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_3.jpg')"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-nav">
+        <div class="mark">✦ <span class="txt">AKSO&nbsp;HOSPITAL</span></div>
+        <a class="back-link" href="index.html">← 인트라넷으로</a>
+        <button class="audio-btn" id="audio-toggle" aria-label="배경음악 재생/정지" onclick="toggleBgm()">
+          <svg id="audio-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        </button>
+      </div>
+
+      <div class="hero-center">
+        <div class="hero-eyebrow"><span class="dot"></span> SEPTEMBER 5TH · 심장외과</div>
+        <h1 class="hero-title">Happy Birth Day<br><em>Zayne!</em></h1>
+        <p class="hero-sub">We love you, Zayne</p>
+        <a class="hero-cta" href="#gb-form-section">
+          축하 메시지 남기기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+        </a>
+      </div>
+
+      <div class="hero-footer">
+        <span>AKSO HOSPITAL</span>
+        <span>이서언 교수</span>
+        <span>09 · 05</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="bgm" loop preload="none" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/audio/Zayne%20BGM%20%F0%9F%8E%B6%20-%20Iceborn%20Warmth%20%20Love%20and%20Deepspace.mp3"></audio>
+
+<div class="content">
+  <div class="glass-card" id="gb-form-section">
+    <div class="section-label">Leave a message</div>
+    <h2 class="section-title">축하 메시지 남기기</h2>
+    <div class="form-row">
+      <label for="gb-name">닉네임</label>
+      <input id="gb-name" type="text" maxlength="20" placeholder="이름 또는 닉네임 (최대 20자)">
+    </div>
+    <div class="form-row">
+      <label for="gb-message">축하 메시지</label>
+      <textarea id="gb-message" maxlength="300" placeholder="따뜻한 축하 메시지를 남겨주세요 (최대 300자)"></textarea>
+      <div class="char-count"><span id="gb-count">0</span>/300</div>
+    </div>
+    <button class="submit-btn" id="gb-submit" onclick="submitGuestbook()">방명록 남기기</button>
+    <div class="status-msg" id="gb-status"></div>
+  </div>
+
+  <div class="glass-card">
+    <div class="list-head">
+      <div>
+        <div class="section-label">Messages</div>
+        <h2 class="section-title">축하 메시지</h2>
+      </div>
+      <span class="count" id="gb-total"></span>
+    </div>
+    <div id="gb-list">
+      <div class="empty-state"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- 배경 배너 크로스페이드 (index.html 히어로 배너와 동일한 이미지 3장 재사용) ---------- */
+(function(){
+  const slides = document.querySelectorAll('#hero-slides .hero-slide');
+  if(slides.length < 2) return;
+  let idx = 0;
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 6000);
+})();
+
+/* ---------- 배경음악: 자동재생이 차단되면 첫 클릭/터치 시 재생 시도 ---------- */
+const bgm = document.getElementById('bgm');
+const audioIcon = document.getElementById('audio-icon');
+const ICON_PLAYING = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+const ICON_MUTED = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle><line x1="2" y1="2" x2="22" y2="22"></line>';
+function updateAudioIcon(){
+  audioIcon.innerHTML = (bgm.paused) ? ICON_MUTED : ICON_PLAYING;
+}
+function toggleBgm(){
+  if(bgm.paused){ bgm.play().catch(()=>{}); } else { bgm.pause(); }
+}
+bgm.addEventListener('play', updateAudioIcon);
+bgm.addEventListener('pause', updateAudioIcon);
+updateAudioIcon();
+function tryAutoplay(){
+  bgm.play().catch(()=>{
+    const retry = () => { bgm.play().catch(()=>{}); document.removeEventListener('pointerdown', retry); document.removeEventListener('keydown', retry); };
+    document.addEventListener('pointerdown', retry, { once:true });
+    document.addEventListener('keydown', retry, { once:true });
+  });
+}
+tryAutoplay();
+
+/* ---------- 방명록 API ---------- */
+const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
+
+const nameEl = document.getElementById('gb-name');
+const msgEl = document.getElementById('gb-message');
+const countEl = document.getElementById('gb-count');
+const submitBtn = document.getElementById('gb-submit');
+const statusEl = document.getElementById('gb-status');
+const listEl = document.getElementById('gb-list');
+const totalEl = document.getElementById('gb-total');
+
+msgEl.addEventListener('input', () => {
+  countEl.textContent = msgEl.value.length;
+});
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderEntries(entries){
+  totalEl.textContent = entries.length ? `${entries.length}개의 메시지` : '';
+  if(!entries.length){
+    listEl.innerHTML = '<div class="empty-state">아직 남겨진 메시지가 없어요.<br>가장 먼저 축하 메시지를 남겨보세요!</div>';
+    return;
+  }
+  listEl.innerHTML = entries.map(en => `
+    <div class="entry">
+      <div class="entry-top">
+        <span class="entry-name">${escapeHtml(en.name)}</span>
+        <span class="entry-time">${escapeHtml(en.timestamp || '')}</span>
+      </div>
+      <div class="entry-msg">${escapeHtml(en.message)}</div>
+    </div>
+  `).join('');
+}
+
+let gbLoading = false;
+async function loadGuestbook(){
+  if(gbLoading) return;
+  gbLoading = true;
+  try{
+    const res = await fetch(GUESTBOOK_API_URL);
+    const data = await res.json();
+    if(data.ok) renderEntries(data.entries || []);
+  }catch(err){
+    if(!listEl.querySelector('.entry')){
+      listEl.innerHTML = '<div class="empty-state">방명록을 불러오지 못했습니다.<br>잠시 후 새로고침 해주세요.</div>';
+    }
+  }finally{
+    gbLoading = false;
+  }
+}
+
+async function submitGuestbook(){
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+  statusEl.textContent = '';
+  statusEl.className = 'status-msg';
+
+  if(!name || !message){
+    statusEl.textContent = '닉네임과 메시지를 모두 입력해주세요.';
+    statusEl.classList.add('error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '남기는 중...';
+
+  try{
+    /* Apps Script 웹앱 doPost 응답은 302 리다이렉트라 CORS 헤더가 없어서,
+       no-cors 없이 fetch하면 서버 저장은 성공해도 브라우저가 실패로 처리해버림.
+       그래서 no-cors + text/plain(JSON 문자열) 조합으로 전송 (index.html과 동일한 방식) */
+    await fetch(GUESTBOOK_API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name, message })
+    });
+    statusEl.textContent = '축하 메시지가 남겨졌습니다 🎉';
+    statusEl.classList.add('ok');
+    nameEl.value = '';
+    msgEl.value = '';
+    countEl.textContent = '0';
+    setTimeout(loadGuestbook, 1200);
+  }catch(err){
+    statusEl.textContent = '전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    statusEl.classList.add('error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '방명록 남기기';
+  }
+}
+
+loadGuestbook();
+setInterval(loadGuestbook, 10000);
+</script>
+</body>
+</html>
