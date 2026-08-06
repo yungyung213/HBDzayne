@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Zayne — 축하 방명록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://script.google.com">
+<style>
+  :root{
+    --bg-page:#141F26;
+    --glass-bg:rgba(255,255,255,0.09);
+    --glass-bg-strong:rgba(255,255,255,0.16);
+    --glass-border:rgba(255,255,255,0.24);
+    --ink:#F7F9FA;
+    --ink-soft:rgba(247,249,250,0.72);
+    --ink-faint:rgba(247,249,250,0.48);
+    --accent:#7EC8F2;
+    --accent-deep:#2E6DA4;
+    --shadow-sm:0 8px 24px rgba(0,0,0,0.22);
+    --serif:'Playfair Display', 'Georgia', serif;
+    --sans:'Pretendard', -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-page);
+    font-family:var(--sans);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ---------- 배경: 생일 배너와 동일한 이미지 3장을 페이지 전체에 크로스페이드 ---------- */
+  .page-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg-page);}
+  .page-slide{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity 1.8s ease;
+  }
+  .page-slide.active{opacity:1;}
+  .page-overlay{
+    position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(185deg, rgba(10,18,24,0.42) 0%, rgba(10,18,24,0.5) 40%, rgba(8,14,19,0.72) 100%);
+  }
+
+  /* ---------- 상단 네비 (좌: Work Hub 링크 / 우: 배경음악 토글) ---------- */
+  .top-nav{
+    position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;
+    padding:20px 20px 0;
+  }
+  .back-link{
+    font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-soft);text-decoration:none;
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:999px;
+    padding:9px 16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, color .15s;
+  }
+  .back-link:hover{background:var(--glass-bg-strong);color:var(--ink);}
+  .audio-btn{
+    width:38px;height:38px;border-radius:50%;flex:0 0 auto;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--ink);
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, transform .15s;
+  }
+  .audio-btn:hover{background:var(--glass-bg-strong);transform:scale(1.05);}
+  .audio-btn svg{width:16px;height:16px;}
+
+  /* ---------- 히어로: 타이틀 + 부제 + 기존 메시지 슬라이더 ---------- */
+  .hero{
+    position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:36px 18px 44px;
+  }
+  .hero-title{
+    font-family:var(--serif);font-weight:700;line-height:1.12;margin:0 0 14px;
+    font-size:clamp(34px,7vw,60px);color:var(--ink);letter-spacing:-0.5px;
+  }
+  .hero-title em{font-style:italic;font-weight:600;color:var(--accent);}
+  .hero-sub{
+    font-family:var(--sans);font-size:clamp(14px,2.2vw,17px);color:var(--ink-soft);
+    margin:0 0 30px;font-weight:500;letter-spacing:0.2px;
+  }
+
+  /* 기 작성된 메시지 슬라이더 (글래스 카드) */
+  .msg-slider{width:100%;max-width:420px;min-height:112px;position:relative;}
+  .msg-slide-card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:var(--shadow-sm);padding:20px 22px;
+    opacity:0;transition:opacity .5s ease;
+    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  }
+  .msg-slide-card.active{opacity:1;position:relative;}
+  .msg-slide-name{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:0.2px;}
+  .msg-slide-text{font-size:13.5px;line-height:1.6;color:var(--ink-soft);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .msg-slide-empty{font-size:13px;color:var(--ink-faint);}
+
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:8px;margin-top:26px;
+    background:var(--glass-bg);color:var(--ink);font-family:var(--sans);font-weight:600;font-size:13px;
+    border:1px solid var(--glass-border);border-radius:999px;padding:11px 20px;cursor:pointer;text-decoration:none;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, transform .15s;
+  }
+  .hero-cta:hover{background:var(--glass-bg-strong);transform:translateY(-1px);}
+  .hero-cta svg{width:13px;height:13px;}
+
+  /* ---------- 방명록 작성 폼 (글래스모피즘) ---------- */
+  .content{max-width:560px;margin:0 auto;padding:0 18px 90px;position:relative;z-index:1;}
+
+  .glass-card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:24px;
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    box-shadow:var(--shadow-sm);padding:26px;
+  }
+
+  .section-label{
+    font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px;
+  }
+  .section-title{font-family:var(--sans);font-size:19px;font-weight:700;color:var(--ink);margin:0 0 22px;}
+
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:12px;color:var(--ink-faint);margin-bottom:7px;font-weight:600;letter-spacing:0.2px;}
+  .form-row input, .form-row textarea{
+    width:100%;padding:14px 16px;border:1.5px solid var(--glass-border);border-radius:14px;
+    font-size:14px;font-family:var(--sans);background:rgba(255,255,255,0.06);color:var(--ink);
+    resize:vertical;transition:border-color .15s, background .15s;
+  }
+  .form-row input::placeholder, .form-row textarea::placeholder{color:var(--ink-faint);}
+  .form-row input:focus, .form-row textarea:focus{border-color:var(--accent);background:rgba(255,255,255,0.1);outline:none;}
+  .form-row textarea{min-height:96px;line-height:1.6;}
+  .char-count{text-align:right;font-size:10.5px;color:var(--ink-faint);margin-top:4px;}
+
+  .submit-btn{
+    width:100%;padding:15px;border:none;border-radius:14px;
+    background:var(--accent);color:#0E2430;font-size:14px;font-weight:700;font-family:var(--sans);
+    cursor:pointer;transition:filter .15s, opacity .15s;
+  }
+  .submit-btn:hover{filter:brightness(1.08);}
+  .submit-btn:disabled{opacity:0.5;cursor:default;}
+
+  .status-msg{font-size:12px;margin-top:10px;text-align:center;min-height:16px;color:var(--ink-soft);}
+  .status-msg.error{color:#FFB4C6;}
+  .status-msg.ok{color:var(--accent);}
+
+  @media(max-width:480px){
+    .top-nav{padding:14px 14px 0;}
+    .hero{padding:26px 14px 34px;}
+    .glass-card{padding:20px;border-radius:20px;}
+    .content{padding:0 14px 70px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-bg" id="page-bg">
+  <div class="page-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg')"></div>
+  <div class="page-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_2.jpg')"></div>
+  <div class="page-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_3.jpg')"></div>
+</div>
+<div class="page-overlay"></div>
+
+<div class="top-nav">
+  <a class="back-link" href="index.html">← Work Hub</a>
+  <button class="audio-btn" id="audio-toggle" aria-label="배경음악 재생/정지" onclick="toggleBgm()">
+    <svg id="audio-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+  </button>
+</div>
+
+<div class="hero">
+  <h1 class="hero-title">Happy Birth Day<br><em>Zayne!</em></h1>
+  <p class="hero-sub">We love you, Zayne</p>
+
+  <div class="msg-slider" id="msg-slider">
+    <div class="msg-slide-card active" id="msg-slide-placeholder">
+      <div class="msg-slide-empty">아직 도착한 축하 메시지가 없어요.</div>
+    </div>
+  </div>
+
+  <a class="hero-cta" href="#gb-form-section">
+    축하 메시지 남기기
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+  </a>
+</div>
+
+<audio id="bgm" loop preload="none" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/audio/Zayne%20BGM%20%F0%9F%8E%B6%20-%20Iceborn%20Warmth%20%20Love%20and%20Deepspace.mp3"></audio>
+
+<div class="content">
+  <div class="glass-card" id="gb-form-section">
+    <div class="section-label">Leave a message</div>
+    <h2 class="section-title">축하 메시지 남기기</h2>
+    <div class="form-row">
+      <label for="gb-name">닉네임</label>
+      <input id="gb-name" type="text" maxlength="20" placeholder="이름 또는 닉네임 (최대 20자)">
+    </div>
+    <div class="form-row">
+      <label for="gb-message">축하 메시지</label>
+      <textarea id="gb-message" maxlength="300" placeholder="따뜻한 축하 메시지를 남겨주세요 (최대 300자)"></textarea>
+      <div class="char-count"><span id="gb-count">0</span>/300</div>
+    </div>
+    <button class="submit-btn" id="gb-submit" onclick="submitGuestbook()">방명록 남기기</button>
+    <div class="status-msg" id="gb-status"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- 배경 배너 크로스페이드 (페이지 전체) ---------- */
+(function(){
+  const slides = document.querySelectorAll('#page-bg .page-slide');
+  if(slides.length < 2) return;
+  let idx = 0;
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 6000);
+})();
+
+/* ---------- 배경음악: 자동재생이 차단되면 첫 클릭/터치 시 재생 시도 ---------- */
+const bgm = document.getElementById('bgm');
+const audioIcon = document.getElementById('audio-icon');
+const ICON_PLAYING = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+const ICON_MUTED = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle><line x1="2" y1="2" x2="22" y2="22"></line>';
+function updateAudioIcon(){
+  audioIcon.innerHTML = (bgm.paused) ? ICON_MUTED : ICON_PLAYING;
+}
+function toggleBgm(){
+  if(bgm.paused){ bgm.play().catch(()=>{}); } else { bgm.pause(); }
+}
+bgm.addEventListener('play', updateAudioIcon);
+bgm.addEventListener('pause', updateAudioIcon);
+updateAudioIcon();
+function tryAutoplay(){
+  bgm.play().catch(()=>{
+    const retry = () => { bgm.play().catch(()=>{}); document.removeEventListener('pointerdown', retry); document.removeEventListener('keydown', retry); };
+    document.addEventListener('pointerdown', retry, { once:true });
+    document.addEventListener('keydown', retry, { once:true });
+  });
+}
+tryAutoplay();
+
+/* ---------- 방명록 API ---------- */
+const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
+
+const nameEl = document.getElementById('gb-name');
+const msgEl = document.getElementById('gb-message');
+const countEl = document.getElementById('gb-count');
+const submitBtn = document.getElementById('gb-submit');
+const statusEl = document.getElementById('gb-status');
+const sliderEl = document.getElementById('msg-slider');
+
+msgEl.addEventListener('input', () => {
+  countEl.textContent = msgEl.value.length;
+});
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ---------- 타이틀 하단 메시지 슬라이더 ---------- */
+let gbEntries = [];
+let sliderIdx = 0;
+let sliderTimer = null;
+function renderSlider(){
+  if(!gbEntries.length){
+    sliderEl.innerHTML = `<div class="msg-slide-card active"><div class="msg-slide-empty">아직 도착한 축하 메시지가 없어요.</div></div>`;
+    return;
+  }
+  sliderEl.innerHTML = gbEntries.map((en, i) => `
+    <div class="msg-slide-card${i===0 ? ' active' : ''}">
+      <div class="msg-slide-name">${escapeHtml(en.name)}</div>
+      <div class="msg-slide-text">${escapeHtml(en.message)}</div>
+    </div>
+  `).join('');
+  sliderIdx = 0;
+  clearInterval(sliderTimer);
+  if(gbEntries.length > 1){
+    sliderTimer = setInterval(() => {
+      const cards = sliderEl.querySelectorAll('.msg-slide-card');
+      cards[sliderIdx].classList.remove('active');
+      sliderIdx = (sliderIdx + 1) % cards.length;
+      cards[sliderIdx].classList.add('active');
+    }, 4200);
+  }
+}
+
+let gbLoading = false;
+async function loadGuestbook(){
+  if(gbLoading) return;
+  gbLoading = true;
+  try{
+    const res = await fetch(GUESTBOOK_API_URL);
+    const data = await res.json();
+    if(data.ok){
+      gbEntries = data.entries || [];
+      renderSlider();
+    }
+  }catch(err){
+    /* 실패시 이전 상태 유지 */
+  }finally{
+    gbLoading = false;
+  }
+}
+
+async function submitGuestbook(){
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+  statusEl.textContent = '';
+  statusEl.className = 'status-msg';
+
+  if(!name || !message){
+    statusEl.textContent = '닉네임과 메시지를 모두 입력해주세요.';
+    statusEl.classList.add('error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '남기는 중...';
+
+  try{
+    /* Apps Script 웹앱 doPost 응답은 302 리다이렉트라 CORS 헤더가 없어서,
+       no-cors 없이 fetch하면 서버 저장은 성공해도 브라우저가 실패로 처리해버림.
+       그래서 no-cors + text/plain(JSON 문자열) 조합으로 전송 (index.html과 동일한 방식) */
+    await fetch(GUESTBOOK_API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name, message })
+    });
+    statusEl.textContent = '축하 메시지가 남겨졌습니다 🎉';
+    statusEl.classList.add('ok');
+    nameEl.value = '';
+    msgEl.value = '';
+    countEl.textContent = '0';
+    setTimeout(loadGuestbook, 1200);
+  }catch(err){
+    statusEl.textContent = '전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    statusEl.classList.add('error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '방명록 남기기';
+  }
+}
+
+loadGuestbook();
+setInterval(loadGuestbook, 10000);
+</script>
+</body>
+</html>
