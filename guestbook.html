@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Zayne — 축하 방명록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://script.google.com">
+<style>
+  :root{
+    --bg-page:#141F26;
+    --glass-bg:rgba(255,255,255,0.09);
+    --glass-bg-strong:rgba(255,255,255,0.16);
+    --glass-border:rgba(255,255,255,0.24);
+    --ink:#F7F9FA;
+    --ink-soft:rgba(247,249,250,0.72);
+    --ink-faint:rgba(247,249,250,0.48);
+    --accent:#7EC8F2;
+    --accent-deep:#2E6DA4;
+    --shadow-sm:0 8px 24px rgba(0,0,0,0.22);
+    --serif:'Playfair Display', 'Georgia', serif;
+    --script:'Mrs Saint Delafield', cursive;
+    --sans:'Pretendard', -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-page);
+    font-family:var(--sans);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ---------- 배경: 생일 배너와 동일한 이미지 3장을 페이지 전체에 크로스페이드 ---------- */
+  .page-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg-page);}
+  .page-slide{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity 1.8s ease;
+  }
+  .page-slide.active{opacity:1;}
+  .page-overlay{
+    position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(185deg, rgba(10,18,24,0.42) 0%, rgba(10,18,24,0.5) 40%, rgba(8,14,19,0.72) 100%);
+  }
+
+  /* ---------- 첫 화면: 간유리(reeded glass) + 타이틀만 ---------- */
+  .landing{
+    position:relative;z-index:2;height:100vh;min-height:560px;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    text-align:center;padding:0 20px 64px;cursor:pointer;
+  }
+  .landing-glass{
+    position:absolute;inset:0;pointer-events:none;
+    backdrop-filter:blur(26px) saturate(1.05);-webkit-backdrop-filter:blur(26px) saturate(1.05);
+    background-image:repeating-linear-gradient(
+      92deg,
+      rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 3px,
+      rgba(255,255,255,0.0) 3px, rgba(255,255,255,0.0) 17px,
+      rgba(255,255,255,0.07) 17px, rgba(255,255,255,0.07) 20px,
+      rgba(255,255,255,0.0) 20px, rgba(255,255,255,0.0) 34px
+    );
+    box-shadow:inset 0 0 140px rgba(0,0,0,0.25);
+    opacity:1;transition:opacity 1.1s ease;
+  }
+  .landing-glass.cleared{opacity:0;}
+  .landing-hint{
+    position:relative;z-index:1;margin-top:22px;font-family:var(--sans);font-size:11px;font-weight:600;
+    letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:0.45;}50%{opacity:1;}}
+
+  .audio-btn{
+    position:fixed;top:20px;right:20px;z-index:5;
+    width:38px;height:38px;border-radius:50%;flex:0 0 auto;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--ink);
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:background .15s, transform .15s;
+  }
+  .audio-btn:hover{background:var(--glass-bg-strong);transform:scale(1.05);}
+  .audio-btn svg{width:16px;height:16px;}
+
+  /* ---------- 타이틀 (중앙 하단) ---------- */
+  .hero-title{position:relative;z-index:1;margin:0;line-height:1;}
+  .hero-title .top-word{
+    display:block;font-family:var(--serif);font-weight:600;color:var(--ink);
+    font-size:clamp(20px,4vw,30px);letter-spacing:5px;text-transform:uppercase;
+  }
+  .hero-title .script-word{
+    display:block;font-family:var(--script);font-weight:400;color:var(--accent);
+    font-size:clamp(58px,13vw,116px);line-height:0.85;margin-top:-0.06em;
+    text-shadow:0 2px 22px rgba(0,0,0,0.3);
+  }
+
+  /* ---------- 메인 콘텐츠 ---------- */
+  .main-content{position:relative;z-index:1;}
+  .content-head{max-width:560px;margin:0 auto;padding:56px 20px 8px;text-align:center;}
+  .hero-sub{
+    font-family:var(--sans);font-size:clamp(15px,2.4vw,18px);color:var(--ink);
+    margin:0 0 8px;font-weight:600;letter-spacing:0.2px;
+  }
+  .hero-credit{
+    font-family:var(--sans);font-size:12px;color:var(--ink-faint);margin:0 0 34px;font-weight:500;letter-spacing:0.3px;
+  }
+
+  /* ---------- 방명록 카드 슬라이더 (좌우 자동 슬라이드) ---------- */
+  .msg-slider-wrap{max-width:420px;margin:0 auto 8px;padding:0 20px;overflow:hidden;}
+  .msg-slider-track{display:flex;transition:transform .6s cubic-bezier(.65,0,.35,1);}
+  .msg-slide{flex:0 0 100%;padding:2px;}
+  .msg-slide-card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:var(--shadow-sm);padding:22px 24px;min-height:104px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .msg-slide-name{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:0.2px;}
+  .msg-slide-text{font-size:13.5px;line-height:1.6;color:var(--ink-soft);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .msg-slide-empty{font-size:13px;color:var(--ink-faint);text-align:center;}
+  .msg-slider-dots{display:flex;justify-content:center;gap:6px;margin:14px 0 40px;}
+  .msg-slider-dots span{width:5px;height:5px;border-radius:50%;background:var(--glass-border);transition:background .2s;}
+  .msg-slider-dots span.active{background:var(--accent);}
+
+  /* ---------- 방명록 작성 폼 (글래스모피즘) ---------- */
+  .content{max-width:560px;margin:0 auto;padding:0 18px 90px;position:relative;z-index:1;}
+
+  .glass-card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:24px;
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    box-shadow:var(--shadow-sm);padding:26px;
+  }
+
+  .section-label{
+    font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px;
+  }
+  .section-title{font-family:var(--sans);font-size:18px;font-weight:700;color:var(--ink);margin:0 0 22px;}
+
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:12px;color:var(--ink-faint);margin-bottom:7px;font-weight:600;letter-spacing:0.2px;}
+  .form-row input, .form-row textarea{
+    width:100%;padding:14px 16px;border:1.5px solid var(--glass-border);border-radius:14px;
+    font-size:14px;font-family:var(--sans);background:rgba(255,255,255,0.06);color:var(--ink);
+    resize:vertical;transition:border-color .15s, background .15s;
+  }
+  .form-row input::placeholder, .form-row textarea::placeholder{color:var(--ink-faint);}
+  .form-row input:focus, .form-row textarea:focus{border-color:var(--accent);background:rgba(255,255,255,0.1);outline:none;}
+  .form-row textarea{min-height:96px;line-height:1.6;}
+  .char-count{text-align:right;font-size:10.5px;color:var(--ink-faint);margin-top:4px;}
+
+  .submit-btn{
+    width:100%;padding:14px;border:none;border-radius:14px;
+    background:var(--accent);color:#fff;font-size:14px;font-weight:700;font-family:var(--sans);
+    cursor:pointer;transition:filter .15s, opacity .15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .submit-btn:hover{filter:brightness(1.08);}
+  .submit-btn:disabled{opacity:0.5;cursor:default;}
+  .submit-btn svg{width:19px;height:19px;}
+  .submit-btn .btn-label{font-size:12px;font-weight:600;}
+
+  .status-msg{font-size:12px;margin-top:10px;text-align:center;min-height:16px;color:var(--ink-soft);}
+  .status-msg.error{color:#FFB4C6;}
+  .status-msg.ok{color:var(--accent);}
+
+  /* ---------- 전송 완료 후: 이미지 저장 / 공유 ---------- */
+  .share-panel{margin-top:16px;display:none;gap:10px;}
+  .share-panel.show{display:flex;}
+  .share-btn{
+    flex:1;padding:12px;border-radius:12px;border:1px solid var(--glass-border);
+    background:rgba(255,255,255,0.08);color:var(--ink);font-family:var(--sans);font-size:12.5px;font-weight:600;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+    transition:background .15s;
+  }
+  .share-btn:hover{background:rgba(255,255,255,0.15);}
+  .share-btn svg{width:14px;height:14px;}
+  .share-hint{font-size:10.5px;color:var(--ink-faint);text-align:center;margin-top:8px;line-height:1.6;}
+
+  @media(max-width:480px){
+    .landing{padding:0 16px 48px;}
+    .content-head{padding:44px 16px 4px;}
+    .glass-card{padding:20px;border-radius:20px;}
+    .content{padding:0 14px 70px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-bg" id="page-bg">
+  <div class="page-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg')"></div>
+  <div class="page-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_2.jpg')"></div>
+  <div class="page-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_3.jpg')"></div>
+</div>
+<div class="page-overlay"></div>
+
+<button class="audio-btn" id="audio-toggle" aria-label="배경음악 재생/정지" onclick="toggleBgm(event)">
+  <svg id="audio-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+</button>
+
+<!-- 첫 화면: 간유리 + 타이틀만. 누르면 아래 콘텐츠로 이동 -->
+<div class="landing" id="landing" onclick="revealContent()">
+  <div class="landing-glass" id="landing-glass"></div>
+  <h1 class="hero-title">
+    <span class="top-word">Happy Birth Day</span>
+    <span class="script-word">Zayne!</span>
+  </h1>
+  <div class="landing-hint">눌러서 들어가기 ↓</div>
+</div>
+
+<audio id="bgm" loop preload="none" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/audio/Zayne%20BGM%20%F0%9F%8E%B6%20-%20Iceborn%20Warmth%20%20Love%20and%20Deepspace.mp3"></audio>
+
+<div class="main-content" id="main-content">
+  <div class="content-head">
+    <p class="hero-sub">사랑하는 이서언의 생일을 축하합니다.</p>
+    <p class="hero-credit">from. 쟈스민단</p>
+  </div>
+
+  <div class="msg-slider-wrap">
+    <div class="msg-slider-track" id="msg-slider-track">
+      <div class="msg-slide"><div class="msg-slide-card"><div class="msg-slide-empty">아직 도착한 축하 메시지가 없어요.</div></div></div>
+    </div>
+  </div>
+  <div class="msg-slider-dots" id="msg-slider-dots"></div>
+
+  <div class="content">
+    <div class="glass-card" id="gb-form-section">
+      <div class="section-label">Leave a message</div>
+      <h2 class="section-title">이서언의 생일을 축하해 주세요.</h2>
+      <div class="form-row">
+        <label for="gb-name">닉네임</label>
+        <input id="gb-name" type="text" maxlength="20" placeholder="이름 또는 닉네임 (최대 20자)">
+      </div>
+      <div class="form-row">
+        <label for="gb-message">축하 메시지</label>
+        <textarea id="gb-message" maxlength="300" placeholder="따뜻한 축하 메시지를 남겨주세요 (최대 300자)"></textarea>
+        <div class="char-count"><span id="gb-count">0</span>/300</div>
+      </div>
+      <button class="submit-btn" id="gb-submit" onclick="submitGuestbook()" aria-label="방명록 남기기">
+        <svg viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 21s-7.4-4.6-10.1-9.3C.3 8.8 1.6 5 5.2 4.1 7.6 3.5 10 4.6 12 7.2 14 4.6 16.4 3.5 18.8 4.1c3.6.9 4.9 4.7 3.3 7.6C19.4 16.4 12 21 12 21z"></path></svg>
+      </button>
+      <div class="status-msg" id="gb-status"></div>
+
+      <div class="share-panel" id="share-panel">
+        <button class="share-btn" onclick="saveMessageImage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          이미지 저장
+        </button>
+        <button class="share-btn" onclick="shareToTwitter()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 4.5c-.8.4-1.7.6-2.6.8.9-.6 1.6-1.5 2-2.5-.9.5-1.9.9-2.9 1.1a4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 2.6 3.6a4.5 4.5 0 0 0 1.4 6 4.4 4.4 0 0 1-2-.6v.1c0 2.2 1.5 4 3.6 4.4a4.5 4.5 0 0 1-2 .1 4.5 4.5 0 0 0 4.2 3.1A9 9 0 0 1 1 19.5 12.7 12.7 0 0 0 7.9 21.5c8.3 0 12.9-6.9 12.9-12.9v-.6c.9-.6 1.6-1.4 2.2-2.5z"></path></svg>
+          공유하기
+        </button>
+      </div>
+      <div class="share-hint" id="share-hint" style="display:none;">이미지를 먼저 저장한 뒤, 트위터 창에서 직접 첨부해주세요 (트위터는 외부에서 이미지를 자동 첨부하는 걸 허용하지 않아요).</div>
+    </div>
+  </div>
+</div>
+
+<canvas id="share-canvas" width="1080" height="1080" style="display:none;"></canvas>
+
+<script>
+/* ---------- 배경 배너 크로스페이드 (페이지 전체) ---------- */
+(function(){
+  const slides = document.querySelectorAll('#page-bg .page-slide');
+  if(slides.length < 2) return;
+  let idx = 0;
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 6000);
+})();
+
+/* ---------- 첫 화면(간유리+타이틀) → 타이틀 클릭 시 유리효과 해제 + 콘텐츠로 스크롤 ---------- */
+function revealContent(){
+  document.getElementById('landing-glass').classList.add('cleared');
+  document.querySelector('.landing-hint').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('main-content').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 550);
+}
+
+/* ---------- 배경음악: 자동재생이 차단되면 첫 클릭/터치 시 재생 시도 ---------- */
+const bgm = document.getElementById('bgm');
+const audioIcon = document.getElementById('audio-icon');
+const ICON_PLAYING = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+const ICON_MUTED = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle><line x1="2" y1="2" x2="22" y2="22"></line>';
+function updateAudioIcon(){
+  audioIcon.innerHTML = (bgm.paused) ? ICON_MUTED : ICON_PLAYING;
+}
+function toggleBgm(e){
+  if(e) e.stopPropagation();
+  if(bgm.paused){ bgm.play().catch(()=>{}); } else { bgm.pause(); }
+}
+bgm.addEventListener('play', updateAudioIcon);
+bgm.addEventListener('pause', updateAudioIcon);
+updateAudioIcon();
+function tryAutoplay(){
+  bgm.play().catch(()=>{
+    const retry = () => { bgm.play().catch(()=>{}); document.removeEventListener('pointerdown', retry); document.removeEventListener('keydown', retry); };
+    document.addEventListener('pointerdown', retry, { once:true });
+    document.addEventListener('keydown', retry, { once:true });
+  });
+}
+tryAutoplay();
+
+/* ---------- 방명록 API ---------- */
+const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
+
+const nameEl = document.getElementById('gb-name');
+const msgEl = document.getElementById('gb-message');
+const countEl = document.getElementById('gb-count');
+const submitBtn = document.getElementById('gb-submit');
+const statusEl = document.getElementById('gb-status');
+const trackEl = document.getElementById('msg-slider-track');
+const dotsEl = document.getElementById('msg-slider-dots');
+const sharePanelEl = document.getElementById('share-panel');
+const shareHintEl = document.getElementById('share-hint');
+
+msgEl.addEventListener('input', () => {
+  countEl.textContent = msgEl.value.length;
+});
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ---------- 방명록 카드 슬라이더 (좌우 자동 슬라이드) ---------- */
+let gbEntries = [];
+let sliderIdx = 0;
+let sliderTimer = null;
+function renderSlider(){
+  clearInterval(sliderTimer);
+  if(!gbEntries.length){
+    trackEl.innerHTML = `<div class="msg-slide"><div class="msg-slide-card"><div class="msg-slide-empty">아직 도착한 축하 메시지가 없어요.</div></div></div>`;
+    dotsEl.innerHTML = '';
+    return;
+  }
+  trackEl.innerHTML = gbEntries.map(en => `
+    <div class="msg-slide">
+      <div class="msg-slide-card">
+        <div class="msg-slide-name">${escapeHtml(en.name)}</div>
+        <div class="msg-slide-text">${escapeHtml(en.message)}</div>
+      </div>
+    </div>
+  `).join('');
+  dotsEl.innerHTML = gbEntries.map((_, i) => `<span${i===0 ? ' class="active"' : ''}></span>`).join('');
+  sliderIdx = 0;
+  trackEl.style.transform = 'translateX(0%)';
+  if(gbEntries.length > 1){
+    sliderTimer = setInterval(() => {
+      sliderIdx = (sliderIdx + 1) % gbEntries.length;
+      trackEl.style.transform = `translateX(-${sliderIdx * 100}%)`;
+      dotsEl.querySelectorAll('span').forEach((d, i) => d.classList.toggle('active', i === sliderIdx));
+    }, 4200);
+  }
+}
+
+let gbLoading = false;
+async function loadGuestbook(){
+  if(gbLoading) return;
+  gbLoading = true;
+  try{
+    const res = await fetch(GUESTBOOK_API_URL);
+    const data = await res.json();
+    if(data.ok){
+      gbEntries = data.entries || [];
+      renderSlider();
+    }
+  }catch(err){
+    /* 실패시 이전 상태 유지 */
+  }finally{
+    gbLoading = false;
+  }
+}
+
+let lastSubmitted = null; // { name, message }
+
+async function submitGuestbook(){
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+  statusEl.textContent = '';
+  statusEl.className = 'status-msg';
+  sharePanelEl.classList.remove('show');
+  shareHintEl.style.display = 'none';
+
+  if(!name || !message){
+    statusEl.textContent = '닉네임과 메시지를 모두 입력해주세요.';
+    statusEl.classList.add('error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+
+  try{
+    /* Apps Script 웹앱 doPost 응답은 302 리다이렉트라 CORS 헤더가 없어서,
+       no-cors 없이 fetch하면 서버 저장은 성공해도 브라우저가 실패로 처리해버림.
+       그래서 no-cors + text/plain(JSON 문자열) 조합으로 전송 (index.html과 동일한 방식) */
+    await fetch(GUESTBOOK_API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name, message })
+    });
+    statusEl.textContent = '축하 메시지가 남겨졌습니다 🎉';
+    statusEl.classList.add('ok');
+    lastSubmitted = { name, message };
+    sharePanelEl.classList.add('show');
+    nameEl.value = '';
+    msgEl.value = '';
+    countEl.textContent = '0';
+    setTimeout(loadGuestbook, 1200);
+  }catch(err){
+    statusEl.textContent = '전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    statusEl.classList.add('error');
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+/* ---------- 작성한 메시지를 이미지로 저장 ---------- */
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = text.split('');
+  let line = '';
+  const lines = [];
+  for(let i = 0; i < words.length; i++){
+    const test = line + words[i];
+    if(ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line = words[i];
+    } else {
+      line = test;
+    }
+  }
+  if(line) lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+  return lines.length;
+}
+
+function drawShareCanvas(name, message, bgImage){
+  const canvas = document.getElementById('share-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  if(bgImage){
+    ctx.drawImage(bgImage, 0, 0, W, H);
+    ctx.fillStyle = 'rgba(10,18,24,0.6)';
+    ctx.fillRect(0, 0, W, H);
+  } else {
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#1b2a33');
+    grad.addColorStop(1, '#0a1319');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#7EC8F2';
+  ctx.font = '600 42px Georgia, serif';
+  ctx.fillText('HAPPY BIRTH DAY', W/2, 190);
+  ctx.font = 'italic 84px Georgia, serif';
+  ctx.fillText('Zayne!', W/2, 290);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(W/2 - 80, 340); ctx.lineTo(W/2 + 80, 340); ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 44px "Malgun Gothic", sans-serif';
+  ctx.fillText(name, W/2, 470);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '34px "Malgun Gothic", sans-serif';
+  wrapCanvasText(ctx, message, W/2, 560, 860, 50);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '24px "Malgun Gothic", sans-serif';
+  ctx.fillText('AKSO Hospital · 심장외과 이서언 교수님 생신 축하', W/2, H - 70);
+
+  return canvas;
+}
+
+function downloadCanvas(canvas, filename){
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function withShareImage(callback){
+  if(!lastSubmitted) return;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, img);
+    callback(canvas);
+  };
+  img.onerror = () => {
+    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, null);
+    callback(canvas);
+  };
+  img.src = 'https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg';
+}
+
+function saveMessageImage(){
+  withShareImage((canvas) => {
+    downloadCanvas(canvas, 'happy-birthday-zayne.png');
+  });
+}
+
+function shareToTwitter(){
+  if(!lastSubmitted) return;
+  withShareImage((canvas) => {
+    downloadCanvas(canvas, 'happy-birthday-zayne.png');
+  });
+  shareHintEl.style.display = 'block';
+  const text = `${lastSubmitted.name}님이 이서언 교수님 생일을 축하하며 남긴 메시지 🎂\n"${lastSubmitted.message}"\n#Zayne생일축하 #HappyBirthdayZayne`;
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+
+loadGuestbook();
+setInterval(loadGuestbook, 10000);
+</script>
+</body>
+</html>
