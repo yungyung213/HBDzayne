@@ -4,35 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AKSO Work Hub</title>
-<!-- 방명록 API(Apps Script) 요청 시작 전에 미리 DNS/TLS 연결을 맺어둬서 실제 요청 시 지연을 줄임 -->
 <link rel="preconnect" href="https://script.google.com">
 <link rel="dns-prefetch" href="https://script.google.com">
 <style>
   :root{
-    --navy-900:#132238;
-    --navy-800:#132238;
-    --navy-700:#333D4B;
-    --mint-600:#29AAA6;
-    --mint-500:#29AAA6;
-    --mint-dark:#178D89;
-    --mint-100:#EAF8F7;
-    --mint-hover:#F3FAFA;
-    --bg-app:#F5F7F9;
-    --card:#FFFFFF;
-    --border:#E6EAF0;
-    --divider:#EEF1F4;
-    --text-dark:#132238;
-    --text-muted:#667085;
-    --text-muted2:#98A2B3;
-    --danger:#D92D20;
-    --warn:#F79009;
-    --success:#039855;
-    --warm-coral:#29AAA6;
-    --warm-gold:#29AAA6;
+    --navy-900:#132238; --navy-800:#132238; --navy-700:#333D4B;
+    --mint-600:#29AAA6; --mint-500:#29AAA6; --mint-dark:#178D89;
+    --mint-100:#EAF8F7; --mint-hover:#F3FAFA;
+    --bg-app:#F5F7F9; --card:#FFFFFF; --border:#E6EAF0; --divider:#EEF1F4;
+    --text-dark:#132238; --text-muted:#667085; --text-muted2:#98A2B3;
+    --danger:#D92D20; --warn:#F79009; --success:#039855;
     --focus:#29AAA6;
-    --radius-lg:20px;
-    --radius-md:16px;
-    --radius-sm:14px;
+    --radius-lg:20px; --radius-md:16px; --radius-sm:14px;
     --shadow-card:0 1px 2px rgba(16,24,40,0.04);
     --shadow-elevated:0 8px 24px rgba(16,24,40,0.06);
     --shadow-btn:0 1px 2px rgba(16,24,40,0.04);
@@ -45,43 +28,20 @@
   html,body,button,input,select,textarea{
     font-family:"Malgun Gothic","Apple SD Gothic Neo","Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;
   }
-  body{
-    background:var(--bg-app);
-    color:var(--text-dark);
-    min-height:100vh;
-  }
-  #app{
-    width:100%;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    position:relative;
-  }
-  .screen{
-    display:none;
-    width:100%;
-    min-height:100vh;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
+  body{background:var(--bg-app); color:var(--text-dark); min-height:100vh;}
+  #app{width:100%; min-height:100vh; display:flex; flex-direction:column; position:relative;}
+  .screen{display:none; width:100%; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:24px;}
   .screen.active{display:flex;}
   :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  /* 입력창은 자체 focus 테두리(border-color)가 있으므로 기본 outline과 겹쳐 두 줄로 보이는 문제 방지 */
   .field input:focus-visible, .field select:focus-visible,
-  textarea.answer-input:focus-visible, input.answer-input:focus-visible, select.answer-input:focus-visible{
-    outline:none;
-  }
+  textarea.answer-input:focus-visible, input.answer-input:focus-visible, select.answer-input:focus-visible{outline:none;}
 
-  /* ---------- 로그인 배경 그라데이션 애니메이션 ---------- */
   #screen-login{position:relative; overflow:hidden; background:#fff;}
   .login-bg-blob{
     position:absolute; width:75vmax; height:75vmax; max-width:900px; max-height:900px;
     border-radius:50%; pointer-events:none; z-index:0;
     background:radial-gradient(circle at 35% 35%, rgba(41,170,166,0.38), rgba(41,170,166,0.12) 55%, rgba(41,170,166,0) 76%);
-    filter:blur(10px);
-    top:-25%; left:-25%;
+    filter:blur(10px); top:-25%; left:-25%;
     animation:loginBlobMove 20s ease-in-out infinite alternate;
   }
   .login-bg-blob.b2{
@@ -90,162 +50,60 @@
     top:auto; left:auto; bottom:-25%; right:-20%;
     animation:loginBlobMove2 24s ease-in-out infinite alternate;
   }
-  @keyframes loginBlobMove{
-    0%{transform:translate(0,0) scale(1);}
-    50%{transform:translate(18vw,14vh) scale(1.12);}
-    100%{transform:translate(-8vw,20vh) scale(0.94);}
-  }
-  @keyframes loginBlobMove2{
-    0%{transform:translate(0,0) scale(1);}
-    50%{transform:translate(-14vw,-10vh) scale(1.08);}
-    100%{transform:translate(8vw,-18vh) scale(0.96);}
-  }
+  @keyframes loginBlobMove{0%{transform:translate(0,0) scale(1);}50%{transform:translate(18vw,14vh) scale(1.12);}100%{transform:translate(-8vw,20vh) scale(0.94);}}
+  @keyframes loginBlobMove2{0%{transform:translate(0,0) scale(1);}50%{transform:translate(-14vw,-10vh) scale(1.08);}100%{transform:translate(8vw,-18vh) scale(0.96);}}
   .login-card{position:relative; z-index:1;}
 
-  /* ---------- 신원확인(계정 재인증) 화면 배경 애니메이션 ---------- */
   #screen-identity{position:relative; overflow:hidden; background:#fff;}
   .id-bg-blob{
     position:absolute; width:70vmax; height:70vmax; max-width:820px; max-height:820px;
     border-radius:50%; pointer-events:none; z-index:0;
     background:radial-gradient(circle at 40% 40%, rgba(41,170,166,0.34), rgba(41,170,166,0.1) 55%, rgba(41,170,166,0) 76%);
-    filter:blur(12px);
-    top:-30%; left:-30%;
+    filter:blur(12px); top:-30%; left:-30%;
     animation:idBlobWave 14s ease-in-out infinite;
   }
   .id-bg-blob.b2{
     width:56vmax; height:56vmax; max-width:640px; max-height:640px;
     background:radial-gradient(circle at 55% 45%, rgba(58,141,214,0.26), rgba(58,141,214,0.07) 55%, rgba(58,141,214,0) 76%);
-    filter:blur(12px);
-    top:auto; left:auto; bottom:-28%; right:-24%;
+    filter:blur(12px); top:auto; left:auto; bottom:-28%; right:-24%;
     animation:idBlobWave2 17s ease-in-out infinite;
   }
-  @keyframes idBlobWave{
-    0%{transform:translate(0,0) scale(1);}
-    25%{transform:translate(22vw,-6vh) scale(1.08);}
-    50%{transform:translate(6vw,10vh) scale(0.96);}
-    75%{transform:translate(-20vw,2vh) scale(1.05);}
-    100%{transform:translate(0,0) scale(1);}
-  }
-  @keyframes idBlobWave2{
-    0%{transform:translate(0,0) scale(1);}
-    30%{transform:translate(-18vw,8vh) scale(1.1);}
-    60%{transform:translate(-4vw,-8vh) scale(0.95);}
-    100%{transform:translate(0,0) scale(1);}
-  }
+  @keyframes idBlobWave{0%{transform:translate(0,0) scale(1);}25%{transform:translate(22vw,-6vh) scale(1.08);}50%{transform:translate(6vw,10vh) scale(0.96);}75%{transform:translate(-20vw,2vh) scale(1.05);}100%{transform:translate(0,0) scale(1);}}
+  @keyframes idBlobWave2{0%{transform:translate(0,0) scale(1);}30%{transform:translate(-18vw,8vh) scale(1.1);}60%{transform:translate(-4vw,-8vh) scale(0.95);}100%{transform:translate(0,0) scale(1);}}
   .wizard-card{position:relative; z-index:1;}
   #screen-quiz{position:relative; overflow:hidden; background:#fff;}
-  .login-card{
-    background:var(--card);
-    width:100%;
-    max-width:380px;
-    border:none;
-    border-radius:var(--radius-lg);
-    padding:44px 30px 32px;
-    box-shadow:var(--shadow-card);
-  }
-  .login-logo{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    margin-bottom:26px;
-  }
-  .login-logo .mark{
-    height:64px;width:auto;min-width:64px;
-    display:flex;align-items:center;justify-content:center;
-    overflow:hidden;
-  }
-  .login-logo .mark img, .dash-topbar .mark img{
-    height:100%;width:auto;max-width:100%;object-fit:contain;display:block;
-  }
+  .login-card{background:var(--card); width:100%; max-width:380px; border:none; border-radius:var(--radius-lg); padding:44px 30px 32px; box-shadow:var(--shadow-card);}
+  .login-logo{display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px;}
+  .login-logo .mark{height:64px;width:auto;min-width:64px; display:flex;align-items:center;justify-content:center; overflow:hidden;}
+  .login-logo .mark img, .dash-topbar .mark img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
   .login-logo .hosp-name{font-size:var(--fs-24);font-weight:800;color:var(--navy-800);letter-spacing:-0.3px;}
   .login-logo .sub{font-size:var(--fs-14);color:var(--text-muted);letter-spacing:1px;font-weight:600;}
   .field{margin-bottom:14px;}
   .field label{display:block;font-size:var(--fs-13);color:var(--text-muted);margin-bottom:6px;font-weight:500;}
-  .field input, .field select{
-    width:100%;
-    padding:16px;
-    border:1.5px solid transparent;
-    border-radius:var(--radius-sm);
-    font-size:var(--fs-16);
-    font-weight:400;
-    font-family:inherit;
-    background:#F2F4F6;
-    transition:border-color .12s, background .12s;
-  }
+  .field input, .field select{width:100%;padding:16px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:var(--fs-16);font-weight:400;font-family:inherit;background:#F2F4F6;transition:border-color .12s, background .12s;}
   .field input:focus, .field select:focus{border-color:var(--mint-600); background:#fff;}
   .field.has-icon{position:relative;}
-  .field.has-icon .field-icon{
-    position:absolute; left:14px; top:50%; transform:translateY(-50%);
-    color:var(--text-muted); display:flex; pointer-events:none;
-  }
+  .field.has-icon .field-icon{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted); display:flex; pointer-events:none;}
   .field.has-icon input{padding-left:42px;}
-  .forgot-link{
-    text-align:right;font-size:var(--fs-12);margin:2px 0 20px;
-  }
+  .forgot-link{text-align:right;font-size:var(--fs-12);margin:2px 0 20px;}
   .forgot-link a{color:var(--text-muted);text-decoration:none;cursor:pointer;}
-  .btn-primary{
-    width:100%;
-    background:var(--mint-600);
-    color:#fff;
-    border:none;
-    padding:16px;
-    border-radius:var(--radius-sm);
-    font-size:var(--fs-16);
-    font-weight:700;
-    cursor:pointer;
-    letter-spacing:-0.2px;
-    box-shadow:var(--shadow-btn);
-    transition:transform .08s, background .12s;
-  }
+  .btn-primary{width:100%;background:var(--mint-600);color:#fff;border:none;padding:16px;border-radius:var(--radius-sm);font-size:var(--fs-16);font-weight:700;cursor:pointer;letter-spacing:-0.2px;box-shadow:var(--shadow-btn);transition:transform .08s, background .12s;}
   .btn-primary:hover{background:#166F6A;}
   .btn-primary:active{transform:scale(0.98);}
-  .btn-secondary{
-    width:100%;
-    background:#F2F4F6;
-    color:var(--navy-800);
-    border:none;
-    padding:15px;
-    border-radius:var(--radius-sm);
-    font-size:var(--fs-15);
-    font-weight:700;
-    cursor:pointer;
-    margin-top:10px;
-  }
-  .login-footnote{
-    margin-top:22px;padding-top:16px;border-top:1px solid var(--border);
-    font-size:var(--fs-11);color:#B0B8C1;line-height:1.6;text-align:center;
-  }
+  .btn-secondary{width:100%;background:#F2F4F6;color:var(--navy-800);border:none;padding:15px;border-radius:var(--radius-sm);font-size:var(--fs-15);font-weight:700;cursor:pointer;margin-top:10px;}
+  .login-footnote{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-size:var(--fs-11);color:#B0B8C1;line-height:1.6;text-align:center;}
 
-  /* ---------- forgot pw ---------- */
-  .simple-card{
-    background:var(--card);width:100%;max-width:380px;
-    border:none;border-radius:var(--radius-lg);padding:44px 32px;text-align:center;
-    box-shadow:var(--shadow-card);
-  }
+  .simple-card{background:var(--card);width:100%;max-width:380px;border:none;border-radius:var(--radius-lg);padding:44px 32px;text-align:center;box-shadow:var(--shadow-card);}
   .simple-card .icon{font-size:var(--fs-32);margin-bottom:16px;}
   .simple-card h2{font-size:var(--fs-18);margin:0 0 10px;color:var(--navy-800);font-weight:700;}
   .simple-card p{font-size:var(--fs-13);color:var(--text-muted);line-height:1.7;margin:0 0 24px;}
 
-  /* ---------- notice modal ---------- */
-  .notice-overlay{
-    position:fixed;inset:0;background:rgba(25,31,40,0.55);
-    display:flex;align-items:center;justify-content:center;z-index:50;
-    padding:20px;
-  }
-  .notice-box{
-    background:#fff;width:100%;max-width:360px;border-radius:20px;
-    padding:38px 26px 26px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,0.24);
-  }
+  .notice-overlay{position:fixed;inset:0;background:rgba(25,31,40,0.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  .notice-box{background:#fff;width:100%;max-width:360px;border-radius:20px;padding:38px 26px 26px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,0.24);}
   .notice-headline{font-size:var(--fs-16);line-height:1.5;font-weight:500;color:var(--navy-800);margin:0 0 28px;letter-spacing:-0.2px;}
   .notice-box .highlight{color:var(--mint-600);}
 
-  /* ---------- wizard shared ---------- */
-  .wizard-card{
-    background:var(--card);width:100%;max-width:420px;
-    border:none;border-radius:var(--radius-lg);padding:38px 28px 32px;
-    box-shadow:var(--shadow-card);
-  }
+  .wizard-card{background:var(--card);width:100%;max-width:420px;border:none;border-radius:var(--radius-lg);padding:38px 28px 32px;box-shadow:var(--shadow-card);}
   .wizard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
   .wizard-title{font-size:var(--fs-14);font-weight:700;color:var(--navy-800);}
   .dots{display:flex;gap:6px;}
@@ -255,93 +113,49 @@
   .step-label{font-size:var(--fs-11);color:var(--mint-600);font-weight:700;letter-spacing:0.5px;margin-bottom:8px;}
   .step-q{font-size:var(--fs-20);font-weight:800;color:var(--text-dark);margin:0 0 26px;line-height:1.5;letter-spacing:-0.4px;}
   .wizard-nav{display:flex;gap:8px;margin-top:24px;}
-  .btn-ghost{
-    flex:0 0 auto;background:#F2F4F6;color:var(--text-muted);border:none;
-    padding:15px 18px;border-radius:var(--radius-sm);font-size:var(--fs-14);font-weight:600;cursor:pointer;
-  }
+  .btn-ghost{flex:0 0 auto;background:#F2F4F6;color:var(--text-muted);border:none;padding:15px 18px;border-radius:var(--radius-sm);font-size:var(--fs-14);font-weight:600;cursor:pointer;}
   .btn-next{flex:1;background:var(--mint-600);color:#fff;border:none;padding:15px;border-radius:var(--radius-sm);font-size:var(--fs-15);font-weight:700;cursor:pointer;box-shadow:var(--shadow-btn);}
   .btn-next:disabled{background:#E5E8EB;box-shadow:none;cursor:not-allowed;}
 
-  /* choice options */
   .choice-list{display:flex;flex-direction:column;gap:10px;}
-  .choice{
-    border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:#F9FAFB;
-    font-size:var(--fs-15);cursor:pointer;display:flex;align-items:center;gap:10px;
-    transition:border-color .12s, background .12s;
-  }
+  .choice{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:#F9FAFB;font-size:var(--fs-15);cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .12s, background .12s;}
   .choice:hover{border-color:var(--mint-500);}
   .choice.selected{border-color:var(--mint-600);background:#E3F8FC;font-weight:700;}
   .choice .radio{width:18px;height:18px;border-radius:50%;border:1.5px solid #D1D6DB;flex:0 0 auto;position:relative;}
   .choice.selected .radio{border-color:var(--mint-600);}
   .choice.selected .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--mint-600);}
 
-  /* birthday wheel picker */
   .step-centered{display:flex;flex-direction:column;align-items:center;}
   .wheel-row{display:flex;gap:14px;justify-content:center;margin-bottom:6px;}
   .wheel-col{width:120px;}
   .wheel-scroll-wrap{position:relative;}
   .wheel-label{text-align:center;font-size:var(--fs-11);color:var(--text-muted);margin-bottom:6px;}
-  .wheel-scroll{
-    height:150px;overflow-y:scroll;scroll-snap-type:y mandatory;
-    border:none;border-radius:var(--radius-sm);background:#F9FAFB;
-    -ms-overflow-style:none; scrollbar-width:none;
-  }
+  .wheel-scroll{height:150px;overflow-y:scroll;scroll-snap-type:y mandatory;border:none;border-radius:var(--radius-sm);background:#F9FAFB;-ms-overflow-style:none; scrollbar-width:none;}
   .wheel-scroll::-webkit-scrollbar{display:none;}
   .wheel-pad{height:51px;}
-  .wheel-item{
-    height:48px;display:flex;align-items:center;justify-content:center;
-    scroll-snap-align:center;font-size:var(--fs-15);color:#B7BEC7;font-weight:600;
-    transition:color .18s ease, font-size .18s ease, transform .18s ease;
-  }
+  .wheel-item{height:48px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:var(--fs-15);color:#B7BEC7;font-weight:600;transition:color .18s ease, font-size .18s ease, transform .18s ease;}
   .wheel-item.center-active{color:var(--navy-800);font-size:var(--fs-20);transform:scale(1.06);}
-  .wheel-highlight{
-    position:absolute;top:51px;left:0;right:0;height:48px;
-    border-radius:8px;
-    border:1.5px solid var(--mint-600);
-    pointer-events:none;background:rgba(0,180,216,0.07);
-    transition:transform .12s ease, background .12s ease;
-  }
+  .wheel-highlight{position:absolute;top:51px;left:0;right:0;height:48px;border-radius:8px;border:1.5px solid var(--mint-600);pointer-events:none;background:rgba(0,180,216,0.07);transition:transform .12s ease, background .12s ease;}
   .wheel-highlight.pulse{transform:scale(1.04);background:rgba(28,140,134,0.14);}
 
-  /* loading */
   .loading-card{display:flex;flex-direction:column;align-items:center;gap:18px;}
-  .spinner{
-    width:54px;height:54px;border-radius:50%;
-    border:5px solid #DCE2E8;border-top-color:var(--mint-600);
-    animation:spin 0.9s linear infinite;
-  }
+  .spinner{width:54px;height:54px;border-radius:50%;border:5px solid #DCE2E8;border-top-color:var(--mint-600);animation:spin 0.9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .loading-text{font-size:var(--fs-13);color:var(--text-muted);}
 
-  textarea.answer-input, input.answer-input{
-    width:100%;padding:16px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:var(--fs-16);font-weight:400;font-family:inherit;background:#F2F4F6;transition:border-color .12s, background .12s;
-  }
+  textarea.answer-input, input.answer-input{width:100%;padding:16px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:var(--fs-16);font-weight:400;font-family:inherit;background:#F2F4F6;transition:border-color .12s, background .12s;}
   textarea.answer-input:focus, input.answer-input:focus{border-color:var(--mint-600); background:#fff;}
   select.answer-input{
-    width:100%;
-    padding:16px 44px 16px 16px;
-    border:1.5px solid transparent;
-    border-radius:var(--radius-sm);
-    font-size:var(--fs-16);
-    font-weight:400;
-    font-family:inherit;
+    width:100%;padding:16px 44px 16px 16px;border:1.5px solid transparent;border-radius:var(--radius-sm);
+    font-size:var(--fs-16);font-weight:400;font-family:inherit;
     background:#F2F4F6 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238B95A1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat right 16px center;
-    background-size:18px;
-    -webkit-appearance:none;
-    appearance:none;
-    cursor:pointer;
-    transition:border-color .12s, background-color .12s;
+    background-size:18px;-webkit-appearance:none;appearance:none;cursor:pointer;transition:border-color .12s, background-color .12s;
   }
   select.answer-input:focus{border-color:var(--mint-600); background-color:#fff;}
 
-  /* ---------- DASHBOARD ---------- */
   #screen-dashboard{align-items:stretch;padding:0;}
   .dash-wrap{width:100%;display:flex;flex-direction:column;min-height:100vh;background:var(--bg-app);}
-  .dash-topbar{
-    background:#fff;color:var(--text-dark);padding:0 20px;height:var(--header-h);
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-    border-bottom:1px solid var(--border);
-  }
+  .dash-topbar{background:#fff;color:var(--text-dark);padding:0 20px;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
   .dash-topbar .brand{display:flex;align-items:center;gap:10px;font-size:var(--fs-15);font-weight:700;color:var(--text-dark);}
   .dash-topbar .brand .mark{height:36px;width:auto;min-width:36px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-11);overflow:hidden;}
   .dash-topbar .meta{font-size:var(--fs-12);color:var(--text-muted);}
@@ -349,93 +163,34 @@
   .dash-topbar .meta .topbar-logout{color:var(--mint-600);font-weight:600;cursor:pointer;text-decoration:none;}
   .dash-topbar .meta .topbar-logout:hover{text-decoration:underline;}
   .dash-body{display:flex;flex-direction:column;flex:1;min-height:0;}
-  .dash-sidebar{
-    width:100%;background:#fff;color:var(--text-muted);flex:0 0 auto;
-    display:flex;align-items:stretch;border-bottom:1px solid var(--border);
-    -ms-overflow-style:none; scrollbar-width:none;
-  }
+  .dash-sidebar{width:100%;background:#fff;color:var(--text-muted);flex:0 0 auto;display:flex;align-items:stretch;border-bottom:1px solid var(--border);-ms-overflow-style:none; scrollbar-width:none;}
   .dash-sidebar::-webkit-scrollbar{display:none;height:0;}
-  .dash-sidebar .menu-item{
-    padding:0 4px;margin:0 14px;height:44px;display:flex;align-items:center;
-    font-size:var(--fs-14);font-weight:600;cursor:pointer;color:var(--text-muted);
-    border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;
-    border-radius:6px 6px 0 0;
-  }
+  .dash-sidebar .menu-item{padding:0 4px;margin:0 14px;height:44px;display:flex;align-items:center;font-size:var(--fs-14);font-weight:600;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;border-radius:6px 6px 0 0;}
   .dash-sidebar .menu-item:hover{color:var(--mint-dark);background:var(--mint-hover);}
   .dash-sidebar .menu-item.active{background:transparent;color:var(--mint-600);border-bottom-color:var(--mint-600);font-weight:700;}
   .dash-main{flex:1;padding:32px 32px 48px;overflow-y:visible;width:100%;box-sizing:border-box;}
-  .dash-notice{
-    background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:22px 22px;margin-bottom:20px;
-  }
-  /* 내 프로필 */
-  /* ---------- 생일 히어로 (배너 + 프로필 + 축하메시지) ---------- */
-  .hero-stack{
-    display:grid;
-    grid-template-columns:minmax(0,2fr) minmax(300px,0.75fr);
-    grid-template-areas:
-      "banner profile"
-      "msgcard msgcard";
-    gap:24px;
-    margin-bottom:24px;
-  }
-  .hero-banner{
-    grid-area:banner;
-    position:relative; border-radius:20px; overflow:hidden;
-    min-height:680px; max-height:820px; height:74vh;
-    box-shadow:var(--shadow-elevated);
-    background:#0F1B2A;
-  }
+  .dash-notice{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:22px 22px;margin-bottom:20px;}
+
+  .hero-stack{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,0.75fr);grid-template-areas:"banner profile" "msgcard msgcard";gap:24px;margin-bottom:24px;}
+  .hero-banner{grid-area:banner;position:relative; border-radius:20px; overflow:hidden; min-height:680px; max-height:820px; height:74vh; box-shadow:var(--shadow-elevated); background:#0F1B2A;}
   .hero-banner-slides{position:absolute; inset:0;}
-  .hero-banner-slide{
-    position:absolute; inset:0; background-size:cover; background-position:center center;
-    opacity:0; transition:opacity 1.4s ease;
-  }
-  .hero-banner-slide.active{opacity:1;}
-  /* 세로로 긴(세로사진) 슬라이드는 얼굴이 보통 위쪽에 있어 위치를 다르게 잡음 */
+  .hero-banner-slide{position:absolute; inset:0; background-size:cover; background-position:center center; opacity:0; transition:opacity 1.4s ease;}
+  .hero-banner-slide.active{opacity:1; z-index:1;}
   .hero-banner-slide.portrait{background-position:center top;}
-  .hero-banner-overlay{
-    position:absolute; inset:0; pointer-events:none;
-    background:linear-gradient(to top, rgba(8,18,28,0.82) 0%, rgba(8,18,28,0.35) 42%, rgba(8,18,28,0.05) 72%);
-  }
-  .hero-banner-mark{
-    position:absolute; top:24px; right:24px; width:auto; height:22px; max-width:80px;
-    object-fit:contain; opacity:0.78;
-  }
-  .hero-banner-content{
-    position:absolute; left:0; right:0; bottom:0; padding:40px; color:#fff;
-  }
+  .hero-banner-overlay{position:absolute; inset:0; pointer-events:none; background:linear-gradient(to top, rgba(8,18,28,0.82) 0%, rgba(8,18,28,0.35) 42%, rgba(8,18,28,0.05) 72%);}
+  .hero-banner-mark{position:absolute; top:24px; right:24px; width:auto; height:22px; max-width:80px; object-fit:contain; opacity:0.78;}
+  .hero-banner-content{position:absolute; left:0; right:0; bottom:0; padding:40px; color:#fff;}
   .hero-banner-date{font-size:var(--fs-13); font-weight:600; color:rgba(255,255,255,0.75); margin-bottom:10px; letter-spacing:0.2px;}
-  .hero-banner-title{
-    font-size:clamp(22px,3.4vw,40px); font-weight:700; line-height:1.3; margin:0 0 12px; letter-spacing:-0.3px;
-  }
-  .hero-banner-msg{
-    font-size:var(--fs-13); line-height:1.6; color:rgba(255,255,255,0.85);
-    max-width:640px; transition:opacity .5s ease;
-    /* 문구가 길어져도 항상 한 줄로만 보이고 넘치는 부분은 ...으로 축약,
-       높이도 항상 1줄 몫으로 고정해 배너 내용 전체 높이가 흔들리지 않게 함 */
-    height:1.6em; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-  }
-  .hero-profile{
-    grid-area:profile;
-    background:#fff; border:1px solid var(--border); border-radius:16px;
-    padding:24px; box-shadow:var(--shadow-card);
-    display:flex; flex-direction:column;
-    min-height:680px; max-height:820px; height:74vh;
-  }
+  .hero-banner-title{font-size:clamp(22px,3.4vw,40px); font-weight:700; line-height:1.3; margin:0 0 12px; letter-spacing:-0.3px;}
+  .hero-banner-msg{font-size:var(--fs-13); line-height:1.6; color:rgba(255,255,255,0.85); max-width:640px;}
+  .hero-banner-dots{position:absolute; right:40px; bottom:20px; display:flex; gap:8px; z-index:2;}
+  .hero-banner-dot{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.35); cursor:pointer; transition:background .2s, transform .2s; border:none; padding:0;}
+  .hero-banner-dot.active{background:#fff; transform:scale(1.2);}
+  .hero-profile{grid-area:profile;background:#fff; border:1px solid var(--border); border-radius:16px;padding:24px; box-shadow:var(--shadow-card);display:flex; flex-direction:column;min-height:680px; max-height:820px; height:74vh;}
   .profile-photo-wrap{position:relative; flex:1 1 auto; margin-bottom:16px; min-height:0; display:flex;}
-  .profile-photo{
-    position:relative;
-    flex:1 1 auto; width:100%; min-height:0; border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--text-muted);font-size:var(--fs-12);font-weight:600;
-    overflow:hidden; background:#F5F7F9;
-  }
+  .profile-photo{position:relative;flex:1 1 auto; width:100%; min-height:0; border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:var(--fs-12);font-weight:600;overflow:hidden; background:#F5F7F9;}
   .profile-photo img{width:100%;height:100%;object-fit:contain;}
-  .profile-photo-badge{
-    position:absolute; top:10px; right:10px;
-    height:30px;width:auto;
-    display:flex;align-items:center;justify-content:center;overflow:visible;
-  }
+  .profile-photo-badge{position:absolute; top:10px; right:10px;height:30px;width:auto;display:flex;align-items:center;justify-content:center;overflow:visible;}
   .profile-photo-badge img{height:100%;width:auto;object-fit:contain;display:block;}
   .profile-info-col{display:contents;}
   .profile-name{font-size:var(--fs-24);font-weight:700;color:var(--navy-900);margin-bottom:4px;}
@@ -446,29 +201,16 @@
   .profile-info-label{font-size:var(--fs-12);color:var(--text-muted2);}
   .profile-info-value{font-size:var(--fs-14);color:var(--text-dark);font-weight:600;word-break:break-word;overflow-wrap:anywhere;}
   .profile-info-item.full{grid-column:1 / -1;}
-  @media(max-width:1099px){
-    .hero-stack{grid-template-columns:65% 1fr;}
-  }
+  @media(max-width:1099px){.hero-stack{grid-template-columns:65% 1fr;}}
   @media(max-width:859px){
-    .hero-stack{
-      grid-template-columns:1fr;
-      grid-template-areas:
-        "banner"
-        "msgcard"
-        "profile";
-      gap:16px;
-    }
+    .hero-stack{grid-template-columns:1fr;grid-template-areas:"banner" "msgcard" "profile";gap:16px;}
     .hero-banner{aspect-ratio:3/4; min-height:440px; max-height:none; height:auto;}
-    .hero-profile{
-      max-height:none; height:auto; min-height:0;
-      flex-direction:row; align-items:center; gap:16px; padding:18px;
-    }
+    .hero-profile{max-height:none; height:auto; min-height:0;flex-direction:row; align-items:center; gap:16px; padding:18px;}
     .profile-photo-wrap{flex:0 0 42%; width:42%; max-width:190px; margin-bottom:0;}
     .profile-photo{aspect-ratio:4/5; flex:none; height:auto;}
     .profile-info-col{display:flex; flex-direction:column; flex:1 1 auto; min-width:0;}
     .profile-divider{margin:10px 0;}
     .profile-name{font-size:var(--fs-18);}
-    /* 모바일에서 사진 옆 텍스트 영역이 좁아 글씨가 빡빡해 보이던 것을 완화 */
     .profile-role{font-size:var(--fs-12);}
     .profile-info-grid{gap:10px 12px;}
     .profile-info-label{font-size:var(--fs-11);}
@@ -477,68 +219,22 @@
   @media(max-width:480px){
     .hero-banner{aspect-ratio:3/4; min-height:420px; max-height:620px;}
     .hero-banner-content{padding:20px 20px 24px;}
+    .hero-banner-dots{right:20px; bottom:16px;}
     .profile-info-grid{grid-template-columns:1fr;}
   }
 
-  /* 축하 메시지 카드 (배너 밖, 별도 카드) */
-  .msg-composer-card{
-    grid-area:msgcard;
-    background:#fff; border:1px solid var(--border); border-radius:14px;
-    padding:24px; box-shadow:var(--shadow-card);
-  }
-  .msg-composer-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .msg-composer-card{grid-area:msgcard;background:#fff; border:1px solid var(--border); border-radius:14px;padding:24px; box-shadow:var(--shadow-card);}
+  .msg-composer-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
   .msg-composer-head h3{font-size:var(--fs-16); font-weight:700; color:var(--navy-800); margin:0;}
-  /* 축하 메시지 작성 폼 (밝은 배경, 카드 내부) */
-  .gb-form{display:flex; flex-direction:column; gap:10px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--divider);}
-  .gb-form-row{display:flex; gap:10px;}
-  .gb-form-input{
-    height:44px; border-radius:999px; border:1.5px solid var(--border);
-    background:#F7F8FA; color:var(--text-dark); padding:0 18px; font-size:var(--fs-14);
-    font-family:inherit; outline:none; transition:border-color .15s, background .15s; box-sizing:border-box; width:100%;
-  }
-  .gb-form-input::placeholder{color:var(--text-muted2);}
-  .gb-form-input:focus{border-color:var(--mint-600); background:#fff;}
-  .gb-form-message{flex:1 1 auto; min-width:0;}
-  .gb-form-submit{
-    flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none;
-    background:var(--mint-600); color:#fff; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; transition:background .15s;
-  }
-  .gb-form-submit:hover{background:var(--mint-dark);}
-  .gb-form-submit:disabled{opacity:0.6; cursor:default;}
-  .gb-form-status{font-size:var(--fs-12); color:var(--text-muted); min-height:1.2em;}
-  .gb-form-saved{font-size:var(--fs-12); color:var(--text-muted); min-height:44px; display:flex; align-items:center;}
-  .gb-form-saved a{color:var(--mint-dark); font-weight:600; text-decoration:underline; cursor:pointer;}
-  /* 배너(어두운 배경) 안에 들어간 축하 메시지 입력폼 전용 테마 */
-  .gb-form-onbanner{
-    margin:16px 0 0; padding:0; border-bottom:none; max-width:520px;
-  }
-  .gb-form-onbanner .gb-form-input{
-    background:rgba(255,255,255,0.14); border:1.5px solid rgba(255,255,255,0.28); color:#fff;
-    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-  }
-  .gb-form-onbanner .gb-form-input::placeholder{color:rgba(255,255,255,0.65);}
-  .gb-form-onbanner .gb-form-input:focus{background:rgba(255,255,255,0.22); border-color:#fff;}
-  .gb-form-onbanner .gb-form-saved{color:rgba(255,255,255,0.85);}
-  .gb-form-onbanner .gb-form-saved a{color:#fff;}
-  .gb-form-onbanner .gb-form-status{color:rgba(255,255,255,0.85); min-height:0;}
-  /* 모바일에서도 전송 버튼은 원형 아이콘 크기(44px) 유지 - 이전에 width:100%로 커지던 버그 수정 */
+  .msg-composer-divider{height:1px; background:var(--divider); margin:0 0 16px;}
   .gb-entries{display:flex; flex-direction:column; gap:14px;}
   .gb-entry-meta{font-size:var(--fs-12); color:var(--text-muted2); margin-bottom:3px;}
-  .gb-entry-msg{
-    font-size:var(--fs-14); color:var(--text-dark); line-height:1.5;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-    overflow:hidden; text-overflow:ellipsis; word-break:break-word;
-  }
+  .gb-entry-msg{font-size:var(--fs-14); color:var(--text-dark); line-height:1.5;display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;overflow:hidden; text-overflow:ellipsis; word-break:break-word;}
   .gb-more-link{font-size:var(--fs-13); color:var(--mint-600); font-weight:600; text-decoration:none; white-space:nowrap;}
   .gb-more-link:hover{color:var(--mint-dark);}
   .gb-empty{font-size:var(--fs-13); color:var(--text-muted2); text-align:center; padding:6px 0;}
-  .dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner{
-    scroll-margin-top: 112px;
-  }
-  @media (max-width:480px){
-    .dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner{ scroll-margin-top: 12px; }
-  }
+  .dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner, #section-column{scroll-margin-top: 112px;}
+  @media (max-width:480px){.dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner, #section-column{ scroll-margin-top: 12px; }}
   .dash-notice h3{font-size:var(--fs-16);margin:0 0 8px;color:var(--navy-800);display:flex;align-items:center;gap:6px;font-weight:700;}
   .notice-row{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:8px 0;border-bottom:1px solid var(--divider);font-size:var(--fs-14);color:var(--text-dark);}
   .notice-row:last-child{border-bottom:none;}
@@ -549,15 +245,12 @@
     .stat-card .icon-chip{width:32px; height:32px;}
     .stat-card .value{font-size:var(--fs-16);}
   }
-  /* 화면이 그보다도 더 좁아지면(구형/폴드 등) 2칸으로도 라벨 글자가 세로로 쪼개져 보이는 문제가 있어
-     이 구간부터는 1열로 되돌려 카드 하나가 전체 너비를 쓰도록 함 (근태관리 카드도 같은 클래스 공유) */
   @media(max-width:360px){.dash-grid{grid-template-columns:1fr;}}
   .stat-card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:16px 18px;display:flex;align-items:center;gap:12px;}
   .stat-card > div:last-child{min-width:0;}
   .stat-card .icon-chip{flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:var(--mint-100);color:var(--mint-dark);display:flex;align-items:center;justify-content:center;}
   .stat-card .label{font-size:var(--fs-12);color:var(--text-muted);margin-bottom:4px;}
   .stat-card .value{font-size:var(--fs-20);font-weight:700;color:var(--navy-900);}
-  /* 미니 그래프 카드 (진료 스케쥴 / 근태관리) */
   .chart-card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:18px 20px;}
   .chart-card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
   .chart-card-title{font-size:var(--fs-13);color:var(--text-muted);font-weight:600;}
@@ -567,55 +260,21 @@
   .mini-bar{width:100%;max-width:26px;border-radius:6px 6px 3px 3px;background:var(--mint-100);position:relative;}
   .mini-bar.today{background:var(--mint-600);}
   .mini-bar-label{font-size:var(--fs-11);color:var(--text-muted2);}
-  .gauge-wrap{display:flex;align-items:center;gap:16px;}
-  .gauge-value{font-size:var(--fs-24);font-weight:700;color:var(--navy-900);}
-  .gauge-sub{font-size:var(--fs-12);color:var(--text-muted);}
 
-  /* messenger widget */
-  .msg-widget{
-    display:none;
-    position:fixed;bottom:20px;right:20px;z-index:80;
-  }
-  .msg-bubble{
-    width:68px;height:68px;border-radius:50%;background:var(--navy-800);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;
-    transition:transform .15s;
-    font-size:28px;
-  }
+  .msg-widget{display:none;position:fixed;bottom:20px;right:20px;z-index:80;}
+  .msg-bubble{width:68px;height:68px;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;transition:transform .15s;font-size:28px;}
   .msg-bubble:hover{transform:scale(1.05);}
-  .scroll-top-btn{
-    display:none; position:fixed; z-index:79;
-    width:40px; height:40px; border-radius:50%; background:#fff; border:1px solid var(--border);
-    box-shadow:0 4px 14px rgba(0,0,0,0.16); align-items:center; justify-content:center; cursor:pointer;
-    color:var(--navy-800); opacity:0; transform:translateY(8px); transition:opacity .2s, transform .2s;
-  }
-  .msg-bubble .badge-count{
-    position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;
-    font-size:var(--fs-11);font-weight:700;border-radius:999px;min-width:22px;height:22px;padding:0 4px;
-    display:flex;align-items:center;justify-content:center;border:2px solid #fff;
-  }
-  .msg-panel{
-    position:fixed;bottom:98px;right:20px;width:320px;max-width:88vw;max-height:70vh;
-    background:#fff;border-radius:var(--radius-md);box-shadow:0 10px 40px rgba(0,0,0,0.18);
-    display:none;flex-direction:column;overflow:hidden;z-index:80;
-    border:none;
-  }
+  .scroll-top-btn{display:none; position:fixed; z-index:79;width:40px; height:40px; border-radius:50%; background:#fff; border:1px solid var(--border);box-shadow:0 4px 14px rgba(0,0,0,0.16); align-items:center; justify-content:center; cursor:pointer;color:var(--navy-800); opacity:0; transform:translateY(8px); transition:opacity .2s, transform .2s;}
+  .scroll-top-btn.show{display:flex; right:20px; bottom:100px; opacity:1; transform:translateY(0);}
+  .msg-bubble .badge-count{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:var(--fs-11);font-weight:700;border-radius:999px;min-width:22px;height:22px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+  .msg-panel{position:fixed;bottom:98px;right:20px;width:320px;max-width:88vw;max-height:70vh;background:#fff;border-radius:var(--radius-md);box-shadow:0 10px 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;z-index:80;border:none;}
   .msg-panel.open{display:flex;}
-  .msg-panel-head{
-    background:var(--navy-900);color:#fff;padding:8px 14px;font-size:var(--fs-13);font-weight:700;
-    display:flex;justify-content:space-between;align-items:center;flex:0 0 auto;
-  }
+  .msg-panel-head{background:var(--navy-900);color:#fff;padding:8px 14px;font-size:var(--fs-13);font-weight:700;display:flex;justify-content:space-between;align-items:center;flex:0 0 auto;}
   .msg-panel-head .close-x{cursor:pointer;color:#B9C3D0;font-size:var(--fs-14);}
-  .msg-panel-body{
-    overflow-y:auto;padding:6px 0;flex:1;background:#FFFFFF;
-  }
+  .msg-panel-body{overflow-y:auto;padding:6px 0;flex:1;background:#FFFFFF;}
   .msg-item{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;opacity:0;transform:translateY(6px);animation:msgIn .35s forwards;}
   @keyframes msgIn{to{opacity:1;transform:translateY(0);}}
-  .msg-item .avatar{
-    width:36px;height:36px;border-radius:50%;flex:0 0 auto;
-    display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-13);font-weight:700;
-  }
+  .msg-item .avatar{width:36px;height:36px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-13);font-weight:700;}
   .msg-item .msg-dept{font-size:var(--fs-10);color:var(--text-muted);font-weight:400;margin-bottom:2px;}
   .msg-item .msg-name-row{display:flex;align-items:baseline;gap:6px;}
   .msg-item .msg-name{font-size:var(--fs-13);font-weight:700;color:var(--text-dark);}
@@ -624,23 +283,13 @@
   .msg-item .text{font-size:var(--fs-12);color:#3A3A3A;margin-top:4px;line-height:1.5;}
   .msg-panel-foot{padding:8px 12px;border-top:1px solid var(--border);font-size:var(--fs-11);color:#B0B0B0;text-align:center;flex:0 0 auto;}
 
-  /* chat thread detail view */
   .msg-item{cursor:pointer;}
   .msg-item:hover{background:#FAFAFA;}
   .msg-item.unread{background:rgba(28,140,134,0.04);}
   .msg-unread-dot{width:6px;height:6px;border-radius:50%;background:var(--mint-600);flex:0 0 auto;margin-left:2px;}
-  .thread-header{
-    position:sticky;top:0;z-index:2;background:#fff;
-    display:flex;align-items:center;gap:10px;padding:12px 14px;
-    border-bottom:1px solid var(--border);
-  }
-  .thread-header .back-arrow{
-    font-size:var(--fs-24);color:var(--text-muted);cursor:pointer;line-height:1;padding:2px 4px;
-  }
-  .thread-avatar{
-    width:32px;height:32px;border-radius:50%;flex:0 0 auto;
-    display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-12);font-weight:700;
-  }
+  .thread-header{position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);}
+  .thread-header .back-arrow{font-size:var(--fs-24);color:var(--text-muted);cursor:pointer;line-height:1;padding:2px 4px;}
+  .thread-avatar{width:32px;height:32px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-12);font-weight:700;}
   .thread-dept{font-size:var(--fs-10);color:var(--text-muted);}
   .thread-name{font-size:var(--fs-13);font-weight:700;color:var(--text-dark);}
   .thread-messages{padding:14px 16px 18px;display:flex;flex-direction:column;gap:12px;}
@@ -654,46 +303,21 @@
 
   .hidden{display:none !important;}
 
-  @keyframes sectionFlash{
-    0%{box-shadow:0 0 0 3px rgba(0,180,216,0.55);}
-    100%{box-shadow:0 0 0 3px rgba(0,180,216,0);}
-  }
+  @keyframes sectionFlash{0%{box-shadow:0 0 0 3px rgba(0,180,216,0.55);}100%{box-shadow:0 0 0 3px rgba(0,180,216,0);}}
   .section-flash{animation:sectionFlash 1.2s ease-out;}
+  @keyframes ambientSnowFall{0%{transform:translate(0,-30px) rotate(0deg); opacity:0;}10%{opacity:0.85;}90%{opacity:0.85;}100%{transform:translate(var(--sway),110vh) rotate(360deg); opacity:0;}}
 
-  @keyframes snowBurst{
-    0%{opacity:0; transform:translate(-50%,-50%) scale(0.2) rotate(0deg);}
-    14%{opacity:1; transform:translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(1.25) rotate(var(--rot1));}
-    100%{opacity:0; transform:translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(0.9) rotate(var(--rot2));}
-  }
-  @keyframes ambientSnowFall{
-    0%{transform:translate(0,-30px) rotate(0deg); opacity:0;}
-    10%{opacity:0.85;}
-    90%{opacity:0.85;}
-    100%{transform:translate(var(--sway),110vh) rotate(360deg); opacity:0;}
-  }
-
-  .help-icon{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:20px;height:20px;border-radius:50%;background:#EEF0F3;color:var(--text-muted);
-    font-size:var(--fs-12);font-weight:700;cursor:pointer;vertical-align:middle;
-  }
+  .help-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#EEF0F3;color:var(--text-muted);font-size:var(--fs-12);font-weight:700;cursor:pointer;vertical-align:middle;}
   .help-icon:hover{background:var(--mint-100);color:var(--mint-600);}
-  .help-popup{
-    margin:-12px 0 16px;font-size:var(--fs-13);color:#00819E;background:var(--mint-100);
-    border:1px solid #B8ECF5;border-radius:var(--radius-sm);padding:10px 14px;line-height:1.6;
-  }
+  .help-popup{margin:-12px 0 16px;font-size:var(--fs-13);color:#00819E;background:var(--mint-100);border:1px solid #B8ECF5;border-radius:var(--radius-sm);padding:10px 14px;line-height:1.6;}
 
-  .field-error{
-    font-size:var(--fs-12);color:var(--danger);margin-top:6px;min-height:14px;
-    opacity:0;transition:opacity .15s;
-  }
+  .field-error{font-size:var(--fs-12);color:var(--danger);margin-top:6px;min-height:14px;opacity:0;transition:opacity .15s;}
   .field-error.show{opacity:1;}
   input.invalid, select.invalid{border-color:var(--danger) !important; background:#FDF3F3;}
   .choice.incorrect{border-color:var(--danger); background:#FDF3F3;}
   .choice.incorrect .radio{border-color:var(--danger);}
   .choice.incorrect .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--danger);}
 
-  /* ---------- SCHEDULE TABLE ---------- */
   .schedule-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
   .schedule-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
   .schedule-section h3{font-size:var(--fs-16);margin:0;color:var(--navy-800);display:flex;align-items:center;gap:6px;font-weight:800;}
@@ -705,35 +329,24 @@
 
   .sched-table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:1540px;}
   .sched-table th, .sched-table td{border:1px solid #EEF0F3;text-align:center;padding:0;height:38px;vertical-align:middle;}
-  .sched-table .month-cell{background:#F8F9FA;width:80px;font-size:var(--fs-24);font-weight:700;color:var(--navy-800);position:relative;}
-  .sched-table .month-label{display:block;font-size:var(--fs-10);color:var(--text-muted);font-weight:400;margin-bottom:2px;}
   .sched-table .row-label{background:#F8F9FA;width:70px;font-size:var(--fs-11);color:var(--text-muted);font-weight:500;}
   .sched-table .day-head{background:#F8F9FA;font-size:var(--fs-11);color:var(--text-muted);font-weight:400;height:28px;}
   .sched-table .day-num{font-size:var(--fs-13);font-weight:600;color:var(--navy-800);height:28px;}
   .sched-table .weekend-col{background:#F9FAFB;}
   .sched-table .sunday-col{background:#FFF5F5;border-right:2px solid #DCE1E7;}
-  .sched-table .birthday{
-    background:#FFE29A !important;color:#9A5B00 !important;font-weight:800;
-  }
-  .sched-table .birthday::after{
-    content:"🎂";position:absolute;top:-8px;right:-2px;font-size:var(--fs-14);
-  }
+  .sched-table .birthday{background:#FFE29A !important;color:#9A5B00 !important;font-weight:800;}
+  .sched-table .birthday::after{content:"🎂";position:absolute;top:-8px;right:-2px;font-size:var(--fs-14);}
   .sched-table .pad-cell{background:#FCFCFD;}
   .sched-mark{display:inline-block;width:10px;height:10px;border-radius:2px;}
   .sched-mark.out{background:#5B8DEF;}
   .sched-mark.spc{background:#F04452;}
 
-  /* ---------- MAIL BOX ---------- */
   .mail-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
   .mail-section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .mail-section h3{font-size:var(--fs-16);margin:0;color:var(--navy-800);font-weight:800;}
   .mail-badge{background:var(--mint-600);color:#fff;font-size:var(--fs-10);font-weight:700;border-radius:10px;padding:2px 8px;}
   .mail-list, .patient-list{display:flex;flex-direction:column; gap:10px;}
-  .patient-card{
-    display:grid; grid-template-columns:22px 90px 1fr 74px; gap:12px; align-items:center;
-    padding:12px 12px; border:1px solid #EEF0F3; border-radius:12px; font-size:var(--fs-13); cursor:pointer;
-    transition:background .12s, box-shadow .12s, transform .12s;
-  }
+  .patient-card{display:grid; grid-template-columns:22px 90px 1fr 74px; gap:12px; align-items:center;padding:12px 12px; border:1px solid #EEF0F3; border-radius:12px; font-size:var(--fs-13); cursor:pointer;transition:background .12s, box-shadow .12s, transform .12s;}
   .patient-card:hover{background:#F9FAFB; box-shadow:0 4px 14px rgba(20,30,50,0.06); transform:translateY(-1px);}
   .patient-fav-col{display:flex; align-items:center; justify-content:center;}
   .patient-main{display:flex; flex-direction:column; gap:2px; min-width:0;}
@@ -761,7 +374,6 @@
   .mail-subject-line{flex:1;min-width:0;font-size:var(--fs-13);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .mail-subject-line .subj{color:var(--text-dark);}
   .mail-row.unread .mail-subject-line .subj{font-weight:700;color:var(--navy-900);}
-  /* 외부에서 온 특별한 메일(사랑하는 사람) 스타일 */
   .mail-row.love-mail{background:linear-gradient(90deg,#EAF4FE,#FFFFFF);}
   .mail-row.love-mail .mail-unread-dot{background:#5B9BD5;}
   .mail-row.love-mail .mail-subject-line .subj{color:#2E6DA4;}
@@ -769,20 +381,9 @@
   .mail-detail-box.love-mail-box .mail-detail-head{background:linear-gradient(90deg,#BFDAF7,#F3F9FF);}
   .mail-detail-box.love-mail-box .mail-detail-subject{color:#2E6DA4;}
 
-  .mail-overlay{
-    position:fixed;inset:0;background:rgba(25,31,40,0.5);
-    display:flex;align-items:center;justify-content:center;z-index:100;
-  }
-  .mail-detail-box{
-    position:relative;
-    background:#fff;width:92%;max-width:520px;border-radius:var(--radius-md);
-    box-shadow:0 12px 40px rgba(0,0,0,0.22);overflow:hidden;
-    display:flex;flex-direction:column;max-height:80vh;
-  }
-  .mail-detail-head{
-    background:var(--navy-900);color:#fff;padding:16px 20px;
-    display:flex;justify-content:space-between;align-items:flex-start;
-  }
+  .mail-overlay{position:fixed;inset:0;background:rgba(25,31,40,0.5);display:flex;align-items:center;justify-content:center;z-index:100;}
+  .mail-detail-box{position:relative;background:#fff;width:92%;max-width:520px;border-radius:var(--radius-md);box-shadow:0 12px 40px rgba(0,0,0,0.22);overflow:hidden;display:flex;flex-direction:column;max-height:80vh;}
+  .mail-detail-head{background:var(--navy-900);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;}
   .mail-detail-head .mail-detail-subject{font-size:var(--fs-15);font-weight:700;line-height:1.4;margin-bottom:6px;}
   .mail-detail-head .mail-detail-meta{font-size:var(--fs-12);color:#B9C3D0;}
   .mail-detail-close{cursor:pointer;color:#B9C3D0;font-size:var(--fs-18);flex:0 0 auto;margin-left:12px;}
@@ -794,73 +395,62 @@
   .chart-row-icon{display:inline-flex; vertical-align:-2px; margin-right:5px; color:var(--text-muted2);}
   .chart-table td{color:var(--text-dark);}
   .chart-table-grid{display:table;}
-  .vital-gauge-card{background:#F7F8FA;border-radius:12px;padding:16px 18px;margin-bottom:16px;}
-  .patient-alert-row{display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--mint-100); border-radius:12px; margin-bottom:16px;}
-  .patient-alert-label{font-size:var(--fs-12); color:var(--mint-dark); font-weight:600; margin-bottom:2px;}
-  .patient-alert-value{font-size:var(--fs-14); color:var(--navy-900); font-weight:600; line-height:1.5;}
-  .vital-gauge-label{font-size:var(--fs-12);color:var(--text-muted);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-  .vital-gauge-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
-  .vital-gauge-value{font-size:var(--fs-24);font-weight:800;color:var(--navy-900);}
-  .vital-gauge-value .unit{font-size:var(--fs-13);font-weight:600;color:var(--text-muted);margin-left:2px;}
-  .vital-gauge-status{font-size:var(--fs-13);font-weight:700;}
-  .vital-gauge-track{position:relative;height:6px;border-radius:3px;background:#E3E7ED;}
-  .vital-gauge-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;}
-  .vital-gauge-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid;transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,0.2);}
-  /* 환자 상세: 기본정보 그리드 */
-  .chart-info-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; margin-bottom:6px;}
-  .chart-info-item{display:flex; flex-direction:column; gap:3px;}
-  .chart-info-label{font-size:var(--fs-11); color:var(--text-muted2);}
-  .chart-info-value{font-size:var(--fs-13); font-weight:700; color:var(--navy-800);}
-  /* 환자 상세: 활력징후 미니카드 */
-  .vitals-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:4px;}
-  .vital-mini-card{
-    background:#F7F8FA; border-radius:12px; padding:12px 10px;
-    display:flex; flex-direction:column; align-items:flex-start; gap:4px;
-  }
-  .vital-mini-icon{
-    width:28px; height:28px; border-radius:8px; background:var(--mint-100); color:var(--mint-dark);
-    display:flex; align-items:center; justify-content:center; margin-bottom:2px;
-  }
-  .vital-mini-label{font-size:var(--fs-10); color:var(--text-muted);}
-  .vital-mini-value{font-size:var(--fs-13); font-weight:700; color:var(--navy-900);}
-  @media(max-width:480px){.vitals-grid{grid-template-columns:repeat(2,1fr);}}
-  /* 환자 상세: SOAP 타임라인 */
-  .soap-timeline{display:flex; flex-direction:column; gap:14px; margin-bottom:4px;}
-  .soap-item{display:flex; gap:12px; align-items:flex-start;}
-  .soap-badge{
-    flex:0 0 auto; width:26px; height:26px; border-radius:8px; font-size:var(--fs-12); font-weight:800;
-    display:flex; align-items:center; justify-content:center;
-    background:#EEF1F4; color:var(--navy-800);
-  }
-  .soap-body{flex:1; min-width:0;}
-  .soap-key{font-size:var(--fs-11); font-weight:700; color:var(--text-muted); margin-bottom:2px;}
-  .soap-text{font-size:var(--fs-13); color:var(--text-dark); line-height:1.6;}
-  /* 환자 상세: 담당의 메모 */
   .doc-note-list{display:flex; flex-direction:column; gap:10px; margin-bottom:12px;}
   .doc-note-item{background:#F7F8FA; border-radius:10px; padding:10px 12px;}
   .doc-note-date{font-size:var(--fs-10); color:var(--text-muted2); margin-bottom:4px; font-weight:600;}
   .doc-note-text{font-size:var(--fs-13); color:var(--text-dark); line-height:1.6;}
   .doc-note-empty{font-size:var(--fs-12); color:var(--text-muted2); padding:8px 2px;}
-  .doc-note-more{
-    display:block; width:100%; text-align:center; background:none; border:none; cursor:pointer;
-    color:var(--mint-dark); font-size:var(--fs-12); font-weight:700; padding:6px 0;
-  }
+  .doc-note-more{display:block; width:100%; text-align:center; background:none; border:none; cursor:pointer;color:var(--mint-dark); font-size:var(--fs-12); font-weight:700; padding:6px 0;}
   .doc-note-more:hover{text-decoration:underline;}
   .doc-note-compose{display:flex; flex-direction:column; gap:8px; margin-bottom:8px;}
-  .doc-note-compose textarea{
-    width:100%; min-height:64px; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px;
-    font-family:inherit; font-size:var(--fs-13); resize:vertical; box-sizing:border-box;
-  }
+  .doc-note-compose textarea{width:100%; min-height:64px; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px;font-family:inherit; font-size:var(--fs-13); resize:vertical; box-sizing:border-box;}
   .doc-note-compose textarea:focus{border-color:var(--mint-600); outline:none;}
   .doc-note-save{align-self:flex-end; width:auto; padding:8px 16px; font-size:var(--fs-12); margin-top:0;}
-  .doc-note-privacy{
-    display:flex; align-items:center; gap:6px; font-size:var(--fs-11); color:var(--text-muted2);
-    padding-top:10px; border-top:1px solid var(--divider);
-  }
+  .doc-note-privacy{display:flex; align-items:center; gap:6px; font-size:var(--fs-11); color:var(--text-muted2);padding-top:10px; border-top:1px solid var(--divider);}
   .mail-detail-body p{margin:0 0 24px;}
   .mail-detail-body .mail-sign{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);font-size:var(--fs-12);color:var(--text-muted);}
+  .love-mail-cta{margin-top:22px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.08);text-align:center;}
+  .love-mail-cta-text{font-size:var(--fs-13);color:var(--text-muted);line-height:1.6;}
+  .love-mail-cta-link{color:var(--mint-dark);font-weight:700;text-decoration:none;}
+  .love-mail-cta-link:hover{text-decoration:underline;}
 
-  /* ---------- RESPONSIVE ---------- */
+  .column-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
+  .column-section h3{font-size:var(--fs-16);margin:0 0 16px;color:var(--navy-800);font-weight:800;}
+  .column-list{display:flex;flex-direction:column;gap:14px;}
+  .column-card{border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:background .12s, box-shadow .12s, transform .12s;display:flex;flex-direction:column;}
+  .column-card:hover{background:#F9FAFB;box-shadow:0 4px 14px rgba(20,30,50,0.06);transform:translateY(-1px);}
+  .column-card-image{width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#F0F3F6;margin-bottom:14px;flex:0 0 auto;}
+  .column-card-image img{width:100%;height:100%;object-fit:cover;display:block;}
+  .column-author-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .column-author-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:#F5F7F9;display:flex;align-items:center;justify-content:center;}
+  .column-author-avatar img{width:100%;height:100%;object-fit:cover;}
+  .column-author-info{min-width:0;}
+  .column-author-name{font-size:var(--fs-13);font-weight:700;color:var(--navy-800);}
+  .column-author-meta{font-size:var(--fs-11);color:var(--text-muted2);}
+  .column-title{font-size:var(--fs-15);font-weight:700;color:var(--navy-900);margin-bottom:6px;line-height:1.4;}
+  .column-preview{font-size:var(--fs-13);color:var(--text-muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .column-meta-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:var(--fs-11);color:var(--text-muted2);}
+  .column-meta-row .dot-sep{width:3px;height:3px;border-radius:50%;background:var(--text-muted2);flex:0 0 auto;}
+  .column-views{display:inline-flex;align-items:center;gap:4px;}
+  @media(min-width:1024px){
+    .column-list{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px;}
+    .column-card{height:100%;}
+  }
+  .column-detail-image{width:100%;border-radius:14px;overflow:hidden;margin-bottom:20px;background:#F0F3F6;}
+  .column-detail-image img{width:100%;height:auto;display:block;}
+  .column-detail-author{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--divider);flex-wrap:wrap;}
+  .column-detail-author-left{display:flex;align-items:center;gap:12px;}
+  .column-detail-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:#F5F7F9;}
+  .column-detail-avatar img{width:100%;height:100%;object-fit:cover;}
+  .column-detail-name{font-size:var(--fs-14);font-weight:700;color:var(--navy-800);}
+  .column-detail-meta{font-size:var(--fs-12);color:var(--text-muted);margin-top:2px;}
+  .column-detail-views{font-size:var(--fs-12);color:var(--text-muted2);white-space:nowrap;}
+  .column-detail-body{font-size:var(--fs-13);line-height:1.85;color:var(--text-dark);}
+  .column-detail-body p{margin:0 0 18px;}
+  .column-detail-body h4{font-size:var(--fs-14);color:var(--navy-800);margin:22px 0 10px;font-weight:800;}
+  .column-eyebrow{font-size:var(--fs-11);font-weight:800;color:var(--mint-dark);letter-spacing:0.4px;margin-bottom:14px !important;}
+  .column-quote{background:var(--mint-100);border-left:3px solid var(--mint-600);border-radius:0 10px 10px 0;padding:14px 18px;font-size:var(--fs-14);font-weight:700;color:var(--navy-800);line-height:1.6;margin:6px 0 22px !important;}
+
   @media (max-width:480px){
     .login-card, .simple-card, .wizard-card{padding:26px 20px 22px; max-width:100%;}
     .wheel-row{gap:10px; width:100%; justify-content:center;}
@@ -873,11 +463,7 @@
     .dash-sidebar .menu-item.active{border-bottom-color:var(--mint-600) !important; background:transparent !important; color:var(--mint-600) !important;}
     .dash-body{flex-direction:column !important;}
     .dash-main{padding:16px 16px 32px !important;}
-    .msg-panel{
-      position:fixed; top:50%; left:50%; right:auto; bottom:auto;
-      transform:translate(-50%,-50%);
-      width:90vw; max-width:360px; max-height:78vh;
-    }
+    .msg-panel{position:fixed; top:50%; left:50%; right:auto; bottom:auto;transform:translate(-50%,-50%);width:90vw; max-width:360px; max-height:78vh;}
     .msg-widget{right:14px; bottom:14px;}
     .msg-bubble{width:52px; height:52px; font-size:22px;}
     .scroll-top-btn.show{display:flex; right:16px; bottom:78px;}
@@ -885,86 +471,36 @@
     .messenger-tab-layout .messenger-chat-panel{display:none !important;}
     .messenger-tab-layout .messenger-mail-panel{flex:1 1 auto !important; min-height:60vh;}
   }
-  /* 480px보다 넓은 모바일/작은 태블릿 폭에서도 메신저 탭은 메일함만 보이도록 동일 규칙을 넓게 커버 */
   @media(max-width:767px){
     .messenger-tab-layout{flex-direction:column !important; height:auto !important; gap:16px !important;}
     .messenger-tab-layout .messenger-chat-panel{display:none !important;}
     .messenger-tab-layout .messenger-mail-panel{flex:1 1 auto !important; min-height:60vh;}
   }
   @media (min-width:481px){
-    .dash-topbar{
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      z-index:50;
-      flex-wrap:nowrap;
-    }
+    .dash-topbar{position:fixed;top:0;left:0;right:0;z-index:50;flex-wrap:nowrap;}
     .dash-topbar .brand{flex:0 0 auto;}
-    .dash-topbar .meta{
-      flex:0 1 auto;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    /* PC에서는 상단바 바로 아래에 가로 메뉴바를 붙여서 둘 다 화면 상단에 고정 */
+    .dash-topbar .meta{flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .dash-sidebar{
-      display:flex !important;
-      position:fixed !important;
-      top:var(--header-h) !important;
-      left:0 !important;
-      right:0 !important;
-      bottom:auto !important;
-      width:100% !important;
-      height:52px !important;
-      align-items:stretch !important;
-      justify-content:center !important;
-      overflow-x:auto !important;
-      overflow-y:hidden !important;
-      padding:0 32px !important;
-      z-index:45 !important;
-      border-bottom:1px solid var(--border) !important;
+      display:flex !important; position:fixed !important; top:var(--header-h) !important; left:0 !important; right:0 !important; bottom:auto !important;
+      width:100% !important; height:52px !important; align-items:stretch !important; justify-content:center !important;
+      overflow-x:auto !important; overflow-y:hidden !important; padding:0 32px !important; z-index:45 !important; border-bottom:1px solid var(--border) !important;
     }
-    .dash-sidebar .menu-item{
-      flex:0 0 auto !important;
-      padding:0 4px !important;
-      margin:0 16px !important;
-      border-bottom:2px solid transparent !important;
-      box-sizing:border-box !important;
-      white-space:nowrap !important;
-      display:flex !important;
-      align-items:center !important;
-      line-height:1.2 !important;
-    }
-    .dash-sidebar .menu-item.active{
-      border-bottom-color:var(--mint-600) !important;
-      background:transparent !important;
-      color:var(--mint-600) !important;
-    }
-    .dash-body{
-      margin-top:calc(var(--header-h) + 52px) !important;
-    }
+    .dash-sidebar .menu-item{flex:0 0 auto !important; padding:0 4px !important; margin:0 16px !important; border-bottom:2px solid transparent !important; box-sizing:border-box !important; white-space:nowrap !important; display:flex !important; align-items:center !important; line-height:1.2 !important;}
+    .dash-sidebar .menu-item.active{border-bottom-color:var(--mint-600) !important; background:transparent !important; color:var(--mint-600) !important;}
+    .dash-body{margin-top:calc(var(--header-h) + 52px) !important;}
   }
   @media (min-width:481px){
-    :root{
-      --fs-10:11px; --fs-11:12px; --fs-12:13px; --fs-13:14px; --fs-14:15px;
-      --fs-15:16px; --fs-16:17px; --fs-18:19px; --fs-20:22px; --fs-24:26px; --fs-32:34px;
-    }
+    :root{--fs-10:11px; --fs-11:12px; --fs-12:13px; --fs-13:14px; --fs-14:15px;--fs-15:16px; --fs-16:17px; --fs-18:19px; --fs-20:22px; --fs-24:26px; --fs-32:34px;}
     .dash-main{max-width:1416px;margin:0 auto;width:100%;}
   }
-  @media (min-width:1024px){
-    .dash-main{padding-left:24px;padding-right:24px;}
-  }
-  @media (min-width:1280px){
-    .dash-main{padding-left:32px;padding-right:32px;}
-  }
+  @media (min-width:1024px){.dash-main{padding-left:24px;padding-right:24px;}}
+  @media (min-width:1280px){.dash-main{padding-left:32px;padding-right:32px;}}
 </style>
 </head>
 
 <body>
 <div id="app">
 
-  <!-- 0. INITIAL LOADING: 사원증 재인증 시스템 접속 -->
   <div class="screen active" id="screen-loading-start">
     <div class="loading-card">
       <div class="spinner"></div>
@@ -972,13 +508,11 @@
     </div>
   </div>
 
-  <!-- 1. LOGIN -->
   <div class="screen" id="screen-login">
     <div class="login-bg-blob"></div>
     <div class="login-bg-blob b2"></div>
     <div class="login-card">
       <div class="login-logo">
-        <!-- 로고 이미지 준비되면 아래 줄을 <div class="mark"><img src="파일명.png"></div> 로 교체하세요 -->
         <div class="mark" id="logo-mark-login"><img src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_logo.png" alt="로고"></div>
         <div class="hosp-name">AKSO HOSPITAL</div>
         <div class="sub">STAFF INTRANET</div>
@@ -998,7 +532,6 @@
     </div>
   </div>
 
-  <!-- 1b. FORGOT EMPLOYEE ID: 팝업(모달)로 변경 -->
   <div class="notice-overlay hidden" id="forgot-overlay">
     <div class="notice-box" style="max-width:380px; text-align:left; padding:30px 26px 26px;">
       <h2 style="font-size:var(--fs-17); font-weight:700; color:var(--navy-800); margin:0 0 12px; text-align:center;">사번 확인 안내</h2>
@@ -1008,7 +541,6 @@
     </div>
   </div>
 
-  <!-- 2. NOTICE MODAL layer (rendered over login, shown via JS) -->
   <div class="notice-overlay hidden" id="notice-reissue">
     <div class="notice-box">
       <p class="notice-headline"><span class="highlight">신규 사원증이 발급</span>되어<br>계정 재인증이 필요합니다</p>
@@ -1016,7 +548,6 @@
     </div>
   </div>
 
-  <!-- 3. IDENTITY VERIFICATION WIZARD -->
   <div class="screen" id="screen-identity">
     <div class="id-bg-blob"></div>
     <div class="id-bg-blob b2"></div>
@@ -1060,7 +591,6 @@
         <div class="step-q">부서를 선택하세요</div>
         <select class="answer-input" id="id-dept">
           <option value="">-- 부서 선택 --</option>
-          <!-- 부서 리스트: 가나다순 정렬 -->
           <option>가정의학과</option>
           <option>내과</option>
           <option>마취통증의학과</option>
@@ -1104,7 +634,6 @@
     </div>
   </div>
 
-  <!-- 2b. loading: 사원증 재인증 시작 -->
   <div class="screen" id="screen-loading-0">
     <div class="loading-card">
       <div class="spinner"></div>
@@ -1112,7 +641,6 @@
     </div>
   </div>
 
-  <!-- 3b. loading after identity -->
   <div class="screen" id="screen-loading-1">
     <div class="loading-card">
       <div class="spinner"></div>
@@ -1120,7 +648,6 @@
     </div>
   </div>
 
-  <!-- 4. QUIZ WIZARD -->
   <div class="screen" id="screen-quiz">
     <div class="id-bg-blob"></div>
     <div class="id-bg-blob b2"></div>
@@ -1165,7 +692,6 @@
     </div>
   </div>
 
-  <!-- 4b. loading -->
   <div class="screen" id="screen-loading-2">
     <div class="loading-card">
       <div class="spinner"></div>
@@ -1173,17 +699,16 @@
     </div>
   </div>
 
-  <!-- 5. DASHBOARD -->
   <div class="screen" id="screen-dashboard">
     <div class="dash-wrap">
       <div class="dash-topbar">
-        <!-- 로고 이미지 준비되면 <span class="mark"><img src="파일명.png"></span> 로 교체하세요 -->
         <div class="brand"><span class="mark" id="logo-mark-dash"><img src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_logo.png" alt="로고"></span> AKSO Work Hub</div>
         <div class="meta"><span id="dash-datetime"></span> · 인증 세션 <span id="dash-timer" class="timer">59:59</span> · <a href="#" class="topbar-logout" onclick="logoutIntranet(); return false;">로그아웃</a></div>
       </div>
       <div class="dash-body">
         <div class="dash-sidebar">
           <div class="menu-item" onclick="switchDashView('default', this, 'hero-banner')">공지사항</div>
+          <div class="menu-item" onclick="switchDashView('default', this, 'section-column')">메디컬럼</div>
           <div class="menu-item active" onclick="switchDashView('default', this, 'section-patient-chart')">전자결재</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-schedule')">진료 스케줄</div>
           <div class="menu-item" onclick="switchDashView('messenger', this)">메신저</div>
@@ -1192,61 +717,48 @@
         <div class="dash-main">
         <div id="view-default">
 
-          <!-- 생일 히어로: 배너(캐러셀) + 내 프로필 + 축하메시지 -->
           <div class="hero-stack">
             <div class="hero-banner" id="hero-banner">
               <div class="hero-banner-slides" id="hero-banner-slides">
-                <div class="hero-banner-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg')"></div>
-                <div class="hero-banner-slide portrait" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_2.jpg')"></div>
-                <div class="hero-banner-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_3.jpg')"></div>
-              </div>
-              <div class="hero-banner-overlay"></div>
-              <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
-              <div class="hero-banner-content">
-                <div class="hero-banner-date">2034-09-05</div>
-                <h1 class="hero-banner-title">이서언 교수님의<br>생일을 진심으로 축하드립니다.</h1>
-                <div class="hero-banner-msg" id="hero-rotating-msg"></div>
-
-                <!-- 축하 메시지 작성 폼: 배너 안으로 이동, 어두운 배경에 맞는 반투명 테마.
-                     닉네임 입력창을 상시 노출하지 않고, 처음 전송할 때 한 번만 prompt()로 물어보고
-                     이후에는 저장된 닉네임을 계속 재사용(변경은 아래 링크로) */ -->
-                <div class="gb-form gb-form-onbanner">
-                  <div id="hero-gb-name-saved" class="hidden gb-form-saved">
-                    <span id="hero-gb-name-saved-text"></span>님으로 작성됩니다 · <a href="#" onclick="resetHeroGbNickname(event)">닉네임 변경</a>
+                <div class="hero-banner-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_1.jpg'); cursor:pointer;" onclick="location.href='guestbook.html'" title="축하 메시지 보러 가기">
+                  <div class="hero-banner-overlay"></div>
+                  <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
+                  <div class="hero-banner-content">
+                    <div class="hero-banner-date">2048-09-05</div>
+                    <h1 class="hero-banner-title">이서언 교수님의<br>생일을 진심으로 축하드립니다.</h1>
+                    <div class="hero-banner-msg">이서언 교수님의 생신을 진심으로 축하드립니다.</div>
                   </div>
-                  <script>
-                  (function(){
-                    try{
-                      var saved = localStorage.getItem('akso_gb_nickname');
-                      if(saved){
-                        var savedEl = document.getElementById('hero-gb-name-saved');
-                        savedEl.classList.remove('hidden');
-                        document.getElementById('hero-gb-name-saved-text').textContent = saved;
-                      }
-                    }catch(e){}
-                  })();
-                  </script>
-                  <div class="gb-form-row">
-                    <label for="hero-gb-message" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">축하 메시지</label>
-                    <input type="text" id="hero-gb-message" class="gb-form-input gb-form-message" placeholder="축하의 메세지를 자유롭게 남겨주세요." maxlength="200">
-                    <button type="button" class="gb-form-submit" id="hero-gb-submit" onclick="submitHeroGuestbook()" aria-label="축하 메시지 남기기">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
+                </div>
+                <div class="hero-banner-slide portrait" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_2.jpg')">
+                  <div class="hero-banner-overlay"></div>
+                  <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
+                  <div class="hero-banner-content">
+                    <div class="hero-banner-date">심장외과 · 교수</div>
+                    <h1 class="hero-banner-title">의학의 깊이가 환자의<br>건강한 삶으로 이어지도록.</h1>
+                    <div class="hero-banner-msg">AKSO 병원 심장외과센터는 선천성 심질환부터 대동맥 질환까지, 깊이 있는 연구와 세심한 진료로 환자의 건강한 삶을 지켜갑니다.</div>
                   </div>
-                  <div class="gb-form-status" id="hero-gb-status"></div>
+                </div>
+                <div class="hero-banner-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/banner_3.jpg')">
+                  <div class="hero-banner-overlay"></div>
+                  <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
+                  <div class="hero-banner-content">
+                    <div class="hero-banner-date">AKSO HOSPITAL</div>
+                    <h1 class="hero-banner-title">AKSO병원, 임천시<br>우수 병원으로 선정되었습니다.</h1>
+                    <div class="hero-banner-msg">지역사회와 함께 성장해온 AKSO병원이 임천시 우수 병원으로 선정되며 그 신뢰를 다시 한번 확인했습니다.</div>
+                  </div>
                 </div>
               </div>
+              <div class="hero-banner-dots" id="hero-banner-dots"></div>
             </div>
 
-            <!-- 방명록 미리보기 (입력폼은 배너 안으로 이동, 여기는 최근 메시지 목록만) -->
             <div class="msg-composer-card">
               <div class="msg-composer-head">
-                <h3>축하 메시지</h3>
+                <h3>🎉 오늘, 이서언 교수님의 생일을 축하해요!</h3>
                 <a href="guestbook.html" class="gb-more-link">전체보기 <span id="gb-widget-count"></span> →</a>
               </div>
+              <div class="msg-composer-divider"></div>
               <div id="gb-widget-list" class="gb-entries"><div class="gb-empty">불러오는 중...</div></div>
             </div>
-
 
             <div class="hero-profile" id="section-profile">
               <div class="profile-photo-wrap">
@@ -1265,7 +777,7 @@
                   <div class="profile-info-item"><span class="profile-info-label">진료과</span><span class="profile-info-value">심장외과</span></div>
                   <div class="profile-info-item"><span class="profile-info-label">직급</span><span class="profile-info-value">교수</span></div>
                   <div class="profile-info-item"><span class="profile-info-label">내선번호</span><span class="profile-info-value">02-1234-5031</span></div>
-                  <div class="profile-info-item full"><span class="profile-info-label">이메일</span><span class="profile-info-value">seoeon.lee@asko.com</span></div>
+                  <div class="profile-info-item full"><span class="profile-info-label">이메일</span><span class="profile-info-value">seoeon.lee@akso.com</span></div>
                 </div>
               </div>
             </div>
@@ -1276,7 +788,11 @@
             <div id="notice-board"></div>
           </div>
 
-          <!-- 진료 스케쥴표 2034-09 -->
+          <div class="column-section" id="section-column">
+            <h3>메디컬럼</h3>
+            <div class="column-list" id="column-list"></div>
+          </div>
+
           <div class="schedule-section" id="section-schedule">
             <div class="schedule-section-head">
               <h3>진료 스케쥴</h3>
@@ -1320,7 +836,6 @@
             </div>
           </div>
 
-          <!-- 환자 차트 오버레이 -->
           <div class="mail-overlay hidden" id="patient-overlay" onclick="closePatientChart(event)">
             <div class="mail-detail-box" id="patient-detail-box" onclick="event.stopPropagation()">
               <div class="mail-detail-head" id="patient-detail-head">
@@ -1334,7 +849,6 @@
             </div>
           </div>
 
-          <!-- 메일함 -->
           <div class="mail-section" id="section-mail">
             <div class="mail-section-head">
               <h3>메일함</h3>
@@ -1342,7 +856,6 @@
             <div class="mail-list" id="main-mail-list"></div>
           </div>
 
-          <!-- 근태관리 -->
           <div class="mail-section" id="section-attendance">
             <div class="mail-section-head">
               <h3>근태관리</h3>
@@ -1373,15 +886,13 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2034-09-05 (토)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:#8B95A1; font-weight:600;">휴무</td></tr>
-                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2034-09-04 (금)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:48</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">19:42</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
-                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2034-09-03 (목)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:55</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">20:15</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
-                <tr><td style="padding:8px 10px;">2034-09-02 (수)</td><td style="padding:8px 10px;">07:41</td><td style="padding:8px 10px;">18:57</td><td style="padding:8px 10px;">정상</td></tr>
+                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2048-09-05 (토)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:#8B95A1; font-weight:600;">휴무</td></tr>
+                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2048-09-04 (금)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:48</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">19:42</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
+                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">2048-09-03 (목)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:55</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">20:15</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
+                <tr><td style="padding:8px 10px;">2048-09-02 (수)</td><td style="padding:8px 10px;">07:41</td><td style="padding:8px 10px;">18:57</td><td style="padding:8px 10px;">정상</td></tr>
               </tbody>
             </table>
           </div>
-
-          <!-- 메일 상세 오버레이는 화면 전환과 무관하게 항상 접근 가능해야 하므로 아래로 이동 -->
 
         </div>
 
@@ -1418,7 +929,6 @@
           </div>
         </div>
 
-        <!-- 메일 상세 오버레이 (view-default/view-messenger 어느 탭에서도 열려야 함) -->
         <div class="mail-overlay hidden" id="mail-overlay" onclick="closeMail(event)">
           <div class="mail-detail-box" id="mail-detail-box" onclick="event.stopPropagation()">
             <div class="mail-detail-head">
@@ -1439,12 +949,10 @@
       </div>
     </div>
 
-    <!-- 모바일 전용: 맨 위로 가기 버튼 (메신저 버블 바로 위) -->
     <button id="scroll-top-btn" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
     </button>
 
-    <!-- messenger widget -->
     <div class="msg-widget">
       <div class="msg-bubble" onclick="toggleMessenger()">
         💬
@@ -1452,16 +960,13 @@
       </div>
     </div>
 
-    <!-- messenger panel -->
     <div class="msg-panel" id="msg-panel">
       <div class="msg-panel-head">
         <span>메신저</span>
         <span class="close-x" onclick="toggleMessenger()">✕</span>
       </div>
       <div class="msg-panel-body" id="msg-list-view">
-        <!-- msg items render here -->
       </div>
-      <!-- thread view inside panel -->
       <div id="msg-thread-view" class="hidden" style="flex:1; display:flex; flex-direction:column; min-height:0;">
         <div class="thread-header">
           <span class="back-arrow" onclick="closeThread()">←</span>
@@ -1478,7 +983,6 @@
       <div class="msg-panel-foot" id="msg-panel-foot"></div>
     </div>
 
-    <!-- notice popup overlay (메일 상세 팝업과 동일한 레이아웃) -->
     <div class="mail-overlay hidden" id="notice-overlay" onclick="closeNotice(event)">
       <div class="mail-detail-box" onclick="event.stopPropagation()">
         <div class="mail-detail-head">
@@ -1499,41 +1003,24 @@
 </div>
 
 <script>
-/* ---------- CORE ---------- */
-const state = {
-  screen: 'screen-login',
-  user: { name: '', empid: '' },
-  birthday: { m: 1, d: 1 }
-};
+const state = { screen: 'screen-login', user: { name: '', empid: '' }, birthday: { m: 1, d: 1 } };
 
 function go(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
   target.classList.add('active');
   state.screen = id;
-  // 로그인 전/신원확인 중에는 메신저 위젯(우하단 말풍선)이 보이면 안 됨
   const widget = document.querySelector('.msg-widget');
   if(widget) widget.style.display = (id === 'screen-dashboard') ? 'flex' : 'none';
 }
 
-// 최초 진입: 이전에 등록을 완료한 적이 있으면 로그인/퀴즈 없이 바로 대시보드로 진입
 let _returningUser = false;
-try{
-  _returningUser = localStorage.getItem('akso_intranet_registered') === '1';
-}catch(e){}
+try{ _returningUser = localStorage.getItem('akso_intranet_registered') === '1'; }catch(e){}
 
 if(_returningUser){
-  cycleLoadingMessages('loading-start-text', [
-    '재인증 시스템에 접속하는 중입니다...',
-    '이전 등록 정보를 확인하는 중...'
-  ], 1800, () => enterDashboard());
+  cycleLoadingMessages('loading-start-text', ['재인증 시스템에 접속하는 중입니다...','이전 등록 정보를 확인하는 중...'], 1800, () => enterDashboard());
 } else {
-  cycleLoadingMessages('loading-start-text', [
-    '사원증 재인증을 시작합니다...',
-    '재인증 시스템에 접속하는 중입니다...',
-    '보안 인증 모듈을 불러오는 중...',
-    '접속 환경을 확인하는 중...'
-  ], 3600, () => go('screen-login'));
+  cycleLoadingMessages('loading-start-text', ['사원증 재인증을 시작합니다...','재인증 시스템에 접속하는 중입니다...','보안 인증 모듈을 불러오는 중...','접속 환경을 확인하는 중...'], 3600, () => go('screen-login'));
 }
 
 function handleLogin(){
@@ -1551,16 +1038,12 @@ function handleLogin(){
 function startIdentity(){
   document.getElementById('notice-reissue').classList.add('hidden');
   go('screen-loading-0');
-  cycleLoadingMessages('loading-0-text', [
-    '사원증 재인증을 시작합니다...',
-    '재인증 정보를 준비하는 중...'
-  ], 1600, () => {
+  cycleLoadingMessages('loading-0-text', ['사원증 재인증을 시작합니다...','재인증 정보를 준비하는 중...'], 1600, () => {
     go('screen-identity');
     initIdentity();
   });
 }
 
-/* ---------- IDENTITY WIZARD ---------- */
 let idStepIdx = 0;
 const idStepsTotal = 4;
 
@@ -1580,13 +1063,7 @@ function idStep(dir){
     idStepIdx++;
     if(idStepIdx >= idStepsTotal){
       go('screen-loading-1');
-      cycleLoadingMessages('loading-1-text', [
-        '본인 확인 정보를 확인하는 중입니다...',
-        '인사 기록 데이터베이스 대조 중...',
-        '사원증 재발급 이력 검증 중...',
-        '보안팀 승인 이력을 조회하는 중...',
-        '최종 승인 대기 중...'
-      ], 5800, () => go('screen-quiz'));
+      cycleLoadingMessages('loading-1-text', ['본인 확인 정보를 확인하는 중입니다...','인사 기록 데이터베이스 대조 중...','사원증 재발급 이력 검증 중...','보안팀 승인 이력을 조회하는 중...','최종 승인 대기 중...'], 5800, () => go('screen-quiz'));
       return;
     }
   } else {
@@ -1640,10 +1117,7 @@ function cycleLoadingMessages(id, msgs, totalTime, onDone){
     i++;
     if(i < msgs.length) el.textContent = msgs[i];
   }, totalTime / msgs.length);
-  setTimeout(() => {
-    clearInterval(interval);
-    onDone();
-  }, totalTime);
+  setTimeout(() => { clearInterval(interval); onDone(); }, totalTime);
 }
 
 function initIdentity(){
@@ -1655,9 +1129,7 @@ function initIdentity(){
   dEl.scrollTop = 0;
   attachWheelHighlight(mEl);
   attachWheelHighlight(dEl);
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{ updateWheelCenter(mEl); updateWheelCenter(dEl); });
-  });
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ updateWheelCenter(mEl); updateWheelCenter(dEl); }); });
 }
 
 function buildWheel(el, count){
@@ -1671,22 +1143,17 @@ function buildWheel(el, count){
   el.innerHTML += '<div class="wheel-pad"></div>';
 }
 
-function attachWheelHighlight(el){
-  el.addEventListener('scroll', () => updateWheelCenter(el));
-}
+function attachWheelHighlight(el){ el.addEventListener('scroll', () => updateWheelCenter(el)); }
 
 function updateWheelCenter(el){
   const items = el.querySelectorAll('.wheel-item');
-  const center = el.scrollTop + 75; 
+  const center = el.scrollTop + 75;
   let closest = null;
   let minDiff = 999;
   items.forEach(it => {
     it.classList.remove('center-active');
     const diff = Math.abs((it.offsetTop + 20) - center);
-    if(diff < minDiff){
-      minDiff = diff;
-      closest = it;
-    }
+    if(diff < minDiff){ minDiff = diff; closest = it; }
   });
   if(closest){
     closest.classList.add('center-active');
@@ -1696,7 +1163,7 @@ function updateWheelCenter(el){
       const highlight = el.parentElement.querySelector('.wheel-highlight');
       if(highlight){
         highlight.classList.remove('pulse');
-        void highlight.offsetWidth; // restart animation
+        void highlight.offsetWidth;
         highlight.classList.add('pulse');
         setTimeout(()=>highlight.classList.remove('pulse'), 150);
       }
@@ -1706,11 +1173,8 @@ function updateWheelCenter(el){
   }
 }
 
-function toggleHelp(id){
-  document.getElementById(id).classList.toggle('hidden');
-}
+function toggleHelp(id){ document.getElementById(id).classList.toggle('hidden'); }
 
-/* ---------- QUIZ WIZARD ---------- */
 let quizStepIdx = 0;
 const quizStepsTotal = 3;
 let quizAnswers = {region:null, food:null, person:''};
@@ -1755,9 +1219,7 @@ document.getElementById('quiz-person').addEventListener('input', e => {
 });
 
 function showQuizStep(i){
-  for(let s=0; s<quizStepsTotal; s++){
-    document.getElementById('quiz-step-'+s).classList.toggle('hidden', s !== i);
-  }
+  for(let s=0; s<quizStepsTotal; s++){ document.getElementById('quiz-step-'+s).classList.toggle('hidden', s !== i); }
   document.getElementById('quiz-back-btn').classList.toggle('hidden', i === 0);
   document.getElementById('quiz-next-btn').textContent = (i === quizStepsTotal-1) ? '확인' : '다음';
   const enabled = (i===0 && quizAnswers.region) || (i===1 && quizAnswers.food) || (i===2 && quizAnswers.person.trim().length>0);
@@ -1768,7 +1230,7 @@ function showQuizStep(i){
 function validateQuizStep(i){
   if(i === 0) return quizAnswers.region === '임천시';
   if(i === 1) return quizAnswers.food === '마카롱';
-  return true; 
+  return true;
 }
 
 function renderProfile(){
@@ -1792,6 +1254,7 @@ function enterDashboard(){
   renderFrequentPatients();
   loadGuestbookWidget();
   initHeroBanner();
+  renderColumns();
   go('screen-dashboard');
   startDashboardClocks();
   try{
@@ -1806,11 +1269,7 @@ function quizStep(dir){
     quizStepIdx++;
     if(quizStepIdx >= quizStepsTotal){
       go('screen-loading-2');
-      cycleLoadingMessages('loading-2-text', [
-        '응답 패턴 분석 중...',
-        '데이터 무결성 검증 중...',
-        '접속 권한 부여 중...'
-      ], 3200, enterDashboard);
+      cycleLoadingMessages('loading-2-text', ['응답 패턴 분석 중...','데이터 무결성 검증 중...','접속 권한 부여 중...'], 3200, enterDashboard);
       return;
     }
   } else {
@@ -1819,7 +1278,6 @@ function quizStep(dir){
   showQuizStep(quizStepIdx);
 }
 
-/* ---------- DASHBOARD ---------- */
 function startDashboardClocks(){
   updateDashTime();
   setInterval(updateDashTime, 1000);
@@ -1837,26 +1295,17 @@ function startDashboardClocks(){
   renderScheduleTable();
 }
 
-/* ---------- 진료 스케줄 (실제 날짜 계산으로 생성 — 수기 입력 오류 방지) ---------- */
 function renderScheduleTable(){
   const el = document.getElementById('sched-table');
   if(!el) return;
-  /* 화면 표기 연도는 2034년이지만, 생일 이벤트 자체는 "현재 시점" 기준으로 진행되는 컨셉이라
-     요일 계산은 실제 캘린더가 맞는 2026년 값을 그대로 사용함(2034년 9/5는 화요일이지만
-     이 사이트에서는 원래 설정대로 토요일로 표기되어야 함) */
-  const YEAR = 2026, MONTH = 9; // 1-indexed month (요일 계산용, 화면 표기 연도와 다름에 주의)
-  const daysInMonth = new Date(YEAR, MONTH, 0).getDate(); // 30
-  const firstJsDay = new Date(YEAR, MONTH - 1, 1).getDay(); // 0=일 ... 6=토
-  const startOffset = (firstJsDay + 6) % 7; // 0=월 ... 6=일 (월요일 시작 기준 오프셋)
+  const YEAR = 2026, MONTH = 9;
+  const daysInMonth = new Date(YEAR, MONTH, 0).getDate();
+  const firstJsDay = new Date(YEAR, MONTH - 1, 1).getDay();
+  const startOffset = (firstJsDay + 6) % 7;
   const totalCells = startOffset + daysInMonth;
   const weeks = Math.ceil(totalCells / 7);
   const dayLabels = ['월','화','수','목','금','토','일'];
 
-  // 날짜 -> 요일(0=월..6=일) 계산
-  function colOf(dayNum){ return (startOffset + dayNum - 1) % 7; }
-
-  // 일부 브라우저/웹뷰에서 rowspan과 table-layout:fixed가 섞이면 열 너비가 어긋나는 문제가 있어
-  // rowspan을 아예 쓰지 않고(월 라벨은 테이블 밖으로 분리), colgroup으로 모든 열 너비를 명시적으로 고정
   let colgroupHtml = '<colgroup><col style="width:70px;">';
   for(let i=0; i<weeks*7; i++){ colgroupHtml += '<col style="width:42px;">'; }
   colgroupHtml += '</colgroup>';
@@ -1866,7 +1315,6 @@ function renderScheduleTable(){
   let amHtml = '<th class="row-label">오전</th>';
   let pmHtml = '<th class="row-label">오후</th>';
 
-  // 오전/오후 마크는 장식용 패턴 (평일 화/수에 외래, 특정 주 화/목에 특수클리닉)
   for(let w = 0; w < weeks; w++){
     for(let c = 0; c < 7; c++){
       const dayNum = w*7 + c - startOffset + 1;
@@ -1893,9 +1341,9 @@ function renderScheduleTable(){
       const cellExtra = isSat ? ' class="weekend-col"' : (isSun ? ' class="sunday-col"' : '');
       let amMark = '';
       let pmMark = '';
-      if(c === 1 || c === 2){ amMark = '<span class="sched-mark out"></span>'; } // 화,수 오전 외래
-      if(c === 1 && (w % 2 === 1)){ pmMark = '<span class="sched-mark spc"></span>'; } // 격주 화 오후 특수클리닉
-      if(c === 4){ pmMark = '<span class="sched-mark out"></span>'; } // 금 오후 외래
+      if(c === 1 || c === 2){ amMark = '<span class="sched-mark out"></span>'; }
+      if(c === 1 && (w % 2 === 1)){ pmMark = '<span class="sched-mark spc"></span>'; }
+      if(c === 4){ pmMark = '<span class="sched-mark out"></span>'; }
       amHtml += `<td${cellExtra}>${amMark}</td>`;
       pmHtml += `<td${cellExtra}>${pmMark}</td>`;
     }
@@ -1912,11 +1360,10 @@ function renderScheduleTable(){
       <tr>${pmHtml}</tr>
     </tbody>`;
 
-  // 생일(9월 5일)이 가로 스크롤 없이 바로 보이도록, 초기 스크롤 위치를 생일 칸 기준으로 맞춤
   const scrollWrap = document.getElementById('sched-scroll-wrap');
   if(scrollWrap){
     const birthdayDay = 5;
-    const birthdayCol = startOffset + birthdayDay - 1; // 0-indexed 데이터 컬럼 위치(행라벨 제외)
+    const birthdayCol = startOffset + birthdayDay - 1;
     const rowLabelWidth = 70, colWidth = 42;
     scrollWrap.scrollLeft = Math.max(0, rowLabelWidth + birthdayCol * colWidth);
   }
@@ -1953,10 +1400,8 @@ function updateDashTime(){
 }
 
 function switchDashView(view, btn, sectionId){
-document.querySelectorAll('.dash-sidebar .menu-item').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.dash-sidebar .menu-item').forEach(m => m.classList.remove('active'));
   btn.classList.add('active');
-  /* btn.scrollIntoView는 상단 메뉴바뿐 아니라 브라우저 창 자체를 세로로도 스크롤시켜
-     화면이 튀는 문제가 있었으므로, 메뉴바(.dash-sidebar) 내부만 가로로 스크롤시키도록 수정 */
   const sidebarEl = btn.closest('.dash-sidebar');
   if(sidebarEl){
     const targetLeft = btn.offsetLeft - (sidebarEl.clientWidth - btn.offsetWidth) / 2;
@@ -1986,14 +1431,13 @@ document.querySelectorAll('.dash-sidebar .menu-item').forEach(m => m.classList.r
     closeInlineThread();
     document.getElementById('inline-msg-list-wrap').scrollTop = 0;
     renderMessages('inline-msg-list');
-    renderMailList(); // 메신저 탭 내의 메일 리스트도 렌더링
+    renderMailList();
     document.querySelectorAll('#view-messenger .mail-list').forEach(el => el.scrollTop = 0);
     requestAnimationFrame(()=> window.scrollTo({top:0, behavior:'auto'}));
   }
 }
 
-/* ---------- MESSENGER ---------- */
-const MSG_DATE = "2034-09-05";
+const MSG_DATE = "2048-09-05";
 const REQUIRED_PEOPLE = [
   {dept:"심장외과", name:"곽헌", role:"전공의"},
   {dept:"간호부",   name:"소원", role:"수간호사"},
@@ -2012,13 +1456,11 @@ function roleGroup(role){
   if(role === '행정원') return 'admin';
   return 'doctor';
 }
-// 부서와 어울리는 역할만 배정 (행정팀에 교수/전공의가 섞이는 등 명칭 혼재 방지)
 function roleForDept(dept){
   if(ADMIN_DEPTS.includes(dept)) return '행정원';
   if(dept === '간호부') return '간호사';
   return (Math.random() < 0.3) ? '간호사' : pickRandom(DOCTOR_ROLES);
 }
-// 누구에게나 어울리는 범용 축하 문구 - 문장 구조와 어투를 다양하게 구성
 const GENERIC_TEMPLATES = [
   "이서언 교수님, 생신을 진심으로 축하드립니다.",
   "교수님, 생신 축하드립니다. 건강하고 보람찬 한 해 되시길 바랍니다.",
@@ -2056,7 +1498,6 @@ const GENERIC_TEMPLATES = [
   "축하드려요 교수님, 오늘 하루는 온전히 축하만 받으세요.",
   "생신 진심으로 축하드립니다. 늘 좋은 본보기가 되어주셔서 감사합니다."
 ];
-// "배우고 있다"류 문구는 실제로 사사받는 전공의/임상강사/조교수만 사용
 const LEARNER_TEMPLATES = [
   "항상 많이 배우고 있습니다. 생신 축하드립니다, 교수님.",
   "생신 축하드립니다. 교수님 덕분에 많이 성장하고 있습니다.",
@@ -2071,11 +1512,6 @@ const LEARNER_TEMPLATES = [
   "많이 부족한 저를 늘 이끌어주셔서 감사합니다. 생신 축하드립니다.",
   "교수님께 배운 원칙들, 늘 마음에 새기고 있습니다. 생신 축하드려요."
 ];
-function templatesFor(role){
-  const pool = GENERIC_TEMPLATES.slice();
-  if(["전공의","임상강사","조교수"].includes(role)) pool.push(...LEARNER_TEMPLATES);
-  return pool;
-}
 
 function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffleArr(arr){
@@ -2086,7 +1522,6 @@ function shuffleArr(arr){
   }
   return a;
 }
-// 같은 대화창 안에서 같은 문장이 바로 반복되지 않도록, 섞은 풀에서 순서대로 꺼내 쓰고 다 쓰면 다시 섞는 헬퍼
 function makeCycler(arr){
   let pool = shuffleArr(arr);
   let idx = 0;
@@ -2107,7 +1542,6 @@ function randTimeMinutes(idx, total){
 }
 
 function generateMessages(total){
-  // 목록 전체에서 같은 축하 문구가 바로바로 반복되지 않도록 셔플 사이클러 사용
   const nextGeneric = makeCycler(GENERIC_TEMPLATES);
   const nextLearnerPool = makeCycler(GENERIC_TEMPLATES.concat(LEARNER_TEMPLATES));
   function nextTextFor(role){
@@ -2122,12 +1556,7 @@ function generateMessages(total){
     if(GIVEN_POOL_FEMALE.includes(given) && Math.random() < 0.5){
       text += ' ' + pickRandom(CONGRATS_EMOJIS);
     }
-    list.push({
-      dept: dept,
-      name: pickRandom(SURNAME_POOL) + given,
-      role: role,
-      text: text
-    });
+    list.push({ dept: dept, name: pickRandom(SURNAME_POOL) + given, role: role, text: text });
   }
   list.forEach((m, idx)=>{ m.time = randTimeMinutes(idx, list.length); m.date = MSG_DATE; m.read = false; });
   list.sort((a,b)=> a.time.localeCompare(b.time));
@@ -2155,10 +1584,7 @@ function toggleMessenger(){
     panel.classList.add('open');
     if(bubble){ bubble.style.opacity = '0'; bubble.style.pointerEvents = 'none'; bubble.style.visibility = 'hidden'; }
     closeThread();
-    if(!messengerOpened){
-      messengerOpened = true;
-      renderMessages('msg-list-view');
-    }
+    if(!messengerOpened){ messengerOpened = true; renderMessages('msg-list-view'); }
   }
 }
 function updateMsgBadge(){
@@ -2193,8 +1619,6 @@ function renderMessages(targetId = 'msg-list-view'){
 }
 updateMsgBadge();
 
-/* ---------- CHAT THREAD DETAIL ---------- */
-// 심장외과 소속(같은 팀)일 때만 쓰는 내부 업무 대화 - 당직표/회진/수술스케줄 등은 실제로 같은 팀 사람만 주고받는 내용
 const CARDIAC_TEAM_LINES = [
   "교수님, 이번 주 컨퍼런스 자료 준비했습니다.",
   "이번 달 당직표 초안 보내드립니다, 확인 부탁드려요.",
@@ -2205,7 +1629,6 @@ const CARDIAC_TEAM_LINES = [
   "인턴 교육 자료 준비 완료했습니다.",
   "다음 주 학회 발표 슬라이드 검토 부탁드려도 될까요?"
 ];
-// 다른 과 의사가 심장외과 교수(이서언)에게 보낼 법한 내용 - 협진/학회/원내 공통 행사 중심
 const GENERAL_DOCTOR_LINES = [
   "협진 요청 드린 환자 건 확인 부탁드립니다.",
   "검사 결과 판독 관련 회신 부탁드립니다.",
@@ -2216,7 +1639,6 @@ const GENERAL_DOCTOR_LINES = [
   "이번 주 원내 합동 컨퍼런스 자료 공유드립니다.",
   "전과 관련 협의드릴 게 있어 연락드립니다."
 ];
-// 심장외과 병동 소속 간호사(예: 소원)만 쓰는 병동 내부 업무
 const WARD_NURSE_LINES = [
   "3번 병동 인수인계 자료 전달드립니다.",
   "오늘 낮 근무 투약 스케줄 확인 부탁드립니다.",
@@ -2230,7 +1652,6 @@ const WARD_NURSE_LINES = [
   "야간 근무 인수인계 사항 정리해서 보내드립니다.",
   "환자분 투약 관련 문의사항 전달드립니다."
 ];
-// 다른 과 간호사가 심장외과 교수에게 보낼 법한 내용 - 협진/컨설트 중심
 const GENERAL_NURSE_LINES = [
   "협진 의뢰 관련 확인 부탁드립니다.",
   "환자분 컨설트 문의드립니다, 확인 부탁드립니다.",
@@ -2255,7 +1676,6 @@ const ADMIN_LINES = [
   "인턴 오리엔테이션 자료 공유드립니다.",
   "레지던트 교육 세미나 일정 변경 안내드립니다."
 ];
-// 발신자의 부서가 이서언과 같은 심장외과인지에 따라 내부용/타과용 대사 풀을 다르게 배정
 function inLinesFor(m){
   const g = roleGroup(m.role);
   const sameDept = (m.dept === '심장외과');
@@ -2272,7 +1692,6 @@ const MEDICAL_OUT_LINES = [
   "검토 후 연락드리겠습니다.",
   "일정 확인 후 회신드리겠습니다."
 ];
-// 소원 간호사 - 조금 더 다정하고 세심한 어투 (존댓말 유지)
 const SOWON_OUT_LINES = [
   "네, 확인했습니다. 감사합니다.",
   "잘 확인했습니다. 감사합니다.",
@@ -2281,7 +1700,6 @@ const SOWON_OUT_LINES = [
   "네, 잘 챙기겠습니다.",
   "네, 바로 조치하겠습니다. 감사합니다."
 ];
-// 곽헌 - 이서언보다 아랫사람. 곽헌 본인은 존댓말+가벼운 톤, 이서언은 반말 섞인 다정한 선배 톤으로 답장
 const KWAK_WORK_LINES = [
   "교수님, 이번 주 컨퍼런스 자료 준비했습니다.",
   "오늘 회진 30분 당겨졌습니다, 참고 부탁드립니다.",
@@ -2306,7 +1724,6 @@ const KWAK_WORK_LINES = [
   "교수님, 오늘 컨설트 건 하나 있었는데 잘 처리했습니다.",
   "저 오늘 좀 긴장했는데 무사히 끝났습니다 교수님 ㅎㅎ"
 ];
-// 곽헌의 연애 상담 요청 (요즘 호감 가는 분이 생겨서 고민 중)
 const KWAK_DATING_LINES = [
   "교수님, 저 요즘 호감 가는 분이 생겼는데 어떻게 다가가야 할지 모르겠어요.",
   "교수님, 그분한테 무슨 선물을 하면 좋을까요?",
@@ -2319,7 +1736,6 @@ const KWAK_DATING_LINES = [
   "교수님, 그분이랑 어디서 같이 시간 보내면 좋을지 추천해주실 수 있나요?",
   "교수님, 저 이제 슬슬 고백해도 될까요? 타이밍을 잘 모르겠어요."
 ];
-// 이서언은 곽헌에게 반말 섞어 답장. 무뚝뚝해 보여도 다정함이 묻어나는 톤 (그리프 신에서 보여준 톤과 일관되게)
 const CASUAL_OUT_LINES = [
   "확인했어. 기본만 챙기면 문제없어.",
   "알겠어. 끝까지 챙겨봐.",
@@ -2352,7 +1768,6 @@ const KWAK_DATING_REPLIES = [
   "그런 고민은 시간 지나면 자연히 풀리기도 해.",
   "내가 그런 쪽으로 조언해줄 입장은 아니야."
 ];
-// 곽헌이 환자를 잃고 힘들어할 때, 이서언이 위로하는 장면 (한 스레드에 한 번, 확률적으로 등장)
 const KWAK_GRIEF_SCENE = [
   {side:'in', text:'교수님... 죄송한데 잠깐 시간 괜찮으신가요.'},
   {side:'in', text:'저 오늘 담당하던 환자분이 돌아가셨어요. 처음 겪는 일도 아닌데 왜 이렇게 힘든지 모르겠습니다.'},
@@ -2379,31 +1794,23 @@ function randomPastDateTime(daysAgoMin, daysAgoMax){
   dt.setDate(dt.getDate() - (daysAgoMin + Math.floor(Math.random()*(daysAgoMax-daysAgoMin+1))));
   const hh = 8 + Math.floor(Math.random()*10);
   const mm = Math.floor(Math.random()*60);
-  return {
-    date: `${dt.getFullYear()}-${pad2b(dt.getMonth()+1)}-${pad2b(dt.getDate())}`,
-    time: `${pad2b(hh)}:${pad2b(mm)}`
-  };
+  return { date: `${dt.getFullYear()}-${pad2b(dt.getMonth()+1)}-${pad2b(dt.getDate())}`, time: `${pad2b(hh)}:${pad2b(mm)}` };
 }
 function addMinutes(date, time, deltaMin){
   const [y,mo,d] = date.split('-').map(Number);
   const [h,mi] = time.split(':').map(Number);
   const dt = new Date(y, mo-1, d, h, mi);
   dt.setMinutes(dt.getMinutes()+deltaMin);
-  return {
-    date: `${dt.getFullYear()}-${pad2b(dt.getMonth()+1)}-${pad2b(dt.getDate())}`,
-    time: `${pad2b(dt.getHours())}:${pad2b(dt.getMinutes())}`
-  };
+  return { date: `${dt.getFullYear()}-${pad2b(dt.getMonth()+1)}-${pad2b(dt.getDate())}`, time: `${pad2b(dt.getHours())}:${pad2b(dt.getMinutes())}` };
 }
 function buildThread(m){
   const bubbles = [];
   const isKwak = (m.name === '곽헌');
   const isSowon = (m.name === '소원');
   const closeColleague = isKwak || isSowon;
-  // 곽헌은 훨씬 더 많은 대화, 소원도 평소보다 많음
   const beforeCount = isKwak ? (7 + Math.floor(Math.random()*3)) : (closeColleague ? (3 + Math.floor(Math.random()*2)) : (1 + Math.floor(Math.random()*2)));
   const inPool = inLinesFor(m);
   const outPool = outLinesFor(m);
-  // 곽헌 대화는 한 스레드 안에서 같은 문장이 반복되지 않도록 셔플 사이클러 사용
   const nextKwakWork = isKwak ? makeCycler(KWAK_WORK_LINES) : null;
   const nextKwakDatingLine = isKwak ? makeCycler(KWAK_DATING_LINES) : null;
   const nextKwakDatingReply = isKwak ? makeCycler(KWAK_DATING_REPLIES) : null;
@@ -2411,7 +1818,6 @@ function buildThread(m){
   for(let i=0; i<beforeCount; i++){
     const dt1 = randomPastDateTime(1+i, 5+i*2);
     if(isKwak && Math.random() < 0.3){
-      // 연애 상담 라인 - 답장은 애매한 회피성으로
       bubbles.push({side:'in', text:nextKwakDatingLine(), date:dt1.date, time:dt1.time});
       const dt2 = addMinutes(dt1.date, dt1.time, 4+Math.floor(Math.random()*15));
       bubbles.push({side:'out', text:nextKwakDatingReply(), date:dt2.date, time:dt2.time});
@@ -2429,8 +1835,6 @@ function buildThread(m){
       bubbles.push({side:'in', text:line2, date:dt4.date, time:dt4.time});
     }
   }
-  // 아직 서프라이즈 컨셉을 확인하지 못한 상태이므로, 축하 메시지에는 답장하지 않음
-  // 곽헌 스레드에는 항상 이 장면이 포함되도록 함 (사용자가 이 대화를 마음에 들어해 고정 반영)
   if(isKwak){
     let dtG = randomPastDateTime(2, 10);
     KWAK_GRIEF_SCENE.forEach((b, gi) => {
@@ -2439,7 +1843,6 @@ function buildThread(m){
     });
   }
   bubbles.push({side:'in', text:m.text, date:m.date, time:m.time});
-  // 날짜가 뒤섞이지 않도록 시간순으로 정렬 (9월 5일 축하 메시지가 항상 가장 마지막)
   bubbles.sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
   return bubbles;
 }
@@ -2461,13 +1864,7 @@ function renderThreadInto(m, avatarEl, deptEl, nameEl, messagesEl){
 function openThread(idx){
   const m = messages[idx];
   if(!m.read){ m.read = true; updateMsgBadge(); }
-  renderThreadInto(
-    m,
-    document.getElementById('thread-avatar'),
-    document.getElementById('thread-dept'),
-    document.getElementById('thread-name'),
-    document.getElementById('thread-messages')
-  );
+  renderThreadInto(m, document.getElementById('thread-avatar'), document.getElementById('thread-dept'), document.getElementById('thread-name'), document.getElementById('thread-messages'));
   document.getElementById('msg-list-view').classList.add('hidden');
   document.getElementById('msg-thread-view').classList.remove('hidden');
 }
@@ -2476,17 +1873,10 @@ function closeThread(){
   document.getElementById('msg-list-view').classList.remove('hidden');
 }
 
-/* 메인 화면(Messenger 탭)에 인라인으로 뜨는 대화창 - 별도 작은 창을 띄우지 않음 */
 function openInlineThread(idx){
   const m = messages[idx];
   if(!m.read){ m.read = true; updateMsgBadge(); }
-  renderThreadInto(
-    m,
-    document.getElementById('inline-thread-avatar'),
-    document.getElementById('inline-thread-dept'),
-    document.getElementById('inline-thread-name'),
-    document.getElementById('inline-thread-messages')
-  );
+  renderThreadInto(m, document.getElementById('inline-thread-avatar'), document.getElementById('inline-thread-dept'), document.getElementById('inline-thread-name'), document.getElementById('inline-thread-messages'));
   document.getElementById('inline-msg-list-wrap').classList.add('hidden');
   document.getElementById('inline-msg-thread-wrap').classList.remove('hidden');
 }
@@ -2495,319 +1885,174 @@ function closeInlineThread(){
   document.getElementById('inline-msg-list-wrap').classList.remove('hidden');
 }
 
-/* ---------- MAIL BOX ---------- */
 const MAIL_DATA = [
-  {
-    id: 1,
-    unread: true,
-    sender: "임천시 흉부외과학회",
-    from: "academic@imcheoncity.world",
-    subject: "[긴급] 2034 임천시 학술대회 초청 강연 연사 확정 요청",
-    preview: "이서언 교수님께 임천시 학술대회 기조강연 연사를 공식 요청드립니다.",
-    date: "2034-09-04",
+  { id: 1, unread: true, sender: "임천시 흉부외과학회", from: "academic@imcheoncity.world",
+    subject: "[긴급] 2048 임천시 학술대회 초청 강연 연사 확정 요청",
+    preview: "이서언 교수님께 임천시 학술대회 기조강연 연사를 공식 요청드립니다.", date: "2048-09-04",
     body: `<p>이서언 교수님께,</p>
-<p>임천시 흉부외과학회 2034년 추계 학술대회 조직위원회를 대표하여 연락드립니다.</p>
+<p>임천시 흉부외과학회 2048년 추계 학술대회 조직위원회를 대표하여 연락드립니다.</p>
 <p>교수님의 관상동맥 우회술(CABG) 분야의 탁월한 임상 성과와 연구 업적을 높이 평가하여, 오는 <strong>11월 14일(토) 기조강연 연사</strong>로 공식 초청하고자 합니다. 강연 주제는 "최소침습 심장수술의 현재와 미래"로 제안드리며, 교수님의 의견에 따라 조율 가능합니다.</p>
 <p>강연 시간은 40분이며, 항공 및 숙박 일체는 학회 측에서 지원합니다. 참가 가능 여부를 <strong>9월 12일(금)까지</strong> 회신 부탁드립니다.</p>
-<div class="mail-sign">임천시 흉부외과학회 간사 박지수<br>academic@imcheoncity.world · 02-1234-5678</div>`
-  },
-  {
-    id: 2,
-    unread: true,
-    sender: "흉부외과 김태훈 교수",
-    from: "th.kim@aksohospital.kr",
+<div class="mail-sign">임천시 흉부외과학회 간사 박지수<br>academic@imcheoncity.world · 02-1234-5678</div>` },
+  { id: 2, unread: true, sender: "흉부외과 김태훈 교수", from: "th.kim@akso.com",
     subject: "Re: 공동 증례 발표 관련 협의 요청",
-    preview: "교수님, 지난번 말씀하셨던 대동맥판막 치환술 증례 공동 발표 건으로 연락드립니다.",
-    date: "2034-09-03",
+    preview: "교수님, 지난번 말씀하셨던 대동맥판막 치환술 증례 공동 발표 건으로 연락드립니다.", date: "2048-09-03",
     body: `<p>이서언 교수님께,</p>
 <p>지난 컨퍼런스에서 논의하셨던 대동맥판막 치환술(AVR) 복합 증례 공동 발표 건으로 연락드립니다.</p>
-<p>해당 환자(등록번호 A-2034-0812)의 경우 심장외과와 흉부외과 협진이 핵심이었던 만큼, 양 과가 공동으로 발표하면 학술적 가치가 높을 것으로 판단됩니다. 발표 자료 초안은 제가 먼저 작성하여 공유드릴 예정이며, 교수님께서 심장외과 파트를 보완해 주시면 감사하겠습니다.</p>
+<p>해당 환자(등록번호 A-2048-0812)의 경우 심장외과와 흉부외과 협진이 핵심이었던 만큼, 양 과가 공동으로 발표하면 학술적 가치가 높을 것으로 판단됩니다. 발표 자료 초안은 제가 먼저 작성하여 공유드릴 예정이며, 교수님께서 심장외과 파트를 보완해 주시면 감사하겠습니다.</p>
 <p>일정 조율을 위해 이번 주 내로 짧게 미팅이 가능하신지 확인 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 흉부외과 김태훈 교수<br>th.kim@aksohospital.kr · 내선 3214</div>`
-  },
-  {
-    id: 3,
-    unread: true,
-    sender: "전산팀 시스템 알림",
-    from: "noreply@aksohospital.kr",
+<div class="mail-sign">AKSO병원 흉부외과 김태훈 교수<br>th.kim@akso.com · 내선 3214</div>` },
+  { id: 3, unread: true, sender: "전산팀 시스템 알림", from: "noreply@akso.com",
     subject: "[EMR 알림] 수술 전 검사 결과 최종 확인 요청 (환자 3건)",
-    preview: "수술 예정 환자 3건에 대한 수술 전 검사 결과 최종 확인이 필요합니다.",
-    date: "2034-09-04",
+    preview: "수술 예정 환자 3건에 대한 수술 전 검사 결과 최종 확인이 필요합니다.", date: "2048-09-04",
     body: `<p>이서언 교수님께,</p>
 <p>아래 수술 예정 환자에 대한 수술 전 검사 결과 최종 확인이 완료되지 않았습니다. EMR 시스템에서 확인 및 서명 처리 부탁드립니다.</p>
 <p><strong>확인 대상 환자 목록</strong><br>
-① 환자 홍○○ (등록번호 A-2034-0891) — 9월 8일 수술 예정, 심초음파 결과 미확인<br>
-② 환자 박○○ (등록번호 A-2034-0904) — 9월 10일 수술 예정, 관상동맥 조영술 결과 미확인<br>
-③ 환자 최○○ (등록번호 A-2034-0917) — 9월 11일 수술 예정, 혈액 응고 검사 미확인</p>
+① 환자 홍○○ (등록번호 A-2048-0891) — 9월 8일 수술 예정, 심초음파 결과 미확인<br>
+② 환자 박○○ (등록번호 A-2048-0904) — 9월 10일 수술 예정, 관상동맥 조영술 결과 미확인<br>
+③ 환자 최○○ (등록번호 A-2048-0917) — 9월 11일 수술 예정, 혈액 응고 검사 미확인</p>
 <p>수술 72시간 전까지 확인 완료가 원칙입니다. 기한 내 처리 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 전산팀 EMR 자동 알림 시스템<br>문의: 내선 5001</div>`
-  },
-  {
-    id: 4,
-    unread: false,
-    sender: "교육수련부",
-    from: "edu@aksohospital.kr",
-    subject: "2034년 하반기 전공의 심장외과 로테이션 일정 안내",
-    preview: "하반기 전공의 심장외과 로테이션 배정 결과를 안내드립니다.",
-    date: "2034-09-01",
+<div class="mail-sign">AKSO병원 전산팀 EMR 자동 알림 시스템<br>문의: 내선 5001</div>` },
+  { id: 4, unread: false, sender: "교육수련부", from: "edu@akso.com",
+    subject: "2048년 하반기 전공의 심장외과 로테이션 일정 안내",
+    preview: "하반기 전공의 심장외과 로테이션 배정 결과를 안내드립니다.", date: "2048-09-01",
     body: `<p>이서언 교수님께,</p>
-<p>2034년 하반기 전공의 심장외과 로테이션 배정 결과를 안내드립니다.</p>
+<p>2048년 하반기 전공의 심장외과 로테이션 배정 결과를 안내드립니다.</p>
 <p><strong>배정 전공의 명단</strong><br>
-• 외과 2년차 이준혁 (2034.09.01 ~ 10.31)<br>
-• 외과 3년차 최수아 (2034.09.01 ~ 09.30)<br>
-• 내과 1년차 정도현 (2034.09.15 ~ 10.14, 심장내과 협진 목적)</p>
+• 외과 2년차 이준혁 (2048.09.01 ~ 10.31)<br>
+• 외과 3년차 최수아 (2048.09.01 ~ 09.30)<br>
+• 내과 1년차 정도현 (2048.09.15 ~ 10.14, 심장내과 협진 목적)</p>
 <p>로테이션 기간 중 수술 참여 및 외래 동행 교육 진행 부탁드립니다. 전공의 평가서는 로테이션 종료 후 2주 이내 제출 바랍니다.</p>
-<div class="mail-sign">AKSO병원 교육수련부<br>edu@aksohospital.kr · 내선 4102</div>`
-  },
-  {
-    id: 5,
-    unread: false,
-    sender: "연구지원팀",
-    from: "research@aksohospital.kr",
-    subject: "IRB 승인 완료 통보 — 연구과제 번호 2034-CS-0047",
-    preview: "교수님께서 제출하신 임상연구 계획서가 IRB 심의를 통과하였습니다.",
-    date: "2034-08-29",
+<div class="mail-sign">AKSO병원 교육수련부<br>edu@akso.com · 내선 4102</div>` },
+  { id: 5, unread: false, sender: "연구지원팀", from: "research@akso.com",
+    subject: "IRB 승인 완료 통보 — 연구과제 번호 2048-CS-0047",
+    preview: "교수님께서 제출하신 임상연구 계획서가 IRB 심의를 통과하였습니다.", date: "2048-08-29",
     body: `<p>이서언 교수님께,</p>
-<p>교수님께서 제출하신 임상연구 계획서 <strong>"최소침습 관상동맥 우회술에서 수술 후 심방세동 발생 예측 인자 분석"</strong>(과제번호 2034-CS-0047)이 기관생명윤리위원회(IRB) 정기 심의를 통과하였음을 알려드립니다.</p>
-<p>승인 유효기간은 <strong>2034년 9월 1일 ~ 2027년 8월 31일</strong>이며, 연구 진행 중 프로토콜 변경 시 변경 승인 신청이 필요합니다. 승인서 원본은 연구지원팀에서 보관하며, 사본은 별도 요청 시 발급 가능합니다.</p>
+<p>교수님께서 제출하신 임상연구 계획서 <strong>"최소침습 관상동맥 우회술에서 수술 후 심방세동 발생 예측 인자 분석"</strong>(과제번호 2048-CS-0047)이 기관생명윤리위원회(IRB) 정기 심의를 통과하였음을 알려드립니다.</p>
+<p>승인 유효기간은 <strong>2048년 9월 1일 ~ 2027년 8월 31일</strong>이며, 연구 진행 중 프로토콜 변경 시 변경 승인 신청이 필요합니다. 승인서 원본은 연구지원팀에서 보관하며, 사본은 별도 요청 시 발급 가능합니다.</p>
 <p>연구의 성공적인 진행을 기원합니다.</p>
-<div class="mail-sign">AKSO병원 연구지원팀<br>research@aksohospital.kr · 내선 4305</div>`
-  },
-  {
-    id: 6,
-    unread: false,
-    sender: "약제팀",
-    from: "pharmacy@aksohospital.kr",
-    subject: "[공문] 헤파린 제제 처방 지침 개정 안내 (2034-09 적용)",
-    preview: "9월부터 적용되는 헤파린 제제 처방 지침 개정 내용을 안내드립니다.",
-    date: "2034-08-28",
+<div class="mail-sign">AKSO병원 연구지원팀<br>research@akso.com · 내선 4305</div>` },
+  { id: 6, unread: false, sender: "약제팀", from: "pharmacy@akso.com",
+    subject: "[공문] 헤파린 제제 처방 지침 개정 안내 (2048-09 적용)",
+    preview: "9월부터 적용되는 헤파린 제제 처방 지침 개정 내용을 안내드립니다.", date: "2048-08-28",
     body: `<p>이서언 교수님께,</p>
-<p>2034년 9월 1일부터 적용되는 헤파린 제제 처방 지침 개정 내용을 안내드립니다.</p>
+<p>2048년 9월 1일부터 적용되는 헤파린 제제 처방 지침 개정 내용을 안내드립니다.</p>
 <p><strong>주요 변경 사항</strong><br>
 ① 체외순환(CPB) 중 헤파린 초기 용량: 300 IU/kg → 350 IU/kg으로 상향<br>
 ② ACT 목표치: ≥400초 유지 (기존 ≥480초에서 하향 조정, 최신 가이드라인 반영)<br>
 ③ 프로타민 중화 비율: 1:1 → 0.8:1 (헤파린 대비)로 변경</p>
 <p>관련 문의 사항은 약제팀 심장외과 담당 약사 임소율(내선 6201)에게 연락 바랍니다.</p>
-<div class="mail-sign">AKSO병원 약제팀장 오승모<br>pharmacy@aksohospital.kr · 내선 6200</div>`
-  },
-  {
-    id: 7,
-    unread: false,
-    sender: "간호부",
-    from: "nursing@aksohospital.kr",
+<div class="mail-sign">AKSO병원 약제팀장 오승모<br>pharmacy@akso.com · 내선 6200</div>` },
+  { id: 7, unread: false, sender: "간호부", from: "nursing@akso.com",
     subject: "심장외과 병동 인력 배치 변경 안내 (9월 2주차)",
-    preview: "9월 2주차부터 심장외과 병동 야간 인력 배치가 일부 조정됩니다.",
-    date: "2034-08-30",
+    preview: "9월 2주차부터 심장외과 병동 야간 인력 배치가 일부 조정됩니다.", date: "2048-08-30",
     body: `<p>이서언 교수님께,</p>
 <p>9월 2주차(9/8~9/14)부터 심장외과 병동(3동 5층) 야간 근무 인력 배치가 아래와 같이 조정됨을 안내드립니다.</p>
 <p>야간 전담 간호사 1명 충원, 인수인계 시간을 기존 19:00에서 <strong>18:45</strong>로 15분 앞당깁니다. 회진 준비 시간에 참고 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 간호부<br>nursing@aksohospital.kr · 내선 2200</div>`
-  },
-  {
-    id: 8,
-    unread: false,
-    sender: "의료정보팀",
-    from: "info@aksohospital.kr",
+<div class="mail-sign">AKSO병원 간호부<br>nursing@akso.com · 내선 2200</div>` },
+  { id: 8, unread: false, sender: "의료정보팀", from: "info@akso.com",
     subject: "수술기록지 전자서명 시스템 업데이트 완료 안내",
-    preview: "수술기록지 전자서명 시스템이 업데이트되어 UI가 일부 변경되었습니다.",
-    date: "2034-08-27",
+    preview: "수술기록지 전자서명 시스템이 업데이트되어 UI가 일부 변경되었습니다.", date: "2048-08-27",
     body: `<p>이서언 교수님께,</p>
 <p>수술기록지 전자서명 시스템이 업데이트되어 서명란 위치 및 저장 버튼 UI가 일부 변경되었습니다. 기존 방식대로 이용 시 오류가 발생할 수 있으니, 변경된 화면을 확인 후 이용해 주시기 바랍니다.</p>
 <p>불편사항은 의료정보팀(내선 5010)으로 문의 바랍니다.</p>
-<div class="mail-sign">AKSO병원 의료정보팀<br>info@aksohospital.kr · 내선 5010</div>`
-  },
-  {
-    id: 9,
-    unread: false,
-    sender: "총무팀",
-    from: "admin@aksohospital.kr",
+<div class="mail-sign">AKSO병원 의료정보팀<br>info@akso.com · 내선 5010</div>` },
+  { id: 9, unread: false, sender: "총무팀", from: "admin@akso.com",
     subject: "주차장 정기점검에 따른 임시 주차 안내 (9/6~9/7)",
-    preview: "본관 지하주차장 정기점검으로 임시 주차 공간을 안내드립니다.",
-    date: "2034-08-26",
+    preview: "본관 지하주차장 정기점검으로 임시 주차 공간을 안내드립니다.", date: "2048-08-26",
     body: `<p>이서언 교수님께,</p>
 <p>본관 지하주차장 정기 소방점검으로 <strong>9월 6일(일) ~ 9월 7일(월)</strong> 이틀간 지하 2층 주차가 제한됩니다. 해당 기간에는 별관 임시 주차장을 이용해 주시기 바랍니다.</p>
-<div class="mail-sign">AKSO병원 총무팀<br>admin@aksohospital.kr · 내선 1010</div>`
-  },
-  {
-    id: 9,
-    unread: false,
-    sender: "총무팀",
-    from: "facility@aksohospital.kr",
+<div class="mail-sign">AKSO병원 총무팀<br>admin@akso.com · 내선 1010</div>` },
+  { id: 9, unread: false, sender: "총무팀", from: "facility@akso.com",
     subject: "본관 3층 회의실 예약 시스템 점검 안내",
-    preview: "3층 대회의실 예약 시스템이 9/7 새벽 점검 예정입니다.",
-    date: "2034-08-25",
+    preview: "3층 대회의실 예약 시스템이 9/7 새벽 점검 예정입니다.", date: "2048-08-25",
     body: `<p>이서언 교수님께,</p>
 <p>9월 7일(월) 새벽 2시~4시, 본관 3층 회의실 예약 시스템 서버 점검이 진행됩니다. 해당 시간 예약 조회 및 신규 예약이 일시 중단됩니다.</p>
-<div class="mail-sign">AKSO병원 총무팀<br>facility@aksohospital.kr</div>`
-  },
-  {
-    id: 10,
-    unread: false,
-    sender: "시설관리팀",
-    from: "facility@aksohospital.kr",
+<div class="mail-sign">AKSO병원 총무팀<br>facility@akso.com</div>` },
+  { id: 10, unread: false, sender: "시설관리팀", from: "facility@akso.com",
     subject: "심장외과 외래 냉난방 설비 점검 완료 안내",
-    preview: "외래 3진료실 냉방 설비 점검이 완료되었습니다.",
-    date: "2034-08-24",
+    preview: "외래 3진료실 냉방 설비 점검이 완료되었습니다.", date: "2048-08-24",
     body: `<p>이서언 교수님께,</p>
 <p>말씀주셨던 3진료실 냉방 소음 건, 실외기 점검 후 조치 완료했습니다. 추가 불편사항 있으시면 회신 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 시설관리팀<br>facility@aksohospital.kr</div>`
-  },
-  {
-    id: 11,
-    unread: false,
-    sender: "감염관리실",
-    from: "infection@aksohospital.kr",
+<div class="mail-sign">AKSO병원 시설관리팀<br>facility@akso.com</div>` },
+  { id: 11, unread: false, sender: "감염관리실", from: "infection@akso.com",
     subject: "수술장 감염관리 정기 교육 이수 안내 (9월)",
-    preview: "9월 수술장 감염관리 필수 교육 이수 기한을 안내드립니다.",
-    date: "2034-08-23",
+    preview: "9월 수술장 감염관리 필수 교육 이수 기한을 안내드립니다.", date: "2048-08-23",
     body: `<p>이서언 교수님께,</p>
-<p>2034년 9월 정기 감염관리 교육 이수 기한은 9월 30일까지입니다. 미이수 시 수술장 출입에 제한이 있을 수 있습니다.</p>
-<div class="mail-sign">AKSO병원 감염관리실<br>infection@aksohospital.kr</div>`
-  },
-  {
-    id: 12,
-    unread: false,
-    sender: "의국 총무",
-    from: "cs.office@aksohospital.kr",
+<p>2048년 9월 정기 감염관리 교육 이수 기한은 9월 30일까지입니다. 미이수 시 수술장 출입에 제한이 있을 수 있습니다.</p>
+<div class="mail-sign">AKSO병원 감염관리실<br>infection@akso.com</div>` },
+  { id: 12, unread: false, sender: "의국 총무", from: "cs.office@akso.com",
     subject: "심장외과 의국 회식 일정 안내 (9/10)",
-    preview: "다음 주 의국 회식 일정을 안내드립니다.",
-    date: "2034-08-22",
+    preview: "다음 주 의국 회식 일정을 안내드립니다.", date: "2048-08-22",
     body: `<p>이서언 교수님께,</p>
 <p>9월 10일(목) 저녁 7시, 본관 인근 식당에서 의국 회식이 있습니다. 참석 여부 회신 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 의국 총무<br>cs.office@aksohospital.kr</div>`
-  },
-  {
-    id: 13,
-    unread: false,
-    sender: "학술팀",
-    from: "academic.affairs@aksohospital.kr",
+<div class="mail-sign">AKSO병원 의국 총무<br>cs.office@akso.com</div>` },
+  { id: 13, unread: false, sender: "학술팀", from: "academic.affairs@akso.com",
     subject: "원내 학술집담회(컨퍼런스) 발표자 요청",
-    preview: "9월 셋째 주 학술집담회 발표자를 요청드립니다.",
-    date: "2034-08-21",
+    preview: "9월 셋째 주 학술집담회 발표자를 요청드립니다.", date: "2048-08-21",
     body: `<p>이서언 교수님께,</p>
 <p>9월 셋째 주 심장외과 학술집담회 발표를 요청드립니다. 최근 증례 중 하나를 선정해 발표 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 학술팀<br>academic.affairs@aksohospital.kr</div>`
-  },
-  {
-    id: 14,
-    unread: false,
-    sender: "구매팀",
-    from: "purchase@aksohospital.kr",
+<div class="mail-sign">AKSO병원 학술팀<br>academic.affairs@akso.com</div>` },
+  { id: 14, unread: false, sender: "구매팀", from: "purchase@akso.com",
     subject: "수술 소모품 재고 부족 안내 및 발주 요청",
-    preview: "일부 수술 소모품의 재고가 부족하여 발주 확인이 필요합니다.",
-    date: "2034-08-20",
+    preview: "일부 수술 소모품의 재고가 부족하여 발주 확인이 필요합니다.", date: "2048-08-20",
     body: `<p>이서언 교수님께,</p>
 <p>심장외과 관련 봉합사 일부 품목 재고가 부족합니다. 긴급 발주가 필요한 품목이 있으시면 회신 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 구매팀<br>purchase@aksohospital.kr</div>`
-  },
-  {
-    id: 15,
-    unread: false,
-    sender: "QI실",
-    from: "qi@aksohospital.kr",
+<div class="mail-sign">AKSO병원 구매팀<br>purchase@akso.com</div>` },
+  { id: 15, unread: false, sender: "QI실", from: "qi@akso.com",
     subject: "수술 후 합병증 지표 월간 리포트 공유",
-    preview: "8월 수술 후 합병증 지표 리포트를 공유드립니다.",
-    date: "2034-08-19",
+    preview: "8월 수술 후 합병증 지표 리포트를 공유드립니다.", date: "2048-08-19",
     body: `<p>이서언 교수님께,</p>
 <p>8월 심장외과 수술 후 합병증 발생률 리포트를 첨부드립니다. 특이사항 있으시면 QI실로 문의 바랍니다.</p>
-<div class="mail-sign">AKSO병원 QI실<br>qi@aksohospital.kr</div>`
-  },
-  {
-    id: 16,
-    unread: false,
-    sender: "홍보팀",
-    from: "pr@aksohospital.kr",
+<div class="mail-sign">AKSO병원 QI실<br>qi@akso.com</div>` },
+  { id: 16, unread: false, sender: "홍보팀", from: "pr@akso.com",
     subject: "병원 홍보 영상 촬영 협조 요청",
-    preview: "병원 홍보 영상 촬영에 협조를 요청드립니다.",
-    date: "2034-08-18",
+    preview: "병원 홍보 영상 촬영에 협조를 요청드립니다.", date: "2048-08-18",
     body: `<p>이서언 교수님께,</p>
 <p>다음 달 병원 홍보 영상 촬영 예정으로, 심장외과 수술장 촬영 협조를 요청드립니다. 일정 조율 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 홍보팀<br>pr@aksohospital.kr</div>`
-  },
-  {
-    id: 17,
-    unread: false,
-    sender: "정보보안팀",
-    from: "security@aksohospital.kr",
+<div class="mail-sign">AKSO병원 홍보팀<br>pr@akso.com</div>` },
+  { id: 17, unread: false, sender: "정보보안팀", from: "security@akso.com",
     subject: "전 직원 비밀번호 정기 변경 안내",
-    preview: "계정 비밀번호 정기 변경 기한이 도래하였습니다.",
-    date: "2034-08-17",
+    preview: "계정 비밀번호 정기 변경 기한이 도래하였습니다.", date: "2048-08-17",
     body: `<p>이서언 교수님께,</p>
 <p>보안 정책에 따라 전 직원 계정 비밀번호를 90일마다 변경해야 합니다. 기한 내 변경 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 정보보안팀<br>security@aksohospital.kr</div>`
-  },
-  {
-    id: 18,
-    unread: false,
-    sender: "영양팀",
-    from: "nutrition@aksohospital.kr",
+<div class="mail-sign">AKSO병원 정보보안팀<br>security@akso.com</div>` },
+  { id: 18, unread: false, sender: "영양팀", from: "nutrition@akso.com",
     subject: "환자식 메뉴 개편 안내 (9월 적용)",
-    preview: "9월부터 적용되는 환자식 메뉴 개편 내용을 안내드립니다.",
-    date: "2034-08-16",
+    preview: "9월부터 적용되는 환자식 메뉴 개편 내용을 안내드립니다.", date: "2048-08-16",
     body: `<p>이서언 교수님께,</p>
 <p>9월부터 심장질환 환자용 저염식 메뉴가 일부 개편됩니다. 관련 문의는 영양팀으로 연락 바랍니다.</p>
-<div class="mail-sign">AKSO병원 영양팀<br>nutrition@aksohospital.kr</div>`
-  },
-  {
-    id: 19,
-    unread: false,
-    sender: "동문회",
-    from: "alumni@aksohospital.kr",
+<div class="mail-sign">AKSO병원 영양팀<br>nutrition@akso.com</div>` },
+  { id: 19, unread: false, sender: "동문회", from: "alumni@akso.com",
     subject: "의과대학 동문 정기 모임 안내",
-    preview: "이번 학기 동문 정기 모임을 안내드립니다.",
-    date: "2034-08-15",
+    preview: "이번 학기 동문 정기 모임을 안내드립니다.", date: "2048-08-15",
     body: `<p>이서언 교수님께,</p>
 <p>오랜만에 인사드립니다. 이번 학기 동문 정기 모임이 10월 중 예정되어 있어 미리 안내드립니다.</p>
-<div class="mail-sign">AKSO병원 동문회<br>alumni@aksohospital.kr</div>`
-  },
-  {
-    id: 20,
-    unread: false,
-    sender: "총무팀",
-    from: "admin@aksohospital.kr",
+<div class="mail-sign">AKSO병원 동문회<br>alumni@akso.com</div>` },
+  { id: 20, unread: false, sender: "총무팀", from: "admin@akso.com",
     subject: "사원증 재발급 관련 보안 정책 변경 안내",
-    preview: "사원증 재발급 절차에 보안 정책이 일부 변경되었습니다.",
-    date: "2034-08-14",
+    preview: "사원증 재발급 절차에 보안 정책이 일부 변경되었습니다.", date: "2048-08-14",
     body: `<p>이서언 교수님께,</p>
 <p>최근 보안 강화 지침에 따라 사원증 재발급 시 본인 확인 절차가 강화되었습니다. 재발급 신청 시 소속 부서장의 승인서와 신분증 사본을 지참하여 보안팀(지하 1층)을 방문해 주시기 바랍니다.</p>
-<div class="mail-sign">AKSO병원 총무팀<br>admin@aksohospital.kr</div>`
-  },
-  {
-    id: 21,
-    unread: false,
-    sender: "의료질관리팀",
-    from: "quality@aksohospital.kr",
+<div class="mail-sign">AKSO병원 총무팀<br>admin@akso.com</div>` },
+  { id: 21, unread: false, sender: "의료질관리팀", from: "quality@akso.com",
     subject: "인증평가 대비 서류 제출 요청",
-    preview: "의료기관 인증평가 대비 관련 서류 제출을 요청드립니다.",
-    date: "2034-08-13",
+    preview: "의료기관 인증평가 대비 관련 서류 제출을 요청드립니다.", date: "2048-08-13",
     body: `<p>이서언 교수님께,</p>
 <p>다가오는 의료기관 인증평가 대비, 심장외과 관련 서류 제출을 요청드립니다. 기한은 9월 말까지입니다.</p>
-<div class="mail-sign">AKSO병원 의료질관리팀<br>quality@aksohospital.kr</div>`
-  },
-  {
-    id: 22,
-    unread: false,
-    sender: "시설관리팀",
-    from: "facility@aksohospital.kr",
+<div class="mail-sign">AKSO병원 의료질관리팀<br>quality@akso.com</div>` },
+  { id: 22, unread: false, sender: "시설관리팀", from: "facility@akso.com",
     subject: "엘리베이터 정기 점검 안내 (본관 3호기)",
-    preview: "본관 3호기 엘리베이터 정기 점검이 예정되어 있습니다.",
-    date: "2034-08-12",
+    preview: "본관 3호기 엘리베이터 정기 점검이 예정되어 있습니다.", date: "2048-08-12",
     body: `<p>이서언 교수님께,</p>
 <p>9월 첫째 주 본관 3호기 엘리베이터 정기 점검이 예정되어 있습니다. 해당 시간 다른 엘리베이터 이용 부탁드립니다.</p>
-<div class="mail-sign">AKSO병원 시설관리팀<br>facility@aksohospital.kr</div>`
-  },
-  {
-    id: 23,
-    unread: false,
-    sender: "사회사업팀",
-    from: "social@aksohospital.kr",
+<div class="mail-sign">AKSO병원 시설관리팀<br>facility@akso.com</div>` },
+  { id: 23, unread: false, sender: "사회사업팀", from: "social@akso.com",
     subject: "저소득층 환자 수술비 지원 신청 안내",
-    preview: "저소득층 환자 수술비 지원 프로그램 신청 안내드립니다.",
-    date: "2034-08-11",
+    preview: "저소득층 환자 수술비 지원 프로그램 신청 안내드립니다.", date: "2048-08-11",
     body: `<p>이서언 교수님께,</p>
 <p>저소득층 환자 대상 수술비 지원 프로그램 신청이 가능합니다. 대상자가 있으시면 사회사업팀으로 문의 바랍니다.</p>
-<div class="mail-sign">AKSO병원 사회사업팀<br>social@aksohospital.kr</div>`
-  }
+<div class="mail-sign">AKSO병원 사회사업팀<br>social@akso.com</div>` }
 ];
 
 function buildMailRow(mail, idx){
@@ -2835,14 +2080,12 @@ function renderMailList(){
     }
   }
   document.querySelectorAll('.mail-list').forEach(listEl=>{
-    if(listEl.id === 'main-mail-list') return; // 위에서 별도 처리
+    if(listEl.id === 'main-mail-list') return;
     listEl.innerHTML = '';
     MAIL_DATA.forEach((mail, idx)=> listEl.appendChild(buildMailRow(mail, idx)));
   });
   const unreadCount = MAIL_DATA.filter(m=>m.unread).length;
-  document.querySelectorAll('.mail-badge-default, .mail-badge-messenger').forEach(b=>{
-    b.textContent = unreadCount || '';
-  });
+  document.querySelectorAll('.mail-badge-default, .mail-badge-messenger').forEach(b=>{ b.textContent = unreadCount || ''; });
 }
 function openMail(idx){
   const mail = MAIL_DATA[idx];
@@ -2861,18 +2104,15 @@ function closeMail(e){
   if(!e || e.target === document.getElementById('mail-overlay')){
     document.getElementById('mail-overlay').classList.add('hidden');
     const player = document.getElementById('love-mail-player');
-    if(player) player.innerHTML = ''; // 팝업 닫으면 노래도 정지
+    if(player) player.innerHTML = '';
     const headerBtn = document.getElementById('love-audio-header-btn');
     if(headerBtn) headerBtn.classList.add('hidden');
     stopAmbientSnow();
   }
 }
 
-function launchConfetti(){
-  startAmbientSnow();
-}
+function launchConfetti(){ startAmbientSnow(); }
 
-/* 팝업이 열려있는 동안, 팝업 뒷배경(어두운 오버레이) 위 + 메일 카드 아래로 흩날리는 눈 */
 function startAmbientSnow(){
   stopAmbientSnow();
   const overlay = document.getElementById('mail-overlay');
@@ -2886,7 +2126,7 @@ function startAmbientSnow(){
     flake.textContent = ['❄','❅','❆'][Math.floor(Math.random()*3)];
     const size = 10 + Math.random()*12;
     const startX = Math.random()*100;
-    const duration = 9 + Math.random()*7; // 훨씬 천천히
+    const duration = 9 + Math.random()*7;
     const sway = (Math.random()*80 - 40);
     flake.style.cssText = `
       position:absolute; left:${startX}%; top:-30px;
@@ -2899,8 +2139,8 @@ function startAmbientSnow(){
     container.appendChild(flake);
     setTimeout(()=> flake.remove(), duration*1000 + 200);
   };
-  window._ambientSnowInterval = setInterval(spawn, 140); // 더 많이 내리도록 촘촘하게
-  for(let i=0;i<14;i++) setTimeout(spawn, i*60); // 열자마자 눈이 어느정도 차 있는 느낌
+  window._ambientSnowInterval = setInterval(spawn, 140);
+  for(let i=0;i<14;i++) setTimeout(spawn, i*60);
 }
 function stopAmbientSnow(){
   if(window._ambientSnowInterval){ clearInterval(window._ambientSnowInterval); window._ambientSnowInterval = null; }
@@ -2908,47 +2148,34 @@ function stopAmbientSnow(){
   if(c) c.remove();
 }
 
-/* ---------- 자주 보는 환자 (진료 스케쥴 내) ---------- */
 function buildPatientData(){
   const loveName = (quizAnswers.person || '').trim() || '이름 모를 그녀';
   return [
     {
-      name: loveName,
-      special: true,
-      regno: "A-2034-0005",
-      age: "비공개",
-      sex: "비공개",
-      dept: "심장외과",
-      doctor: "이서언",
-      diagnosis: "선천성 심장기형 (수술 후 경과관찰)",
-      diagnosisCode: "Q24.9 / Z95.812",
-      lastVisit: "2034-08-22",
-      admitDate: "2034-08-22 (외래)",
-      alert: "다음 정기검진 예정일: 2034-09-12",
+      name: loveName, special: true, regno: "A-2048-0005", age: "비공개", sex: "비공개",
+      dept: "심장외과", doctor: "이서언", diagnosis: "선천성 심장기형 (수술 후 경과관찰)",
+      diagnosisCode: "Q24.9 / Z95.812", lastVisit: "2048-08-22", admitDate: "2048-08-22 (외래)",
+      alert: "다음 정기검진 예정일: 2048-09-12",
       gauge: { icon:"", label:"심기능 회복도", value:94, unit:"%", status:"안정", statusColor:"#22C55E" },
       trend: [88, 90, 91, 93, 92, 95, 94],
       doctorNotes: [
-        ["2034-08-22", "청진상 심잡음 미세하게 감소, 심초음파 EF 62%로 안정 범위. 다만 오늘따라 웃는 얼굴 뒤로 많이 참는 게 느껴져 마음이 쓰인다. 너무 무리하지 않았으면."],
-        ["2034-06-20", "혈압 118/74, 맥박 74회/분으로 수치는 안정적. 다만 최근 수면 패턴이 불규칙해 보여 다음 진료 때는 컨디션부터 자세히 물어봐야겠다."],
-        ["2034-04-18", "리듬 이상 소견 없음, 항응고 수치도 목표 범위 내. 괜찮다는 말을 곧이곧대로 믿고 싶지 않다. 옆에서 계속 지켜봐야지."],
-        ["2034-02-14", "안색이 유독 창백해 산소포화도까지 재확인했으나 98%로 정상. 그래도 분명 무리했을 거다. 다음엔 먼저 쉬라고 말해야겠다."],
-        ["2033-12-13", "정기 심초음파 결과 특이 소견 없음. 검사 수치는 문제없지만 본인이 스스로를 잘 안 챙기는 편이라 계속 신경 쓰인다."],
-        ["2033-10-11", "흉부 X-ray 및 활력징후 모두 정상 범위. 많이 웃었던 하루였다. 그 모습 보니 나도 모르게 마음이 놓였다."],
-        ["2033-09-19", "오늘 유난히 힘든 하루였어. 정신을 차려보니 어느새 네 차트를 열어놓고, 너한테 하고 싶은 말을 적고 있더라. 바쁘다는 핑계로 살가운 말 한마디 제대로 못 건네는 날이 많은데, 그래도 하루 중 가장 먼저 떠오르는 사람은 늘 너였어. 유독 오늘 같은 날은 네 목소리가 듣고 싶었어. 잘 지내고 있다는 사실 하나만으로도 나한텐 얼마나 큰 위안이 되는지, 아마 너는 잘 모를 거야. 다음에 보면 오늘 못다 한 말들, 그때 다 해줄게. 이따 만나자. 사랑해."],
-        ["2033-08-09", "맥박 약간 상승(82회/분) 확인, 과로 가능성 있어 경과관찰 권고. 본인은 괜찮다지만 다음 방문 때는 좀 더 자세히 살펴봐야겠다."],
-        ["2033-06-07", "심박 리듬 안정적, 부정맥 소견 없음. 그래도 습관처럼 한 번 더 확인하게 된다."],
-        ["2033-04-05", "혈압·맥박 모두 정상 범위였지만 오늘따라 말이 없었다. 무슨 일이 있었던 건 아닌지 괜히 신경이 쓰인다."],
-        ["2033-02-01", "수술 부위 및 심기능 회복 경과 전반적으로 양호. 그 모습에 나도 모르게 마음을 놓았다."],
-        ["2032-11-30", "정기검진 결과 안정적이나, 최근 들어 일이 많아진 듯해 걱정이 앞선다."],
-        ["2032-09-28", "진료받으러 올 때마다 애써 담담한 척하는 게 눈에 보인다. 내색하지 않는 이유가 있겠거니 하고 굳이 캐묻지는 않았지만, 그런 모습 볼 때마다 계속 마음이 쓰인다."]
+        ["2048-08-22", "청진상 심잡음 미세하게 감소, 심초음파 EF 62%로 안정 범위. 다만 오늘따라 웃는 얼굴 뒤로 많이 참는 게 느껴져 마음이 쓰인다. 너무 무리하지 않았으면."],
+        ["2048-06-20", "혈압 118/74, 맥박 74회/분으로 수치는 안정적. 다만 최근 수면 패턴이 불규칙해 보여 다음 진료 때는 컨디션부터 자세히 물어봐야겠다."],
+        ["2048-04-18", "리듬 이상 소견 없음, 항응고 수치도 목표 범위 내. 괜찮다는 말을 곧이곧대로 믿고 싶지 않다. 옆에서 계속 지켜봐야지."],
+        ["2048-02-14", "안색이 유독 창백해 산소포화도까지 재확인했으나 98%로 정상. 그래도 분명 무리했을 거다. 다음엔 먼저 쉬라고 말해야겠다."],
+        ["2047-12-13", "정기 심초음파 결과 특이 소견 없음. 검사 수치는 문제없지만 본인이 스스로를 잘 안 챙기는 편이라 계속 신경 쓰인다."],
+        ["2047-10-11", "흉부 X-ray 및 활력징후 모두 정상 범위. 많이 웃었던 하루였다. 그 모습 보니 나도 모르게 마음이 놓였다."],
+        ["2047-09-19", "오늘 유난히 힘든 하루였어. 정신을 차려보니 어느새 네 차트를 열어놓고, 너한테 하고 싶은 말을 적고 있더라. 바쁘다는 핑계로 살가운 말 한마디 제대로 못 건네는 날이 많은데, 그래도 하루 중 가장 먼저 떠오르는 사람은 늘 너였어. 유독 오늘 같은 날은 네 목소리가 듣고 싶었어. 잘 지내고 있다는 사실 하나만으로도 나한텐 얼마나 큰 위안이 되는지, 아마 너는 잘 모를 거야. 다음에 보면 오늘 못다 한 말들, 그때 다 해줄게."],
+        ["2047-08-09", "맥박 약간 상승(82회/분) 확인, 과로 가능성 있어 경과관찰 권고. 본인은 괜찮다지만 다음 방문 때는 좀 더 자세히 살펴봐야겠다."],
+        ["2047-06-07", "심박 리듬 안정적, 부정맥 소견 없음. 그래도 습관처럼 한 번 더 확인하게 된다."],
+        ["2047-04-05", "혈압·맥박 모두 정상 범위였지만 오늘따라 말이 없었다. 무슨 일이 있었던 건 아닌지 괜히 신경이 쓰인다."],
+        ["2047-02-01", "수술 부위 및 심기능 회복 경과 전반적으로 양호. 그 모습에 나도 모르게 마음을 놓았다."],
+        ["2046-11-30", "정기검진 결과 안정적이나, 최근 들어 일이 많아진 듯해 걱정이 앞선다."],
+        ["2046-09-28", "진료받으러 올 때마다 애써 담담한 척하는 게 눈에 보인다. 내색하지 않는 이유가 있겠거니 하고 굳이 캐묻지는 않았지만, 그런 모습 볼 때마다 계속 마음이 쓰인다."]
       ],
       vitalsTable: [
-        ["혈압 (BP)", "108 / 68 mmHg"],
-        ["맥박 (HR)", "72 회/분"],
-        ["체온 (BT)", "36.5 ℃"],
-        ["호흡수 (RR)", "16 회/분"],
-        ["심기능 회복도", "94 %"],
-        ["리듬 상태", "안정 (Sinus, Stable)"]
+        ["혈압 (BP)", "108 / 68 mmHg"], ["맥박 (HR)", "72 회/분"], ["체온 (BT)", "36.5 ℃"],
+        ["호흡수 (RR)", "16 회/분"], ["심기능 회복도", "94 %"], ["리듬 상태", "안정 (Sinus, Stable)"]
       ],
       soap: [
         ["S (주관적 소견)", "특별한 자각 증상 없음. 컨디션 양호하다고 진술."],
@@ -2958,25 +2185,12 @@ function buildPatientData(){
       ]
     },
     {
-      name: "김O훈",
-      regno: "A-2034-0812",
-      age: "58세",
-      sex: "남",
-      dept: "심장외과",
-      doctor: "이서언",
-      diagnosis: "대동맥판막 협착증 (AVR 수술 후 경과관찰)",
-      diagnosisCode: "I35.0 / Z95.2",
-      lastVisit: "2034-08-30",
-      admitDate: "2034-08-30 (외래)",
-      alert: "다음 외래 예정일: 2034-09-20",
+      name: "김O훈", regno: "A-2048-0812", age: "58세", sex: "남", dept: "심장외과", doctor: "이서언",
+      diagnosis: "대동맥판막 협착증 (AVR 수술 후 경과관찰)", diagnosisCode: "I35.0 / Z95.2",
+      lastVisit: "2048-08-30", admitDate: "2048-08-30 (외래)", alert: "다음 외래 예정일: 2048-09-20",
       gauge: { icon:"", label:"인공판막 기능", value:92, unit:"%", status:"양호", statusColor:"#22C55E" },
       trend: [90, 91, 90, 92, 91, 93, 92],
-      vitalsTable: [
-        ["혈압 (BP)", "128 / 82 mmHg"],
-        ["맥박 (HR)", "68 회/분"],
-        ["체온 (BT)", "36.6 ℃"],
-        ["호흡수 (RR)", "18 회/분"]
-      ],
+      vitalsTable: [["혈압 (BP)", "128 / 82 mmHg"], ["맥박 (HR)", "68 회/분"], ["체온 (BT)", "36.6 ℃"], ["호흡수 (RR)", "18 회/분"]],
       soap: [
         ["S (주관적 소견)", "호흡곤란이나 흉통 등 특이 자각 증상 없음. 일상 활동 시 어지럼증도 호소하지 않음."],
         ["O (객관적 소견)", "심초음파상 인공판막 기능 정상 범위로 확인됨. 판막 주위 역류 소견 없으며, 심낭삼출 등 합병증 징후 관찰되지 않음."],
@@ -2985,25 +2199,12 @@ function buildPatientData(){
       ]
     },
     {
-      name: "박O준",
-      regno: "A-2034-0904",
-      age: "7세",
-      sex: "남",
-      dept: "심장외과 (소아심장분과)",
-      doctor: "이서언",
-      diagnosis: "심실중격결손 (VSD, 수술 후 경과관찰)",
-      diagnosisCode: "Q21.0",
-      lastVisit: "2034-09-01",
-      admitDate: "2034-09-01 (외래, 보호자 동반)",
-      alert: "다음 정기검진 예정일: 2034-11-20",
+      name: "박O준", regno: "A-2048-0904", age: "7세", sex: "남", dept: "심장외과 (소아심장분과)", doctor: "이서언",
+      diagnosis: "심실중격결손 (VSD, 수술 후 경과관찰)", diagnosisCode: "Q21.0",
+      lastVisit: "2048-09-01", admitDate: "2048-09-01 (외래, 보호자 동반)", alert: "다음 정기검진 예정일: 2048-11-20",
       gauge: { icon:"", label:"심실중격 결손 회복도", value:91, unit:"%", status:"양호", statusColor:"#22C55E" },
       trend: [80, 83, 85, 87, 88, 90, 91],
-      vitalsTable: [
-        ["혈압 (BP)", "96 / 60 mmHg"],
-        ["맥박 (HR)", "98 회/분"],
-        ["체온 (BT)", "36.8 ℃"],
-        ["호흡수 (RR)", "22 회/분"]
-      ],
+      vitalsTable: [["혈압 (BP)", "96 / 60 mmHg"], ["맥박 (HR)", "98 회/분"], ["체온 (BT)", "36.8 ℃"], ["호흡수 (RR)", "22 회/분"]],
       soap: [
         ["S (주관적 소견)", "보호자 진술상 최근 활동량 증가했고 숨차하는 모습 거의 없어짐. 식욕 및 체중 증가 양호."],
         ["O (객관적 소견)", "심초음파상 잔존 결손 크기 미세, 좌우 단락량 미미한 수준으로 감소. 성장곡선상 체중/신장 정상 범위 내 진행 중."],
@@ -3012,25 +2213,12 @@ function buildPatientData(){
       ]
     },
     {
-      name: "최O아",
-      regno: "A-2034-0917",
-      age: "47세",
-      sex: "여",
-      dept: "심장외과",
-      doctor: "이서언",
-      diagnosis: "심방세동 (약물 치료 중)",
-      diagnosisCode: "I48.91",
-      lastVisit: "2034-08-28",
-      admitDate: "2034-08-28 (외래)",
-      alert: "다음 외래 예정일: 2034-09-25",
+      name: "최O아", regno: "A-2048-0917", age: "47세", sex: "여", dept: "심장외과", doctor: "이서언",
+      diagnosis: "심방세동 (약물 치료 중)", diagnosisCode: "I48.91",
+      lastVisit: "2048-08-28", admitDate: "2048-08-28 (외래)", alert: "다음 외래 예정일: 2048-09-25",
       gauge: { icon:"", label:"리듬 안정도", value:81, unit:"%", status:"관찰중", statusColor:"#3B82F6" },
       trend: [71, 74, 76, 73, 78, 79, 81],
-      vitalsTable: [
-        ["혈압 (BP)", "122 / 79 mmHg"],
-        ["맥박 (HR)", "불규칙 (관찰중)"],
-        ["체온 (BT)", "36.5 ℃"],
-        ["호흡수 (RR)", "16 회/분"]
-      ],
+      vitalsTable: [["혈압 (BP)", "122 / 79 mmHg"], ["맥박 (HR)", "불규칙 (관찰중)"], ["체온 (BT)", "36.5 ℃"], ["호흡수 (RR)", "16 회/분"]],
       soap: [
         ["S (주관적 소견)", "가끔 가슴이 두근거리는 느낌을 호소하나 일상생활에 지장을 줄 정도는 아니라고 진술함."],
         ["O (객관적 소견)", "심전도상 심방세동 리듬이 간헐적으로 관찰되나, 이전 검사 대비 발생 빈도는 감소한 추세."],
@@ -3063,33 +2251,6 @@ function renderFrequentPatients(){
     </div>
   `).join('');
 }
-function buildSparklineSvg(values, color){
-  const w = 280, h = 56, pad = 4;
-  const min = Math.min(...values), max = Math.max(...values);
-  const range = (max - min) || 1;
-  const stepX = (w - pad*2) / (values.length - 1);
-  const points = values.map((v,i) => {
-    const x = pad + i*stepX;
-    const y = h - pad - ((v - min) / range) * (h - pad*2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  });
-  const last = points[points.length-1].split(',');
-  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%; height:auto; display:block;">
-    <polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
-    <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="${color}"></circle>
-  </svg>`;
-}
-function buildRingSvg(value, color){
-  const size = 84, stroke = 8, r = (size - stroke) / 2, c = size/2;
-  const circumference = 2 * Math.PI * r;
-  const offset = circumference * (1 - value/100);
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#EEF1F4" stroke-width="${stroke}"></circle>
-    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round"
-      stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" transform="rotate(-90 ${c} ${c})"></circle>
-    <text x="${c}" y="${c+6}" text-anchor="middle" font-size="17" font-weight="700" fill="${color}">${value}%</text>
-  </svg>`;
-}
 let currentPatientIdx = null;
 const DOC_NOTE_VISIBLE_COUNT = 3;
 function renderDoctorNoteItems(notes, expanded){
@@ -3118,7 +2279,6 @@ function buildDoctorNotesHtml(p){
   const notes = p.doctorNotes || [];
   doctorNotesExpanded = false;
   const notesListHtml = renderDoctorNoteItems(notes, doctorNotesExpanded);
-
   return `
     <div class="chart-section-title">담당의 소견 메모</div>
     <div class="doc-note-list" id="doc-note-list">${notesListHtml}</div>
@@ -3138,7 +2298,7 @@ function addDoctorNote(){
   if(!text) return;
   const p = PATIENT_DATA[currentPatientIdx];
   if(!p.doctorNotes) p.doctorNotes = [];
-  const today = "2034-09-05";
+  const today = "2048-09-05";
   p.doctorNotes.unshift([today, text]);
   doctorNotesExpanded = true;
   document.getElementById('doc-note-list').innerHTML = renderDoctorNoteItems(p.doctorNotes, doctorNotesExpanded);
@@ -3157,11 +2317,7 @@ function openPatientChart(idx){
   ];
   const infoHtml = `
     <div class="chart-section-title">기본 정보</div>
-    <table class="chart-table">
-      <tbody>
-        ${infoRows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('')}
-      </tbody>
-    </table>`;
+    <table class="chart-table"><tbody>${infoRows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('')}</tbody></table>`;
 
   const VITAL_ICONS = {
     "혈압 (BP)": '<path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"></path>',
@@ -3175,19 +2331,11 @@ function openPatientChart(idx){
   };
   const vitalsHtml = `
     <div class="chart-section-title">활력징후 (Vital Signs)</div>
-    <table class="chart-table chart-table-grid">
-      <tbody>
-        ${p.vitalsTable.map(([k,v])=>`<tr><th><span class="chart-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${VITAL_ICONS[k] || '<circle cx="12" cy="12" r="9"></circle>'}</svg></span>${k}</th><td>${v}</td></tr>`).join('')}
-      </tbody>
-    </table>`;
+    <table class="chart-table chart-table-grid"><tbody>${p.vitalsTable.map(([k,v])=>`<tr><th><span class="chart-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${VITAL_ICONS[k] || '<circle cx="12" cy="12" r="9"></circle>'}</svg></span>${k}</th><td>${v}</td></tr>`).join('')}</tbody></table>`;
 
   const soapHtml = `
     <div class="chart-section-title">경과기록 (Progress Note)</div>
-    <table class="chart-table">
-      <tbody>
-        ${p.soap.map(([k,v])=>`<tr><th style="white-space:nowrap;">${k}</th><td>${v}</td></tr>`).join('')}
-      </tbody>
-    </table>`;
+    <table class="chart-table"><tbody>${p.soap.map(([k,v])=>`<tr><th style="white-space:nowrap;">${k}</th><td>${v}</td></tr>`).join('')}</tbody></table>`;
 
   currentPatientIdx = idx;
   const notesHtml = buildDoctorNotesHtml(p);
@@ -3202,19 +2350,15 @@ function closePatientChart(e){
   }
 }
 
-/* ---------- 축하 방명록 위젯 (메인 대시보드) ---------- */
-/* ⚠️ 아래 URL을 본인의 Apps Script 웹앱 배포 URL로 교체하세요 (guestbook.html과 동일해야 함) */
 const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
 
 function escapeHtmlGb(str){
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function formatGbTime(ts){
   if(!ts) return '';
   const d = new Date(ts);
-  if(isNaN(d.getTime())) return String(ts); // ISO 형식이 아니면 원본 그대로 표시
+  if(isNaN(d.getTime())) return String(ts);
   const mo = String(d.getMonth()+1).padStart(2,'0');
   const dd = String(d.getDate()).padStart(2,'0');
   const hh = String(d.getHours()).padStart(2,'0');
@@ -3248,17 +2392,15 @@ let gbWidgetLoading = false;
 async function loadGuestbookWidget(){
   const listEl = document.getElementById('gb-widget-list');
   if(!listEl) return;
-  if(gbWidgetLoading) return; // 이전 요청이 아직 안 끝났으면 겹쳐서 또 보내지 않음
+  if(gbWidgetLoading) return;
   gbWidgetLoading = true;
   try{
     const res = await fetch(GUESTBOOK_API_URL);
     const data = await res.json();
     if(!data.ok) throw new Error('bad response');
-    // 최신 작성 순으로 위에 오도록 클라이언트에서 다시 정렬 (API 응답 순서와 무관하게 항상 최신순 보장)
     gbWidgetEntries = (data.entries || []).slice().sort((a,b) => gbSortKey(b) - gbSortKey(a));
     renderGbWidgetList();
   }catch(err){
-    // 일시적인 폴링 실패로 화면이 계속 깜빡이지 않도록, 이미 표시 중인 데이터가 있으면 그대로 유지함
     if(!gbWidgetEntries.length){
       listEl.innerHTML = `<div class="gb-empty">방명록을 불러오지 못했습니다.</div>`;
     }
@@ -3266,132 +2408,49 @@ async function loadGuestbookWidget(){
     gbWidgetLoading = false;
   }
 }
-setInterval(loadGuestbookWidget, 8000); // 8초마다 갱신 (기존 20초에서 단축)
+setInterval(loadGuestbookWidget, 8000);
 
-/* 배너 방명록 닉네임 기억 기능: 처음 한 번 입력하면 이후 자동으로 재사용 */
-const GB_NICK_KEY = 'akso_gb_nickname';
-function initHeroGbNickname(){
-  const saved = (() => { try{ return localStorage.getItem(GB_NICK_KEY); }catch(e){ return null; } })();
-  const savedEl = document.getElementById('hero-gb-name-saved');
-  const savedTextEl = document.getElementById('hero-gb-name-saved-text');
-  if(saved && savedEl && savedTextEl){
-    savedEl.classList.remove('hidden');
-    savedTextEl.textContent = saved;
-  }
-}
-function resetHeroGbNickname(e){
-  if(e) e.preventDefault();
-  try{ localStorage.removeItem(GB_NICK_KEY); }catch(err){}
-  const savedEl = document.getElementById('hero-gb-name-saved');
-  if(savedEl) savedEl.classList.add('hidden');
-}
-initHeroGbNickname();
-
-/* 배너 안 축하 메시지 입력 폼 → 방명록 API로 전송.
-   닉네임을 항상 보이는 입력창으로 받지 않고, 저장된 닉네임이 없을 때만
-   전송 시점에 prompt()로 한 번 물어보고 이후 계속 재사용함 */
-async function submitHeroGuestbook(){
-  const msgEl = document.getElementById('hero-gb-message');
-  const statusEl = document.getElementById('hero-gb-status');
-  const btn = document.getElementById('hero-gb-submit');
-  if(!msgEl) return;
-  const message = msgEl.value.trim();
-  if(!message){
-    if(statusEl) statusEl.textContent = '메시지를 입력해주세요.';
-    return;
-  }
-  let savedNick = null;
-  try{ savedNick = localStorage.getItem(GB_NICK_KEY); }catch(e){}
-  if(!savedNick){
-    const input = (window.prompt('축하 메시지에 표시할 닉네임을 입력해주세요.', '') || '').trim();
-    savedNick = input || '익명';
-    try{ localStorage.setItem(GB_NICK_KEY, savedNick); }catch(e){}
-    initHeroGbNickname();
-  }
-  const name = savedNick;
-  if(btn) btn.disabled = true;
-  if(statusEl) statusEl.textContent = '전송 중...';
-  try{
-    /* Apps Script 웹앱은 doPost 응답이 302 리다이렉트로 오는데, 이 리다이렉트 응답에는
-       CORS 헤더가 없어서 no-cors 없이 fetch하면 서버 저장은 성공해도 브라우저가 응답을
-       읽으려다 CORS 에러로 실패 처리해버림(지난 시도에서 이 부분 때문에 오히려 닉네임 저장까지
-       막혔던 것으로 보임). 그래서 no-cors는 유지하되, 백엔드가 JSON.parse(e.postData.contents)로
-       파싱하므로 body는 JSON 문자열로 보내는 조합이 정답 */
-    await fetch(GUESTBOOK_API_URL, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ name, message })
-    });
-    if(statusEl) statusEl.textContent = '메시지가 등록되었습니다. 감사합니다!';
-    gbWidgetEntries.unshift({ name, message, timestamp:'방금 전' });
-    renderGbWidgetList();
-    msgEl.value = '';
-    setTimeout(loadGuestbookWidget, 1500);
-  }catch(err){
-    if(statusEl) statusEl.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해주세요.';
-  }finally{
-    if(btn) btn.disabled = false;
-  }
-}
-
-/* ---------- 히어로 배너: 이미지 캐러셀 + 축하 메시지 순환 ---------- */
 let heroBannerTimer = null;
-let heroMsgTimer = null;
 let heroSlideIdx = 0;
-let heroMsgIdx = 0;
-const HERO_FALLBACK_MSGS = [
-  '축하 메시지가 많이 도착해서, 불러오는 데 시간이 조금 걸리고 있어요.'
-];
 
 function initHeroBanner(){
   const slides = document.querySelectorAll('#hero-banner-slides .hero-banner-slide');
+  const dotsWrap = document.getElementById('hero-banner-dots');
+  if(dotsWrap && !dotsWrap.childElementCount){
+    slides.forEach((s, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'hero-banner-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `배너 ${i+1}번째`);
+      dot.onclick = () => goToHeroSlide(i);
+      dotsWrap.appendChild(dot);
+    });
+  }
   if(slides.length > 1 && !heroBannerTimer){
-    heroBannerTimer = setInterval(() => {
-      slides[heroSlideIdx].classList.remove('active');
-      heroSlideIdx = (heroSlideIdx + 1) % slides.length;
-      slides[heroSlideIdx].classList.add('active');
-    }, 6000);
-  }
-  if(!heroMsgTimer){
-    renderHeroRotatingMsg();
-    heroMsgTimer = setInterval(() => { heroMsgIdx++; renderHeroRotatingMsg(); }, 4500);
+    heroBannerTimer = setInterval(() => goToHeroSlide((heroSlideIdx + 1) % slides.length), 6000);
   }
 }
-
-function renderHeroRotatingMsg(){
-  const el = document.getElementById('hero-rotating-msg');
-  if(!el) return;
-  const pool = (gbWidgetEntries && gbWidgetEntries.length) ? gbWidgetEntries : null;
-  let text;
-  if(pool){
-    const en = pool[heroMsgIdx % pool.length];
-    text = `[${en.name}] ${en.message}`;
-  }else{
-    text = HERO_FALLBACK_MSGS[heroMsgIdx % HERO_FALLBACK_MSGS.length];
-  }
-  el.style.opacity = 0;
-  setTimeout(() => {
-    el.textContent = text;
-    el.style.opacity = 1;
-  }, 250);
+function goToHeroSlide(idx){
+  const slides = document.querySelectorAll('#hero-banner-slides .hero-banner-slide');
+  const dots = document.querySelectorAll('#hero-banner-dots .hero-banner-dot');
+  if(!slides.length) return;
+  slides[heroSlideIdx].classList.remove('active');
+  if(dots[heroSlideIdx]) dots[heroSlideIdx].classList.remove('active');
+  heroSlideIdx = idx;
+  slides[heroSlideIdx].classList.add('active');
+  if(dots[heroSlideIdx]) dots[heroSlideIdx].classList.add('active');
 }
 
-/* "내가 사랑하는 사람은?" 응답자 이름으로 온 외부 생일 축하 메일을 맨 위에 추가 */
 let loveMailInserted = false;
 function insertLoveMail(){
   if(loveMailInserted) return;
   loveMailInserted = true;
   const name = (quizAnswers.person || '').trim() || '이름 모를 그녀';
   MAIL_DATA.unshift({
-    id: 0,
-    unread: true,
-    special: true,
-    sender: name,
-    from: "personal.mail@gmail.com",
+    id: 0, unread: true, special: true, sender: name, from: "personal.mail@gmail.com",
     subject: "사랑하는 서언오빠에게",
     preview: `사랑하는 서언 오빠에게, 오늘이 무슨 날인지 오빠는 아마 무심하게 지나쳤을까?`,
-    date: "2034-09-05",
+    date: "2048-09-05",
     body: `<div style="background:#EAF4FE; border:1px solid #BFDAF7; border-radius:8px; padding:10px 12px; font-size:var(--fs-12); color:#3E6E9E; margin-bottom:16px; line-height:1.6;">
 ⚠️ 외부에서 발송된 메일입니다.
 </div>
@@ -3401,16 +2460,16 @@ function insertLoveMail(){
 <p>마치 정해진 운명처럼, 오빠를 만난 그 순간부터 내 모든 세계의 축은 오빠가 있는 쪽으로 기울어지기 시작했어. 아무리 멀리 빙 둘러가도, 아무리 어두운 밤을 지나도, 결국 내 걸음이 도달하는 곳은 언제나 오빠 곁이더라구.</p>
 <p>생일 축하해, 오빠.<br>이 세상에 태어나줘서 고맙다는 말, 그리고 긴 시간과 수많은 아픔 속에서도 포기하지 않고 끝내 버텨줘서 고맙다는 말을 꼭 전하고 싶었어. 오빠가 버텨온 그 침묵의 시간들이 있었기에 지금 내가 오빠의 손을 잡을 수 있는 거겠지.</p>
 <p>그러니 오늘 하루만큼은 타인을 위해 애쓰거나 무거운 책임을 짊어지지 않았으면 좋겠어. 늘 남을 챙기는 데 익숙한 오빠지만, 오늘만큼은 온전히 내가 오빠를 다정하게 감싸 안고 챙길 수 있게 허락해 줘.</p>
-<p>믿음직스럽진 못하지만 내가 오빠의 다정한 쉼터가 되어줄게! 오늘 하루는 조금은 아이처럼 굴어도, 조금은 기대어도 좋아!<br>어디에 있든, 어떤 시간을 지나든, 나는 언제나 오빠가 있는 그곳을 향해 걸어가고 있을 테니까!<br><br>다시 한번, 생일 진심으로 축하해. 서언오빠!!<br>오빠의 모든 순간에 내가 함께할께!<br>항상 고맙고 사랑해.</p>
-<p>+글솜씨가 부족해서 조금 부끄럽네. 이 정도면 오빠 마음에 닿았으려나?<br>모두가 곤히 잠들어 있을 새벽에 편지를 적어 내려가다 보니, 그리움이 점점 커져서 시간이 너무 천천히 흘러가는 것 같아.<br><br>오빠가 정말 많이 보고 싶은 밤이야.<br>얼른 아침이 와서 오빠한테 달려갈 수 있었으면 좋겠다.</p>
+<p>믿음직스럽진 못하지만 내가 오빠의 다정한 쉼터가 되어줄게. 오늘 하루는 조금은 아이처럼 굴어도, 조금은 기대어도 좋아!<br>어디에 있든, 어떤 시간을 지나든, 나는 언제나 오빠가 있는 그곳을 향해 걸어가고 있을 테니까,<br><br>다시 한번, 생일 진심으로 축하해. 서언오빠!!<br>오빠의 모든 순간에 내가 함께할께!<br>항상 고맙고 사랑해.</p>
+<p>+글솜씨가 부족해서 조금 부끄럽네. 이 정도면 오빠 마음에 닿았으려나?<br>모두가 곤히 잠들어 있을 새벽에 편지를 적어 내려가다 보니, 그리움이 점점 커져서 시간이 너무 천천히 흘러가는 것 같아. 나도 오빠를 닮아가나봐.<br><br>오빠가 정말 많이 보고 싶은 밤이야.<br>얼른 아침이 와서 오빠한테 달려갈 수 있었으면 좋겠다.</p>
 <div class="mail-sign">- ${name} -</div>
-<div id="love-mail-player" style="margin-top:18px;"></div>`
+<div id="love-mail-player" style="margin-top:18px;"></div>
+<div class="love-mail-cta">
+  <div class="love-mail-cta-text">오빠를 향한 마음, 나만 전한 게 아니었어.<br><a class="love-mail-cta-link" href="https://www.claudeusercontent.com/guestbook.html">다른 사람들의 축하 인사도 보러 가기 →</a></div>
+</div>`
   });
   renderMailList();
 }
-/* HDBsong.mp3 / X_HBDsong.mp3는 repo에 실제로는 빈 파일(2바이트)로 올라가 있어 재생이 안 됐음.
-   repo audio 폴더에 실제 곡 파일("Zayne BGM 🎶 - Iceborn Warmth  Love and Deepspace.mp3", 약 4.7MB)이
-   따로 존재하는 것을 확인해 그 파일을 가리키도록 수정함 (URL 인코딩 필요) */
 const LOVE_MAIL_AUDIO_URL = "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/audio/Zayne%20BGM%20%F0%9F%8E%B6%20-%20Iceborn%20Warmth%20%20Love%20and%20Deepspace.mp3";
 function renderLoveMailPlayer(){
   const el = document.getElementById('love-mail-player');
@@ -3423,7 +2482,6 @@ function renderLoveMailPlayer(){
     btn.textContent = '▶';
     audio.addEventListener('play', () => { btn.textContent = '⏸'; });
     audio.addEventListener('pause', () => { btn.textContent = '▶'; });
-    // 메일을 여는 클릭 자체가 사용자 제스처이므로 자동재생을 먼저 시도해봄 (막히면 버튼으로 바로 재생 가능)
     const p = audio.play();
     if(p && p.catch) p.catch(() => {});
   }
@@ -3439,32 +2497,101 @@ function toggleLoveAudio(){
   }
 }
 
-/* ---------- NOTICE POPUP ---------- */
-const NOTICE_DATA = [
+const PROFILE_IMG_URL = "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_profile.png";
+/* image: 비어있으면 카드/상세 모두 이미지 영역이 자동으로 생략됩니다.
+   나중에 사진을 구하면 해당 컬럼의 image 값에 URL만 채워 넣으면 바로 반영됩니다. */
+const COLUMN_DATA = [
   {
-    subject: "2034년 하반기 정기 건강검진 일정 안내",
-    dept: "인사팀",
-    date: "2034-09-01",
-    content: "2034년 하반기 임직원 정기 건강검진을 아래와 같이 실시합니다.<br><br>1. 대상: 전 임직원<br>2. 기간: 2034년 9월 15일 ~ 10월 31일<br>3. 장소: 본관 3층 건강검진센터<br><br>검진 8시간 전부터 금식해 주시기 바라며, 인트라넷을 통해 사전 예약 후 방문 부탁드립니다."
+    author: "이서언", dept: "심장외과 l 주임교수 l Evol-Cardiac 의학연구실(AEC) 연구 팀장", email: "seoeon.lee@akso.com", avatar: PROFILE_IMG_URL,
+    title: "깊이 있는 연구와 세심한 집도, AKSO 심장외과센터가 만드는 삶의 기적", date: "2048-09-01", views: 24600, image: "", featured: true,
+    body: `<p class="column-eyebrow">[ SPECIAL FEAT l 이달의 AKSO ] 이서언 주임교수 인터뷰</p>
+<p><b>Q. 심장외과센터를 간단히 소개해 주신다면요.</b><br>저희 AKSO 병원 심장외과센터는 선천성 심질환 교정, 대동맥 재생, 심방중격 결손 회복 등 고난도 심장 수술을 전문으로 하는 핵심 진료 센터입니다. 진단부터 집도, 회복까지 전 과정을 한 팀이 끝까지 책임지는 구조로 운영하고 있고, 그 덕분에 다른 병원에서 어렵다고 돌아섰던 환자분들도 저희 센터를 많이 찾아주십니다.</p>
+<p><b>Q. 애초에 심장외과를 선택하신 특별한 계기가 있으신가요.</b><br>사실 어릴 적 인연이 하나 있습니다. 선천성 심장질환을 안고 있던 또래 아이를 가까이서 지켜본 적이 있는데, 몸이 힘든 와중에도 늘 씩씩하게 웃던 모습이 오래도록 마음에 남았습니다. 언젠가 저 병을 내 손으로 고쳐주고 싶다는 다짐을 그때 처음 했던 것 같습니다. 지금 생각해보면 그 다짐 하나가 지금까지 저를 이 길로 이끌어온 셈이지요. 신기하게도 시간이 한참 흐른 뒤, 전혀 예상하지 못한 자리에서 그 인연을 다시 마주하게 되는 순간도 있었습니다. 삶이란 게 참 알 수 없더군요.</p>
+<p><b>Q. 최근 특별히 집중하고 계신 연구 분야가 있다면요.</b><br>희귀 질환인 코어병(A, E, Y형) 수술 치료 분야입니다. Evol-Cardiac 의학연구실(AEC)에서 연구팀장을 맡아 관련 임상 데이터를 꾸준히 쌓아가고 있고, 감사하게도 2046년 스텔라 의학상과 린드상을 함께 받을 수 있었습니다. 상은 제가 아니라 함께한 팀과, 무엇보다 저를 믿고 곁을 지켜준 환자분들의 몫이라고 생각합니다.</p>
+<p><b>Q. 환자분들이 직접 뽑은 '가장 좋아하는 의사'로도 꾸준히 손꼽히십니다.</b><br>과분한 평가입니다. 다만 수술은 결국 사람과 사람이 하는 일이라, 설명 하나 검사 결과 하나도 환자분 눈높이에서 다시 전해드리려 하는 편입니다. 그리고 돌이켜보면, 제가 지금처럼 환자분을 대하게 된 데에는 앞서 말씀드린 그 어릴 적 인연의 영향이 컸던 것 같습니다. 그 마음이 환자분들께 닿았다면 그것만으로 충분합니다.</p>
+<p class="column-quote">"수술의 완성은 환자가 평범한 일상으로 무사히 돌아가는 순간에 있습니다."</p>
+<p><b>Q. 마지막으로 한 말씀 부탁드립니다.</b><br>단순히 심장 기능을 회복시키는 것을 넘어, 정확한 진단부터 세심한 집도, 회복까지 전 과정을 체계적으로 설계하는 곳이 되고 싶습니다. 저희 센터는 깊이 있는 연구 성과를 바탕으로 환자분의 온전한 삶을 끝까지 지켜내겠습니다.</p>`
   },
   {
-    subject: "전자의무기록(EMR) 시스템 정기 점검 예정",
-    dept: "전산팀",
-    date: "2034-09-02",
-    content: "안정적인 서비스 제공을 위해 EMR 시스템 정기 점검을 실시합니다.<br><br>1. 일시: 매주 일요일 02:00 ~ 04:00 (2시간)<br>2. 영향: 점검 시간 내 EMR 접속 및 조회 불가<br><br>긴급 처방 및 조회가 필요한 경우 비상 매뉴얼에 따라 수기 기록을 작성해 주시기 바랍니다."
+    author: "김태훈", dept: "흉부외과 l 교수", email: "th.kim@akso.com", avatar: "",
+    title: "심장은 조용히 나이 듭니다 — 정기검진이 필요한 이유", date: "2048-08-16", views: 13800, image: "",
+    body: `<p>판막질환이나 대동맥질환은 특별한 증상 없이 서서히 진행되는 경우가 많습니다. 몸이 스스로 부담을 나눠 감당하다 보니, 정작 환자분들은 병이 상당히 진행된 뒤에야 어지럼증이나 실신, 극심한 흉통으로 응급실을 찾게 됩니다.</p>
+<h4>침묵 속에서 자라는 병</h4>
+<p>대동맥류나 판막협착증은 크기가 작을 때는 대부분 무증상입니다. 그래서 가족력이 있거나 고령, 고혈압을 오래 앓아온 분이라면 특별한 증상이 없더라도 1~2년에 한 번은 심장초음파로 상태를 확인하시길 권해드립니다. 작을 때 발견하면 경과관찰만으로 충분한 경우가 많지만, 늦게 발견하면 응급 수술로 이어지는 경우가 적지 않습니다.</p>
+<h4>정기검진은 두려움이 아니라 안심입니다</h4>
+<p>많은 분들이 '괜히 검사해서 병을 발견할까 봐' 검진을 미루십니다. 하지만 심장은 미리 알수록 선택할 수 있는 치료법이 많아지는 장기입니다. 조기에 발견하면 몸에 부담이 적은 방법으로도 충분히 치료할 수 있는 경우가 많습니다.</p>
+<p>정기검진을 받고 "괜찮습니다"라는 말을 들으며 안도하는 얼굴을 마주할 때마다, 이 일을 계속하는 이유를 다시금 되새기게 됩니다. 오늘의 작은 검진 하나가, 내년에도 변함없이 웃을 수 있는 이유가 되어주길 바랍니다.</p>`
   },
   {
-    subject: "사원증 재발급 관련 보안 정책 변경 안내",
-    dept: "보안팀",
-    date: "2034-09-03",
-    content: "최근 보안 강화 지침에 따라 사원증 재발급 시 본인 확인 절차가 강화되었습니다.<br><br>재발급 신청 시 소속 부서장의 승인서와 신분증 사본을 지참하여 보안팀(지하 1층)을 방문해 주시기 바랍니다. 또한, 분실 시 즉시 분실 신고를 통해 출입 권한을 중지해 주십시오."
-  },
-  {
-    subject: "9월 학술 컨퍼런스 참가 신청 마감 임박",
-    dept: "교육수련부",
-    date: "2034-09-04",
-    content: "오는 9월 25일 개최되는 '2034 AKSO 심장외과 학술 컨퍼런스' 참가 신청이 이번 주 금요일 마감됩니다.<br><br>현재 잔여석이 얼마 남지 않았으니 참가를 희망하시는 교수님 및 전공의 여러분께서는 서둘러 신청해 주시기 바랍니다. 신청은 인트라넷 교육수련부 메뉴에서 가능합니다."
+    author: "임소율", dept: "약제팀 l 심장전담 약사", email: "soyul.lim@akso.com", avatar: "",
+    title: "항응고제 한 알에도, 심장을 지키는 이유가 있습니다", date: "2048-08-05", views: 9700, image: "",
+    body: `<p>심장 수술을 받으신 분들께 빠지지 않고 챙겨드리는 약이 있습니다. 바로 항응고제, 항혈소판제와 같이 혈전을 예방하는 약물입니다. 인공판막을 넣으셨거나 부정맥이 있는 환자분이라면 이 작은 알약 한 알이 뇌졸중이나 재수술을 막아주는 마지막 방어선이 되기도 합니다.</p>
+<h4>같은 시간, 같은 용량이 핵심입니다</h4>
+<p>항응고제는 혈중 농도가 일정하게 유지되는 것이 무엇보다 중요합니다. 하루 이틀 잊었다가 한 번에 몰아서 드시거나, 임의로 용량을 줄이시는 경우 오히려 출혈이나 혈전 위험이 함께 커질 수 있습니다. 매일 같은 시간, 정해진 양을 지키는 것만으로도 절반은 성공입니다.</p>
+<h4>사소해 보이는 질문이 가장 중요합니다</h4>
+<p>"이 약은 왜 먹어야 하나요?" 환자분들이 흔히 하시는 이 질문에 성실히 답해드리는 것이 복약 순응도를 높이는 첫걸음이라고 생각합니다. 감기약, 영양제 하나를 새로 드시기 전에도 꼭 한 번 여쭤봐 주세요. 작은 확인 하나가 큰 사고를 막아줍니다.</p>
+<p>매일 정해진 시간에 알람을 맞춰두고 약을 챙기시는 환자분들을 뵐 때마다, 그 성실함이 곧 오늘 하루를 지켜내는 치료라는 걸 다시 느낍니다.</p>`
   }
+];
+function formatColumnViews(n){
+  return (typeof n === 'number' ? n : 0).toLocaleString('ko-KR');
+}
+function renderColumns(){
+  const listEl = document.getElementById('column-list');
+  if(!listEl) return;
+  listEl.innerHTML = COLUMN_DATA.map((c, idx) => `
+    <div class="column-card" onclick="openColumn(${idx})">
+      ${c.image ? `<div class="column-card-image"><img src="${c.image}" alt="${c.title}"></div>` : ''}
+      <div class="column-author-row">
+        <div class="column-author-avatar">${c.avatar ? `<img src="${c.avatar}" alt="${c.author}">` : ''}</div>
+        <div class="column-author-info">
+          <div class="column-author-name">${c.author}</div>
+          <div class="column-author-meta">${c.dept} l ${c.email}</div>
+        </div>
+      </div>
+      <div class="column-title">${c.title}</div>
+      <div class="column-preview">${c.body.replace(/<p class="column-eyebrow">.*?<\/p>/s,'').replace(/<[^>]+>/g,' ').trim()}</div>
+      <div class="column-meta-row">
+        <span>${c.date}</span>
+        <span class="dot-sep"></span>
+        <span class="column-views">조회 ${formatColumnViews(c.views)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+function openColumn(idx){
+  const c = COLUMN_DATA[idx];
+  if(!c) return;
+  document.getElementById('mail-detail-subject').textContent = c.title;
+  document.getElementById('mail-detail-meta').textContent = `${c.author} l ${c.date} l 조회 ${formatColumnViews(c.views)}`;
+  document.getElementById('mail-detail-body').innerHTML = `
+    ${c.image ? `<div class="column-detail-image"><img src="${c.image}" alt="${c.title}"></div>` : ''}
+    <div class="column-detail-author">
+      <div class="column-detail-author-left">
+        <div class="column-detail-avatar">${c.avatar ? `<img src="${c.avatar}" alt="${c.author}">` : ''}</div>
+        <div>
+          <div class="column-detail-name">${c.author}</div>
+          <div class="column-detail-meta">${c.dept} l ${c.email}</div>
+        </div>
+      </div>
+      <div class="column-detail-views">조회 ${formatColumnViews(c.views)}</div>
+    </div>
+    <div class="column-detail-body">${c.body}</div>`;
+  document.getElementById('mail-detail-box').classList.remove('love-mail-box');
+  const headerBtn = document.getElementById('love-audio-header-btn');
+  if(headerBtn) headerBtn.classList.add('hidden');
+  document.getElementById('mail-overlay').classList.remove('hidden');
+}
+
+const NOTICE_DATA = [
+  { subject: "2048년 하반기 정기 건강검진 일정 안내", dept: "인사팀", date: "2048-09-01",
+    content: "2048년 하반기 임직원 정기 건강검진을 아래와 같이 실시합니다.<br><br>1. 대상: 전 임직원<br>2. 기간: 2048년 9월 15일 ~ 10월 31일<br>3. 장소: 본관 3층 건강검진센터<br><br>검진 8시간 전부터 금식해 주시기 바라며, 인트라넷을 통해 사전 예약 후 방문 부탁드립니다." },
+  { subject: "전자의무기록(EMR) 시스템 정기 점검 예정", dept: "전산팀", date: "2048-09-02",
+    content: "안정적인 서비스 제공을 위해 EMR 시스템 정기 점검을 실시합니다.<br><br>1. 일시: 매주 일요일 02:00 ~ 04:00 (2시간)<br>2. 영향: 점검 시간 내 EMR 접속 및 조회 불가<br><br>긴급 처방 및 조회가 필요한 경우 비상 매뉴얼에 따라 수기 기록을 작성해 주시기 바랍니다." },
+  { subject: "사원증 재발급 관련 보안 정책 변경 안내", dept: "보안팀", date: "2048-09-03",
+    content: "최근 보안 강화 지침에 따라 사원증 재발급 시 본인 확인 절차가 강화되었습니다.<br><br>재발급 신청 시 소속 부서장의 승인서와 신분증 사본을 지참하여 보안팀(지하 1층)을 방문해 주시기 바랍니다. 또한, 분실 시 즉시 분실 신고를 통해 출입 권한을 중지해 주십시오." },
+  { subject: "9월 학술 컨퍼런스 참가 신청 마감 임박", dept: "교육수련부", date: "2048-09-04",
+    content: "오는 9월 25일 개최되는 '2048 AKSO 심장외과 학술 컨퍼런스' 참가 신청이 이번 주 금요일 마감됩니다.<br><br>현재 잔여석이 얼마 남지 않았으니 참가를 희망하시는 교수님 및 전공의 여러분께서는 서둘러 신청해 주시기 바랍니다. 신청은 인트라넷 교육수련부 메뉴에서 가능합니다." }
 ];
 
 function renderNoticeBoard(){
