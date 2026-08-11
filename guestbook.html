@@ -1050,6 +1050,7 @@ function renderSlider(){
 }
 
 let gbLoading = false;
+let gbEntriesSignature = ''; // 방금 렌더링한 목록의 "지문". 이게 그대로면 다시 그리지 않음
 async function loadGuestbook(){
   if(gbLoading) return;
   gbLoading = true;
@@ -1059,8 +1060,22 @@ async function loadGuestbook(){
     if(data.ok){
       // 백엔드가 최신순(reverse)으로 내려주는데, 갤러리는 오래된 것부터 왼쪽에 오도록 다시 뒤집어서
       // 방금 작성한 메시지가 항상 "맨 마지막(오른쪽)" 카드에 오게 함
-      gbEntries = (data.entries || []).slice().reverse();
-      renderSlider();
+      const fresh = (data.entries || []).slice().reverse();
+      const freshSignature = JSON.stringify(fresh);
+      // ⚠️⚠️⚠️ "미친듯이 깜빡거림" 진짜 근본 원인 발견: 10초마다 이 함수가 방명록을 다시
+      // 불러오는데, 새 메시지가 하나도 안 늘어난 순간에도 매번 무조건 renderSlider()를 불러서
+      // 카드 DOM 전체(backdrop-filter 블러 카드들 포함)를 통째로 지웠다가 다시 그리고 있었음.
+      // 그러다 보니 사용자가 카드를 보고 있는 도중에도 10초에 한 번씩 스크롤 위치가 갑자기
+      // 0으로 튀고, 확대해서 보던 카드(card-focus)도 초기화되고, 블러 레이어들이 통째로
+      // 재생성되면서 화면이 깜빡이는 것처럼 보였던 것 - 배경 크로스페이드(8초 주기)와
+      // 이 재렌더링(10초 주기)이 서로 안 맞물려서 몇 초 간격으로 뭔가 계속 번쩍이는
+      // 느낌을 줬던 것으로 보임. → 새로 불러온 목록이 지난번과 완전히 똑같으면
+      // (실제로 새 메시지가 없으면) DOM을 아예 건드리지 않도록 수정
+      if(freshSignature !== gbEntriesSignature){
+        gbEntries = fresh;
+        gbEntriesSignature = freshSignature;
+        renderSlider();
+      }
     }
   }catch(err){
     /* 실패시 이전 상태 유지 */
