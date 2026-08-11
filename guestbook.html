@@ -699,12 +699,43 @@ async function loadCardBgImages(){
   return loadImagesFromRepoFolder(CARD_BG_API, CARD_BG_CACHE_KEY);
 }
 
+/* ⚠️⚠️⚠️ 깜빡임 관련 추가 원인 하나 더 발견: 배경 사진들이 꽤 고용량(예: 예비용 배너 중 하나만
+   봐도 2560x1440, 디코딩하면 메모리상 14MB 가까이 됨 - 실제 GB_Gallery 폴더의 사용자 제공
+   사진들은 리사이징 없이 원본 그대로라 이보다 더 클 가능성이 높음)이라, 사진이 화면에 막
+   나타나려는 바로 그 순간에 브라우저가 그제서야 압축을 풀면(디코딩) 그 타이밍에 프레임이
+   끊기면서 검게 번쩍이는 것처럼 보일 수 있음 → 화면에 보여주기 훨씬 전에 미리 백그라운드에서
+   디코딩을 끝내두는 방식으로 수정 (image.decode() 사용, 디코딩된 결과는 브라우저가 캐싱해서
+   같은 URL을 배경이미지로 써도 재사용됨) */
+function decodeImage(url){
+  return new Promise((resolve) => {
+    try{
+      const img = new Image();
+      img.src = url;
+      if(img.decode){
+        img.decode().then(resolve).catch(resolve);
+      } else {
+        img.onload = resolve;
+        img.onerror = resolve;
+      }
+    }catch(e){ resolve(); }
+  });
+}
+
 async function initBackgroundSlides(){
   const loaded = await loadGalleryImages();
   const urls = shuffleArray(loaded); // 매번 랜덤한 순서로 섞어서 크로스페이드
   const bg = document.getElementById('page-bg');
+  // 첫 화면에 바로 보일 이미지 하나만 디코딩이 끝날 때까지 기다렸다가 그려서 초기 진입은
+  // 자연스럽게 하고, 나머지는 화면에 아직 안 보이는 상태로 백그라운드에서 미리 디코딩해둠
+  if(urls.length) await decodeImage(urls[0]);
   bg.innerHTML = urls.map((u,i) => `<div class="page-slide${i===0 ? ' active' : ''}" style="background-image:url('${u}')"></div>`).join('');
   const slides = bg.querySelectorAll('.page-slide');
+  const decodedFlags = urls.map(() => false);
+  decodedFlags[0] = true;
+  urls.forEach((u, i) => {
+    if(i === 0) return;
+    decodeImage(u).then(() => { decodedFlags[i] = true; });
+  });
 
   function cleanFilenameToName(url){
     try{
@@ -763,8 +794,16 @@ async function initBackgroundSlides(){
   if(slides.length < 2) return;
   let idx = 0;
   setInterval(() => {
+    // 다음 차례 이미지가 아직 디코딩 중이면(드물게 느린 네트워크 등) 그 사진은 건너뛰고
+    // 이미 디코딩이 끝난 다음 사진으로 넘어가서, 디코딩 지연으로 인한 프레임 끊김을 피함
+    let nextIdx = (idx + 1) % slides.length;
+    let guard = 0;
+    while(!decodedFlags[nextIdx] && guard < slides.length){
+      nextIdx = (nextIdx + 1) % slides.length;
+      guard++;
+    }
     slides[idx].classList.remove('active');
-    idx = (idx + 1) % slides.length;
+    idx = nextIdx;
     slides[idx].classList.add('active');
     updateCredit(idx);
   }, 8000);
