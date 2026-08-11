@@ -52,15 +52,24 @@
   }
 
   /* ---------- 배경: GB_Gallery 폴더 이미지를 동적으로 불러와 크로스페이드 ---------- */
-  .page-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg-page);}
+  .page-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg-page);
+    transform:translateZ(0);-webkit-transform:translateZ(0);}
   .page-slide{
     position:absolute;inset:0;background-size:cover;background-position:center;
     opacity:0;transition:opacity 2.6s ease;
+    /* 모바일(특히 iOS) 브라우저에서 fixed 배경 + 크로스페이드가 스크롤/애니메이션 중
+       깜빡이는(flicker) 렌더링 버그가 있어, 별도 GPU 레이어로 강제 승격해서 리페인트를
+       줄임(합성만 하고 매 프레임 다시 그리지 않도록) */
+    transform:translateZ(0);-webkit-transform:translateZ(0);
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    will-change:opacity;
   }
   .page-slide.active{opacity:1;}
   .page-overlay{
     position:fixed;inset:0;z-index:-1;
-    background:linear-gradient(185deg, rgba(10,18,24,0.42) 0%, rgba(10,18,24,0.5) 40%, rgba(8,14,19,0.72) 100%);
+    /* 배경 사진이 바뀌는 순간의 대비가 커서 깜빡이는 것처럼 보였던 것도 있어 전체적으로
+       살짝 더 어둡게(투명도 낮춤)해서 크로스페이드 시 변화 폭 자체를 줄임 */
+    background:linear-gradient(185deg, rgba(10,18,24,0.54) 0%, rgba(10,18,24,0.6) 40%, rgba(8,14,19,0.78) 100%);
   }
 
   /* ---------- 눈 내리는 효과 ---------- */
@@ -77,7 +86,7 @@
 
   /* ---------- 첫 화면: 글래스모피즘(블러+틴트) + 타이틀만 ---------- */
   .landing{
-    position:relative;z-index:2;height:100vh;min-height:560px;
+    position:relative;z-index:2;height:100vh;height:100dvh;min-height:560px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:0 20px;cursor:pointer;
   }
@@ -408,18 +417,28 @@
      여러 모바일 수정사항이 반영 안 되고 있었던 적 있음) */
   @media(max-width:640px){
     .love-note, #stage-form, #stage-gallery{display:none;opacity:0;transition:opacity .6s ease;}
-    .love-note{min-height:100vh;display:none;flex-direction:column;justify-content:center;box-sizing:border-box;}
+    .love-note{min-height:100vh;min-height:100dvh;display:none;flex-direction:column;justify-content:center;box-sizing:border-box;}
+    /* ⚠️ 입력폼(#stage-form)이 자기 내용만큼만 높이를 차지하다 보니, 화면 중앙으로 스크롤시키려는
+       목표 위치가 문서 전체 높이(스크롤 가능한 최대치)를 넘어서 브라우저가 스크롤을 그 이상 못
+       내리고 clamp 시켜버렸음(그래서 카드가 중앙이 아니라 화면 하단에 붙어 보였던 것) →
+       love-note와 동일하게 최소 한 화면 높이(100dvh)를 확보하고 flex로 세로 중앙정렬해서,
+       스크롤이 clamp되지 않고 실제로 화면 중앙까지 도달할 수 있게 함 */
+    #stage-form{min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;box-sizing:border-box;}
+    #stage-gallery{min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;box-sizing:border-box;}
     /* 갤러리를 계속 보이게 했더니 화면 아래쪽에 계속 걸쳐 보이면서 거슬리고,
        다른 섹션들의 중앙정렬 스크롤 위치에도 영향을 줘서 다시 원래대로(화살표로 공개) 되돌림.
        재방문자를 위한 접근은 상단 네비의 별도 바로가기 링크로 대체함(#stage-gallery-shortcut) */
     /* 예전엔 화면 끝까지 꽉 채우는 좁은 레이아웃이었는데, PC버전처럼 여유있고 자연스러운
        비율로 되돌림 - 카드도 좀 더 넉넉하게, 좌우 여백도 다시 확보 */
     .msg-slider-row{max-width:100%;padding:0 8px;gap:8px;}
-    .msg-slide{width:68vw;}
+    .msg-slide{width:56vw;}
     .slider-arrow{width:34px;height:34px;}
     .thanks-list{padding-top:14px;}
     .site-footer{padding-top:5px;}
-    .gallery-shortcut{display:flex;}
+    /* 첫 화면에서부터 바로 보이면 아직 아무것도 안 남긴 방문자에게 혼란을 줄 수 있어서
+       기본은 숨겨두고, 입력 섹션(#stage-form)까지 도달한 뒤부터만(.show 클래스) 나타나게 함 */
+    .gallery-shortcut{display:none;}
+    .gallery-shortcut.show{display:flex;}
   }
 
   /* PC(641px 이상)에서는 love-note의 "다음으로" 화살표를 안 보여줌(스크롤로 자연스럽게
@@ -857,13 +876,22 @@ function goToLoveNote(e){
   }
 })();
 
+function showGalleryShortcut(){
+  // 입력 섹션(#stage-form)까지 도달하기 전까지는 방명록 바로가기 버튼을 숨겨뒀다가,
+  // 여기 도달한 이후부터만(그리고 계속) 보여줌
+  const shortcut = document.querySelector('.gallery-shortcut');
+  if(shortcut) shortcut.classList.add('show');
+}
+
 function revealForm(e){
   if(e) e.stopPropagation();
   const stage = document.getElementById('stage-form');
   const formCard = document.getElementById('gb-form-section');
   if(isMobileView){
-    // 작성폼 전체(stage-form)를 나타내되, 화면 중앙 정렬 기준은 실제 입력 카드로 삼음
-    fadeInReveal(stage, 'block', formCard);
+    // 작성폼 전체(stage-form)를 나타내되, 화면 중앙 정렬 기준은 실제 입력 카드로 삼음.
+    // stage-form이 이제 flex(1화면 높이)라서 'flex'로 보여줘야 justify-content:center가 적용됨
+    fadeInReveal(stage, 'flex', formCard);
+    showGalleryShortcut();
   } else {
     formCard.scrollIntoView({behavior:'smooth', block:'center'});
   }
@@ -874,7 +902,8 @@ function revealGallery(e){
   const stage = document.getElementById('stage-gallery');
   const row = document.getElementById('msg-slider-row');
   if(isMobileView){
-    fadeInReveal(stage, 'block', row);
+    fadeInReveal(stage, 'flex', row);
+    showGalleryShortcut();
   } else {
     row.scrollIntoView({behavior:'smooth', block:'center'});
   }
