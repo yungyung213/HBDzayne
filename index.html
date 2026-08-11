@@ -590,7 +590,7 @@
 
       <div id="id-step-1" class="hidden step-centered">
         <div class="step-label" style="text-align:center;">STEP 2</div>
-        <div class="step-q" style="text-align:center;">생일을 입력하세요</div>
+        <div class="step-q" style="text-align:center;">생일을 입력하세요.</div>
         <div class="wheel-row">
           <div class="wheel-col">
             <div class="wheel-label">월</div>
@@ -612,7 +612,7 @@
 
       <div id="id-step-2" class="hidden">
         <div class="step-label">STEP 3</div>
-        <div class="step-q">부서를 선택하세요</div>
+        <div class="step-q">부서를 선택하세요.</div>
         <select class="answer-input" id="id-dept">
           <option value="">-- 부서 선택 --</option>
           <option>가정의학과</option>
@@ -642,7 +642,7 @@
 
       <div id="id-step-3" class="hidden">
         <div class="step-label">STEP 4</div>
-        <div class="step-q">사번을 입력하세요 <span class="help-icon" onclick="toggleHelp('empid-help')">?</span></div>
+        <div class="step-q">사번을 입력하세요. <span class="help-icon" onclick="toggleHelp('empid-help')">?</span></div>
         <div class="help-popup hidden" id="empid-help">
           사번은 <b>사원증 좌측, 학과명 아래</b>에 적힌 번호입니다.
           <img src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_Q_IDcard.png" alt="사원증 사번 위치 안내" style="width:100%; border-radius:8px; margin-top:8px; display:block;">
@@ -761,7 +761,7 @@
                   <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
                   <div class="hero-banner-content">
                     <h1 class="hero-banner-title">의학의 깊이가 환자의<br>건강한 삶으로 이어지도록.</h1>
-                    <div class="hero-banner-msg">깊이 있는 연구와 세심한 진료로 환자 곁을 지키는 AKSO병원입니다.</div>
+                    <div class="hero-banner-msg">깊이 있는 연구와 세심한 진료로 환자 곁을 지킵니다.</div>
                   </div>
                 </div>
                 <div class="hero-banner-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/banner_img/banner_3.png')">
@@ -778,7 +778,7 @@
 
             <div class="msg-composer-card">
               <div class="msg-composer-head">
-                <h3>이서언 교수님의 생일을 축하드려요!</h3>
+                <h3>🥳이서언 교수님의 생일을 축하드려요!</h3>
                 <a href="guestbook.html" class="gb-more-link">전체보기 <span id="gb-widget-count"></span> →</a>
               </div>
               <div class="msg-composer-divider"></div>
@@ -1816,16 +1816,16 @@ const KWAK_DATING_REPLIES = [
 const KWAK_GRIEF_SCENE = [
   {side:'in', text:'교수님... 죄송한데 잠깐 시간 괜찮으신가요.'},
   {side:'in', text:'저 오늘 담당하던 환자분이 돌아가셨어요. 처음 겪는 일도 아닌데 왜 이렇게 힘든지 모르겠습니다.'},
-  {side:'out', text:'지금 어디야.'},
+  {side:'out', text:'지금 어디지?'},
   {side:'in', text:'병동 비상계단이요. 잠깐 나와있습니다.'},
   {side:'out', text:'본관 뒤편 정원 벤치 알지. 거기로 가 있어.'},
-  {side:'in', text:'거긴 왜...'},
+  {side:'in', text:'거긴 왜요...?'},
   {side:'out', text:'그 벤치, CCTV 사각지대야. 거기서는 잠깐 울어도 아무도 몰라.'},
   {side:'in', text:'...교수님도 거기서 자주 우셨나요?'},
   {side:'out', text:'아니, 난 수술에 실패했을 때만 거기 가서 해 뜨는 걸 보곤 했어.'},
-  {side:'out', text:'내일도 해는 뜨는데, 그걸 더 이상 볼 수 없는 사람이 생긴다는 게 의사를 오래 할수록 제일 힘든 부분이더라.'},
+  {side:'out', text:'내일도 해는 뜨는데, 그걸 더 이상 볼 수 없는 사람이 생긴다는 게 의사를 오래 할수록 제일 힘든 부분이더군.'},
   {side:'out', text:'오늘 밤엔 실컷 울어도 되고, 새벽엔 그 환자분 몫까지 해 뜨는 거 보고 와도 돼.'},
-  {side:'in', text:'...감사합니다 교수님. 저 잠깐 다녀오겠습니다.'}
+  {side:'in', text:'...감사합니다 교수님..'}
 ];
 function outLinesFor(m){
   if(m.name === '소원') return SOWON_OUT_LINES;
@@ -2210,7 +2210,7 @@ function buildPatientData(){
         ["2048-02-14", "안색이 유독 창백해 산소포화도까지 재확인했으나 98%로 정상. 그래도 분명 무리했을 거다. 다음엔 먼저 쉬라고 말해야겠다."],
         ["2047-12-13", "정기 심초음파 결과 특이 소견 없음. 검사 수치는 문제없지만 본인이 스스로를 잘 안 챙기는 편이라 계속 신경 쓰인다."],
         ["2047-10-11", "흉부 X-ray 및 활력징후 모두 정상 범위. 많이 웃었던 하루였다. 그 모습 보니 나도 모르게 마음이 놓였다."],
-        ["2047-09-19", "오늘 유난히 힘든 하루였어. 정신을 차려보니 어느새 네 차트를 열어놓고, 너한테 하고 싶은 말을 적고 있더라. 바쁘다는 핑계로 살가운 말 한마디 제대로 못 건네는 날이 많은데, 그래도 하루 중 가장 먼저 떠오르는 사람은 늘 너였어. 유독 오늘 같은 날은 네 목소리가 듣고 싶었어. 오늘 밀크티를 사 먹었는데 그렇게 뽑고 싶어하던 굿즈가 나왔다는 메시지를 봤어. 별거 아닌 그 한마디에도 이렇게 마음이 놓이는 걸 보면 나도 어쩔 수 없나 봐. 빨리 보고 싶다."],
+        ["2047-09-19", "오늘 유난히 힘든 하루였어. 정신을 차려보니 어느새 네 차트를 열어놓고, 너한테 하고 싶은 말을 적고 있더라. 바쁘다는 핑계로 항상 연락이 늦는데, 그래도 하루 중 가장 먼저 떠오르는 사람은 늘 너였어. 유독 오늘 같은 날은 네 목소리가 듣고 싶었어. 오늘 밀크티를 사 먹었는데 그렇게 뽑고 싶어하던 굿즈가 나왔다는 메시지를 봤어. 별거 아닌 그 한마디에도 이렇게 마음이 놓이는 걸 보면 나도 어쩔 수 없나 봐. 빨리 보고 싶다."],
         ["2047-08-09", "맥박 약간 상승(82회/분) 확인, 과로 가능성 있어 경과관찰 권고. 본인은 괜찮다지만 다음 방문 때는 좀 더 자세히 살펴봐야겠다."],
         ["2047-06-07", "심박 리듬 안정적, 부정맥 소견 없음. 그래도 습관처럼 한 번 더 확인하게 된다."],
         ["2047-04-05", "혈압·맥박 모두 정상 범위였지만 오늘따라 말이 없었다. 무슨 일이 있었던 건 아닌지 괜히 신경이 쓰인다."],
@@ -2631,7 +2631,7 @@ const COLUMN_DATA = [
 <p>사소해 보이는 질문 하나가 큰 사고를 막아준다는 걸 알기에, 오늘도 같은 질문을 몇 번이고 웃으며 받아 적습니다.</p>`
   },
   {
-    author: "소원", dept: "간호부 l 수간호사", email: "sowon.jung@akso.com", avatar: "https://ui-avatars.com/api/?name=%EC%86%8C%EC%9B%90&background=FDECC8&color=B8791A&size=128&bold=true",
+    author: "김혜원", dept: "간호부 l 수간호사", email: "heawon.kim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EC%86%8C%EC%9B%90&background=FDECC8&color=B8791A&size=128&bold=true",
     title: "환절기 낙상, 작은 습관으로 예방할 수 있어요", date: "2048-07-22", views: 8213, image: "",
     body: `<p>병동에서 근무하다 보면 계절이 바뀌는 시기에 낙상 사고가 유독 늘어나는 걸 느낍니다. 기온 변화로 근육이 경직되고, 어지럼증을 호소하시는 어르신 환자분들도 많아지기 때문입니다.</p>
 <h4>아침에 일어날 땐 '천천히'가 핵심입니다</h4>
