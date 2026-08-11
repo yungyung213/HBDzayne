@@ -42,7 +42,16 @@
     --sans:'Pretendard', -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   }
   *{box-sizing:border-box;}
-  html{background:var(--bg-page);}
+  /* ⚠️⚠️⚠️ "가로가 생김/배율이 깨지는 느낌" 진짜 원인 발견: 방명록 전송 성공 시 반짝이는
+     이펙트를 그리는 #sparkle-layer가 버튼 밖으로 크게 퍼지도록 일부러 inset:-120px로
+     의도한 것인데, 이게 body의 overflow-x:hidden만으로는 완전히 안 막혀서(overflow는
+     body가 아니라 html/뷰포트 레벨에서 걸어야 문서 전체 스크롤 폭 계산에 안 잡힘)
+     문서 전체 가로 스크롤 폭이 실제 화면보다 넓어지는 상태였음(실측: 334px 화면에서
+     scrollWidth가 420px까지 벌어짐) → 터치로 좌우로 밀리거나, 브라우저가 그 여백을
+     반영해 레이아웃을 다시 계산하면서 "화면이 늘어나는/배율이 깨지는" 느낌으로 보였던
+     것. html에도 overflow-x:hidden을 추가해서 뷰포트 레벨에서 확실히 막음(반짝이
+     이펙트 자체는 여전히 버튼 밖으로 잘 퍼짐 - 그 안쪽 요소의 overflow는 안 건드림) */
+  html{background:var(--bg-page);overflow-x:hidden;}
   html,body{margin:0;padding:0;}
   body{
     font-family:var(--sans);
@@ -131,27 +140,30 @@
     font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--ink-faint);
     padding-left:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
+  /* ⚠️ 이 3개 작은 버튼(음악/맨위로/방명록바로가기)은 원래 backdrop-filter(유리 블러)를
+     썼는데, 화면에 항상 고정으로 떠 있는 요소가 배경 사진 크로스페이드 + 카드 블러와
+     동시에 블러 연산을 하다 보니 저사양 기기에서 GPU 부하가 겹쳐 화면이 통째로
+     검게 깜빡이는(black flash) 현상의 유력한 원인 중 하나였음 → 블러를 빼고 살짝 더
+     진한 반투명 배경색만 쓰는 것으로 교체해서 시각적으로는 비슷하되 GPU 부담을 줄임 */
   .audio-btn{
     width:38px;height:38px;border-radius:50%;flex:0 0 auto;cursor:pointer;
     display:flex;align-items:center;justify-content:center;color:var(--ink);
-    background:var(--glass-bg);border:1px solid var(--glass-border);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(20,31,38,0.55);border:1px solid var(--glass-border);
     transition:background .15s, transform .15s;
   }
-  .audio-btn:hover{background:var(--glass-bg-strong);transform:scale(1.05);}
+  .audio-btn:hover{background:rgba(20,31,38,0.72);transform:scale(1.05);}
   .audio-btn svg{width:16px;height:16px;}
 
   .scroll-top-btn{
     display:flex;align-items:center;justify-content:center;
     position:fixed;right:18px;bottom:18px;z-index:8;
     width:38px;height:38px;border-radius:50%;cursor:pointer;color:var(--ink);
-    background:var(--glass-bg);border:1px solid var(--glass-border);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(20,31,38,0.55);border:1px solid var(--glass-border);
     opacity:0;pointer-events:none;transform:translateY(8px);
     transition:opacity .2s ease, transform .2s ease, background .15s;
   }
   .scroll-top-btn.show{opacity:1;pointer-events:auto;transform:translateY(0);}
-  .scroll-top-btn:hover{background:var(--glass-bg-strong);}
+  .scroll-top-btn:hover{background:rgba(20,31,38,0.72);}
   .scroll-top-btn svg{width:16px;height:16px;}
 
   /* 재방문자가 단계별 화면을 다시 다 거치지 않고 바로 방명록으로 갈 수 있는 바로가기.
@@ -160,11 +172,10 @@
     display:none;
     position:fixed;left:18px;bottom:18px;z-index:8;
     align-items:center;gap:6px;padding:9px 14px;border-radius:20px;cursor:pointer;
-    background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--ink);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(20,31,38,0.55);border:1px solid var(--glass-border);color:var(--ink);
     font-family:var(--sans);font-size:12px;font-weight:600;
   }
-  .gallery-shortcut:hover{background:var(--glass-bg-strong);}
+  .gallery-shortcut:hover{background:rgba(20,31,38,0.72);}
 
   /* ---------- 타이틀 (중앙, 예전보다 위쪽): 둥글게 휘는 이모지 뱃지 + Norman Variable 타이틀 ---------- */
   .hero-eyebrow-arc{position:relative;z-index:1;width:min(64vw,260px);aspect-ratio:320/56;height:auto;margin:0 auto -6px;display:block;}
@@ -283,6 +294,10 @@
     box-shadow:var(--shadow-sm);padding:22px 20px;
     display:flex;flex-direction:column;justify-content:space-between;gap:14px;
     cursor:pointer;transition:box-shadow .3s ease, zoom .35s ease;
+    /* 가로 스크롤 중 카드마다 블러 레이어가 계속 생성/소멸되며 화면이 순간 검게
+       깜빡이는 현상을 줄이기 위해 자체 GPU 레이어로 미리 고정해둠 */
+    transform:translateZ(0);-webkit-transform:translateZ(0);
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
   }
   .msg-slide.card-focus .msg-slide-card{
     box-shadow:0 14px 40px rgba(0,0,0,0.35);
