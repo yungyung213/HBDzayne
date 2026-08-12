@@ -1400,7 +1400,6 @@ function updateScrollTopBtn(){
   const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   const shouldShow = y > 300;
   btn.classList.toggle('show', shouldShow);
-  // 클래스 토글만으로 안 보인다는 재발 신고가 있어, 핵심 속성은 인라인 스타일로도 직접 강제해 이중 보장
   btn.style.opacity = shouldShow ? '1' : '0';
   btn.style.visibility = shouldShow ? 'visible' : 'hidden';
   btn.style.transform = shouldShow ? 'translateY(0)' : 'translateY(8px)';
@@ -2094,7 +2093,7 @@ const MAIL_DATA = [
 <div class="mail-sign">AKSO병원 시설관리팀<br>facility@akso.com</div>` },
   { id: 23, unread: false, sender: "사회사업팀", from: "social@akso.com",
     subject: "저소득층 환자 수술비 지원 신청 안내",
-    preview: "저소득층 환자 수술비 지원 프로그램 신청 안내드립니다.", date: "2048-08-11",
+    preview: "저소득층 환자 대상 수술비 지원 프로그램 신청 안내드립니다.", date: "2048-08-11",
     body: `<p>이서언 교수님께,</p>
 <p>저소득층 환자 대상 수술비 지원 프로그램 신청이 가능합니다. 대상자가 있으시면 사회사업팀으로 문의 바랍니다.</p>
 <div class="mail-sign">AKSO병원 사회사업팀<br>social@akso.com</div>` }
@@ -2512,7 +2511,6 @@ function initHeroSwipe(){
     goToHeroSlide(next);
     restartHeroTimer();
   };
-  // 모바일/터치 기기
   wrap.addEventListener('touchstart', (e) => {
     if(!e.touches || !e.touches.length) return;
     onDown(e.touches[0].clientX, e.touches[0].clientY);
@@ -2522,10 +2520,9 @@ function initHeroSwipe(){
     if(!touch) return;
     onUp(touch.clientX, touch.clientY);
   }, {passive:true});
-  // 데스크톱 마우스 드래그 (PointerEvent를 지원하는 브라우저 전반)
   if(window.PointerEvent){
     wrap.addEventListener('pointerdown', (e) => {
-      if(e.pointerType === 'touch') return; // 터치는 위 touchstart/touchend가 이미 처리
+      if(e.pointerType === 'touch') return;
       onDown(e.clientX, e.clientY);
     });
     wrap.addEventListener('pointerup', (e) => {
@@ -2593,8 +2590,6 @@ function toggleLoveAudio(){
 }
 
 const PROFILE_IMG_URL = "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_profile.png";
-/* image: 비어있으면 카드/상세 모두 이미지 영역이 자동으로 생략됩니다.
-   나중에 사진을 구하면 해당 컬럼의 image 값에 URL만 채워 넣으면 바로 반영됩니다. */
 const COLUMN_DATA = [
   {
     author: "이서언", dept: "심장외과 l 주임교수 l Evol-Cardiac 의학연구실(AEC) 연구 팀장", email: "seoeon.lee@akso.com", avatar: PROFILE_IMG_URL,
@@ -2611,7 +2606,7 @@ const COLUMN_DATA = [
 <p><b class="column-q">Q. 마지막으로 한 말씀 부탁드려도 될까요?</b><br>단순히 심장 기능을 회복시키는 것을 넘어, 정확한 진단부터 세심한 집도, 회복까지 전 과정을 체계적으로 설계하는 곳이 되고 싶습니다. 저희 센터는 깊이 있는 연구 성과를 바탕으로 환자분의 온전한 삶을 끝까지 지켜내겠습니다.</p>`
   },
   {
-    author: "김태훈", dept: "흉부외과 l 교수", email: "th.kim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EA%B9%80%ED%83%9C%ED%9B%88&background=DCEEFB&color=1B5FA8&size=128&bold=true",
+    author: "김태훈", dept: "흉부외과 l 교수", email: "th.kim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EA%B9%80%ED%83%9C%ED%9B%88&length=3&background=DCEEFB&color=1B5FA8&size=128&bold=true",
     title: "오래가는 마른기침, 그냥 넘기지 마세요", date: "2048-08-16", views: 13875, image: "",
     body: `<p>감기는 다 나은 것 같은데 마른기침만 몇 주째 남아있는 분들이 있습니다. 대부분은 기도가 예민해진 상태가 서서히 가라앉는 과정이지만, 3주 이상 기침이 이어진다면 단순 감기가 아닌 다른 원인을 함께 살펴봐야 합니다.</p>
 <h4>3주가 기준입니다</h4>
@@ -2621,7 +2616,7 @@ const COLUMN_DATA = [
 <p>대수롭지 않게 여기고 넘겼던 기침 하나가 실은 몸이 보내는 가장 오래된 신호였다는 걸, 진료실에서 마주할 때마다 다시 느낍니다.</p>`
   },
   {
-    author: "임소율", dept: "약제팀 l 약사", email: "soyul.lim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EC%9E%84%EC%86%8C%EC%9C%A8&background=FCE8F3&color=B23A82&size=128&bold=true",
+    author: "임소율", dept: "약제팀 l 약사", email: "soyul.lim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EC%9E%84%EC%86%8C%EC%9C%A8&length=3&background=FCE8F3&color=B23A82&size=128&bold=true",
     title: "감기약과 영양제, 함께 먹어도 될까요?", date: "2048-08-05", views: 9714, image: "",
     body: `<p>진료 후 조제실 앞에서 가장 많이 받는 질문 중 하나가 "이 약, 제가 먹는 영양제랑 같이 먹어도 되나요?"입니다. 별것 아닌 것 같아도 의외로 상호작용이 있는 조합이 꽤 많습니다.</p>
 <h4>흔한 조합일수록 방심하기 쉽습니다</h4>
@@ -2631,7 +2626,7 @@ const COLUMN_DATA = [
 <p>사소해 보이는 질문 하나가 큰 사고를 막아준다는 걸 알기에, 오늘도 같은 질문을 몇 번이고 웃으며 받아 적습니다.</p>`
   },
   {
-    author: "김혜원", dept: "간호부 l 수간호사", email: "heawon.kim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EC%86%8C%EC%9B%90&background=FDECC8&color=B8791A&size=128&bold=true",
+    author: "김혜원", dept: "간호부 l 수간호사", email: "heawon.kim@akso.com", avatar: "https://ui-avatars.com/api/?name=%EA%B9%80%ED%98%9C%EC%9B%90&length=3&background=FDECC8&color=B8791A&size=128&bold=true",
     title: "환절기 낙상, 작은 습관으로 예방할 수 있어요", date: "2048-07-22", views: 8213, image: "",
     body: `<p>병동에서 근무하다 보면 계절이 바뀌는 시기에 낙상 사고가 유독 늘어나는 걸 느낍니다. 기온 변화로 근육이 경직되고, 어지럼증을 호소하시는 어르신 환자분들도 많아지기 때문입니다.</p>
 <h4>아침에 일어날 땐 '천천히'가 핵심입니다</h4>
@@ -2641,7 +2636,7 @@ const COLUMN_DATA = [
 <p>사소한 습관 하나가 큰 사고를 막아준다는 걸, 매일 병동을 돌 때마다 다시 느낍니다.</p>`
   },
   {
-    author: "박현우", dept: "안과 l 전문의", email: "hyunwoo.park@akso.com", avatar: "https://ui-avatars.com/api/?name=%EB%B0%95%ED%98%84%EC%9A%B0&background=E4ECFB&color=2A5CA8&size=128&bold=true",
+    author: "박현우", dept: "안과 l 전문의", email: "hyunwoo.park@akso.com", avatar: "https://ui-avatars.com/api/?name=%EB%B0%95%ED%98%84%EC%9A%B0&length=3&background=E4ECFB&color=2A5CA8&size=128&bold=true",
     title: "눈이 뻑뻑하고 시리다면, 안구건조증일 수 있어요", date: "2048-07-10", views: 12047, image: "",
     body: `<p>모래가 들어간 것처럼 눈이 뻑뻑하고, 바람만 스쳐도 시리다는 분들이 부쩍 늘었습니다. 화면을 오래 들여다보는 시간이 길어지면서 눈을 깜빡이는 횟수 자체가 줄어드는 게 큰 원인 중 하나입니다.</p>
 <h4>의외로 '깜빡임 횟수'가 핵심입니다</h4>
