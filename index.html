@@ -682,7 +682,7 @@
       </div>
 
       <div id="quiz-step-0">
-        <div class="step-label">CHECK 1</div>
+        <div class="step-label">CHECK #1</div>
         <div class="step-q">현재 거주하고 있는 지역은?</div>
         <div class="choice-list" id="quiz-region-list">
           <div class="choice" data-value="임천시"><span class="radio"></span>임천시</div>
@@ -693,10 +693,10 @@
       </div>
 
       <div id="quiz-step-1" class="hidden">
-        <div class="step-label">CHECK 2</div>
+        <div class="step-label">CHECK #2</div>
         <div class="step-q">내가 좋아하는 음식은?</div>
         <div class="choice-list" id="quiz-food-list">
-          <div class="choice" data-value="물"><span class="radio"></span>물</div>
+          <div class="choice" data-value="물"><span class="radio"></span>당근 케이크</div>
           <div class="choice" data-value="당근"><span class="radio"></span>당근</div>
           <div class="choice" data-value="마카롱"><span class="radio"></span>마카롱</div>
         </div>
@@ -704,7 +704,7 @@
       </div>
 
       <div id="quiz-step-2" class="hidden">
-        <div class="step-label">CHECK 3</div>
+        <div class="step-label">CHECK #3</div>
         <div class="step-q">내게 가장 소중한 사람의 이름은?</div>
         <input class="answer-input" id="quiz-person" placeholder="이름을 입력하세요">
       </div>
@@ -753,7 +753,7 @@
                   <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
                   <div class="hero-banner-content">
                     <h1 class="hero-banner-title">이서언 교수님의<br>생일을 진심으로 축하드립니다.</h1>
-                    <div class="hero-banner-msg">임직원 여러분의 축하 메시지를 확인해보세요.</div>
+                    <div class="hero-banner-msg">축하 메시지를 확인해보세요.</div>
                   </div>
                 </div>
                 <div class="hero-banner-slide portrait" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/banner_img/banner_2.png')">
@@ -1023,10 +1023,30 @@
       </div>
     </div>
 
+    <div class="mail-overlay hidden" id="site-info-overlay" onclick="closeSiteInfo(event)">
+      <div class="mail-detail-box" onclick="event.stopPropagation()" style="max-width:400px;">
+        <div class="mail-detail-head">
+          <div style="flex:1;min-width:0;">
+            <div class="mail-detail-subject">페이지 안내</div>
+          </div>
+          <span class="mail-detail-close" onclick="closeSiteInfo()">✕</span>
+        </div>
+        <div class="mail-detail-body">
+          <p>안녕하세요. 에루입니다. :)</p>
+          <br>
+          <p>본 페이지는 2026년 9월 『러브앤딥스페이스』 이서언의 생일을 축하하기 위해 팬 개인이 제작한 비공식·비영리 팬페이지입니다. PaperGames 및 『러브앤딥스페이스』 공식 운영진과는 관련이 없습니다.</p>
+          <p>『러브앤딥스페이스』의 명칭, 캐릭터, 이미지 및 원작 설정에 관한 권리는 PaperGames를 비롯한 각 권리자에게 있습니다. 본 페이지에 추가된 기관, 인물, 사건 등의 설정은 연출을 위해 창작된 허구이며 실제와 관련이 없습니다.</p>
+          <p>본 페이지는 상업적 이익을 목적으로 하지 않습니다. 권리 침해 우려가 있는 콘텐츠는 권리자의 정당한 요청이 확인되는 경우 신속히 수정하거나 삭제하겠습니다.</p>
+          <br>
+          <p>추가 문의 사항은 트위터 <b>@eru_eru_25</b>로 연락 부탁드립니다. :)</p>
+        </div>
+      </div>
+    </div>
+
 </div>
 
-<div style="position:fixed; bottom:3px; left:0; right:0; text-align:center; font-size:var(--fs-10); color:#8A93A0; opacity:0.9; pointer-events:none; z-index:200; letter-spacing:0.2px;">
-  본 페이지는 가상의 페이지로 실제와는 관련이 없습니다.
+<div style="position:fixed; bottom:3px; left:0; right:0; text-align:center; font-size:var(--fs-10); color:#8A93A0; opacity:0.9; z-index:200; letter-spacing:0.2px; pointer-events:none;">
+  본 페이지는 가상의 페이지로 실제와는 관련이 없습니다. <span style="text-decoration:underline; cursor:pointer; pointer-events:auto;" onclick="document.getElementById('site-info-overlay').classList.remove('hidden')">자세히 보기</span>
 </div>
 
 <script>
@@ -2722,6 +2742,12 @@ function openNotice(idx){
 function closeNotice(e){
   if(!e || e.target === document.getElementById('notice-overlay') || e.target.classList.contains('close-x')){
     document.getElementById('notice-overlay').classList.add('hidden');
+  }
+}
+
+function closeSiteInfo(e){
+  if(!e || e.target === document.getElementById('site-info-overlay')){
+    document.getElementById('site-info-overlay').classList.add('hidden');
   }
 }
 
