@@ -1125,16 +1125,18 @@ async function loadGuestbook(){
 
 let lastSubmitted = null; // { name, message }
 
+const SPARKLE_EMOJI_SETS = ['❄', '🦭', '☃️', '🍐']; // 눈송이/물범/눈사람/배 - 한 번 터질 때는 한 종류만
 function fireSparkles(){
   const layer = document.getElementById('sparkle-layer');
   if(!layer) return;
   layer.innerHTML = '';
   const count = 16;
   const cx = 50, cy = 50; // 버튼 중심 기준 %
+  const emoji = SPARKLE_EMOJI_SETS[Math.floor(Math.random() * SPARKLE_EMOJI_SETS.length)]; // 이번 터짐에서 쓸 이모지 하나만 고정으로 뽑음
   for(let i = 0; i < count; i++){
     const s = document.createElement('span');
     s.className = 'sparkle';
-    s.textContent = '❄';
+    s.textContent = emoji;
     const angle = Math.random() * Math.PI * 2;
     const dist = 40 + Math.random() * 70;
     s.style.setProperty('--bx', (Math.cos(angle) * dist) + 'px');
