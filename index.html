@@ -582,14 +582,14 @@
       </div>
 
       <div id="id-step-0">
-        <div class="step-label">STEP 1</div>
+        <div class="step-label">STEP #1</div>
         <div class="step-q">이름을 입력하세요</div>
         <input class="answer-input" id="id-name" placeholder="이름">
         <div class="field-error" id="id-name-error">이름이 일치하지 않습니다. 다시 확인해주세요.</div>
       </div>
 
       <div id="id-step-1" class="hidden step-centered">
-        <div class="step-label" style="text-align:center;">STEP 2</div>
+        <div class="step-label" style="text-align:center;">STEP #2</div>
         <div class="step-q" style="text-align:center;">생일을 입력하세요.</div>
         <div class="wheel-row">
           <div class="wheel-col">
@@ -611,7 +611,7 @@
       </div>
 
       <div id="id-step-2" class="hidden">
-        <div class="step-label">STEP 3</div>
+        <div class="step-label">STEP #3</div>
         <div class="step-q">부서를 선택하세요.</div>
         <select class="answer-input" id="id-dept">
           <option value="">-- 부서 선택 --</option>
@@ -769,7 +769,7 @@
                   <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
                   <div class="hero-banner-content">
                     <h1 class="hero-banner-title">최첨단 장비와 축적된 경험이<br>새로운 가능성을 엽니다.</h1>
-                    <div class="hero-banner-msg">정밀 진단 장비와 첨단 수술 시스템으로 더 정확한 치료를 제공합니다.</div>
+                    <div class="hero-banner-msg">정밀 장비와 첨단 수술 시스템으로 더 정확한 치료를 제공합니다.</div>
                   </div>
                 </div>
               </div>
@@ -1254,7 +1254,7 @@ document.getElementById('quiz-food-list').addEventListener('click', e => {
   const correct = c.dataset.value === '마카롱';
   c.classList.add(correct ? 'selected' : 'incorrect');
   const foodErrorEl = document.getElementById('quiz-food-error');
-  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '물') ? '수분섭취도 중요하지만 더 좋아하는게 있죠?' : '틀렸습니다. 다시 선택해주세요.';
+  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.?' : '틀렸습니다. 다시 선택해주세요.';
   foodErrorEl.classList.toggle('show', !correct);
   quizAnswers.food = c.dataset.value;
   document.getElementById('quiz-next-btn').disabled = false;
