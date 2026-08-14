@@ -463,7 +463,7 @@
           공유하기
         </button>
       </div>
-      <div class="share-hint" id="share-hint" style="display:none;">이미지를 먼저 저장한 뒤, 트위터 창에서 직접 첨부해주세요 (트위터는 외부에서 이미지를 자동 첨부하는 걸 허용하지 않아요).</div>
+      <div class="share-hint" id="share-hint" style="display:none;">"이미지 저장"을 누르면 마음을 함께해주신 분들의 사진이 랜덤 배경으로 담긴 이미지가 만들어져요.<br>그 귀여운 사진들도 함께 공유해보세요!</div>
       <div class="section-arrow" id="post-submit-arrow" style="display:none;" onclick="revealGallery(event)" aria-label="방명록 보러가기">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </div>
@@ -1026,6 +1026,7 @@ async function submitGuestbook(){
     statusEl.classList.add('ok');
     lastSubmitted = { name, message };
     sharePanelEl.classList.add('show');
+    shareHintEl.style.display = 'block';
     fireSparkles();
     const postArrow = document.getElementById('post-submit-arrow');
     if(postArrow) postArrow.style.display = 'flex';
@@ -1159,10 +1160,6 @@ function saveMessageImage(){
 
 function shareToTwitter(){
   if(!lastSubmitted) return;
-  withShareImage((canvas) => {
-    downloadCanvas(canvas, 'happy-birthday-zayne.png');
-  });
-  shareHintEl.style.display = 'block';
   const text = `${lastSubmitted.message}\n#이서언생일축하해 #2026_HBD_SEOEON_2026 #2026_HBD_Zayne`;
   const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
   window.open(url, '_blank');
