@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+  헉.. 여기까지 어떻게 오셨나요...🥺
+  서언이 생일 축하해 주려고 진짜 별짓을 다 해보는 것 같아요ㅋㅋㅋㅋㅋㅋ
+  이렇게까지 덕질하는게 너무너무너무너무 오랜만이기도하고...ㅠㅠ...
+  여기까지 오신 김에 방명록 하나 남겨주시면 너무너무 기쁠 것 같아요! (쟈스민단이 아니라도 환영합니다!)
+  별거 없는 페이지이지만 즐겨주시면 감사드리겠습니닷!💓
+  행복하셔요..!☃️❄️
+
+  Whoa.. how did you end up all the way here...🥺
+  It feels like I'm trying literally everything to celebrate Zayne's birthdayㅋㅋㅋㅋㅋㅋ...
+  It's been sooo long since I've fangirled this hard too...ㅠㅠ...
+  Since you made it this far, I'd be so so happy if you left a message in the guestbook!
+  (Even if you're not part of the Jasmine fan crew, you're welcome here!)
+  It's nothing fancy, but I'd really appreciate it if you enjoyed the page!💓
+  Wishing you happiness..!☃️❄️
+-->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -354,7 +370,7 @@
   .mail-section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .mail-section h3{font-size:var(--fs-16);margin:0;color:var(--navy-800);font-weight:800;}
   .mail-badge{background:var(--mint-600);color:#fff;font-size:var(--fs-10);font-weight:700;border-radius:10px;padding:2px 8px;}
-  .mail-list, .patient-list{display:flex;flex-direction:column; gap:10px;}
+  .patient-list{display:flex;flex-direction:column; gap:10px;}
   .patient-card{display:grid; grid-template-columns:22px 90px 1fr 74px; gap:12px; align-items:center;padding:12px 12px; border:1px solid #EEF0F3; border-radius:12px; font-size:var(--fs-13); cursor:pointer;transition:background .12s, box-shadow .12s, transform .12s;}
   .patient-card:hover{background:#F9FAFB; box-shadow:0 4px 14px rgba(20,30,50,0.06); transform:translateY(-1px);}
   .patient-fav-col{display:flex; align-items:center; justify-content:center;}
@@ -372,12 +388,15 @@
     .patient-main{grid-area:main;}
     .patient-lastvisit{grid-area:lastvisit; align-self:start;}
   }
-  /* 메일함: 근태관리 표와 동일한 table/td 구조. td 기본 vertical-align:middle이 셀 높이 기준으로 정렬을 처리해서
-     flex+line-height 조합과 달리 폰트 로딩 타이밍/기기 렌더링 차이에 흔들리지 않음 */
-  table.mail-list{width:100%; border-collapse:collapse; table-layout:fixed;}
-  table.mail-list col.col-dot{width:20px;}
-  table.mail-list col.col-sender{width:118px;}
-  table.mail-list col.col-date{width:60px;}
+  .mail-table-wrap{width:100%; max-width:100%; min-width:0; overflow-x:hidden;}
+  table.mail-list{width:100%; max-width:100%; min-width:0; border-collapse:collapse; table-layout:fixed;}
+  table.mail-list col.col-dot{width:18px;}
+  table.mail-list col.col-sender{width:128px;}
+  table.mail-list col.col-date{width:52px;}
+  @media(max-width:480px){
+    table.mail-list col.col-sender{width:30%;}
+    table.mail-list col.col-date{width:42px;}
+  }
   .mail-row td{padding:10px 8px; border-bottom:1px solid #F0F1F3; vertical-align:middle; cursor:pointer;}
   .mail-row:hover td{background:#F5F6F8;}
   .mail-row:hover td:first-child{border-radius:6px 0 0 6px;}
@@ -387,7 +406,7 @@
   .mail-unread-dot.read{background:transparent;}
   .mail-sender{font-size:var(--fs-13);font-weight:400;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .mail-row.unread .mail-sender{font-weight:700;color:var(--navy-900);}
-  .mail-date{font-size:var(--fs-11);color:var(--text-muted);white-space:nowrap;}
+  .mail-date{font-size:var(--fs-11);color:var(--text-muted);white-space:nowrap;text-align:right;}
   .mail-subject-line{font-size:var(--fs-13);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .mail-subject-line .subj{color:var(--text-dark);}
   .mail-row.unread .mail-subject-line .subj{font-weight:700;color:var(--navy-900);}
@@ -501,6 +520,7 @@
     .messenger-tab-layout .messenger-chat-panel{display:none !important;}
     .messenger-tab-layout .messenger-mail-panel{flex:1 1 auto !important; min-height:60vh;}
   }
+  .messenger-mail-panel, .messenger-chat-panel{min-width:0; max-width:100%;}
   @media (min-width:481px){
     .dash-topbar{position:fixed;top:0;left:0;right:0;z-index:250;}
     .dash-body{margin-top:var(--header-h) !important;}
@@ -738,7 +758,7 @@
         <button class="hamburger-btn" id="hamburger-btn" onclick="toggleNavDrawer()" aria-label="메뉴 열기">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
-        <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;" title="맨 위로"><span class="mark" id="logo-mark-dash"><img src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_logo.png" alt="로고"></span> AKSO Work Hub</div>
+        <div class="brand" onclick="goHome()" style="cursor:pointer;" title="맨 위로"><span class="mark" id="logo-mark-dash"><img src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_logo.png" alt="로고"></span> AKSO Work Hub</div>
         <div class="dash-sidebar" id="dash-sidebar">
           <div class="menu-item" onclick="switchDashView('default', this, 'hero-banner')">공지사항</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-column')">메디컬럼</div>
@@ -889,10 +909,12 @@
             <div class="mail-section-head">
               <h3>메일함</h3>
             </div>
-            <table class="mail-list" id="main-mail-list">
-              <colgroup><col class="col-dot"><col class="col-sender"><col><col class="col-date"></colgroup>
-              <tbody></tbody>
-            </table>
+            <div class="mail-table-wrap">
+              <table class="mail-list" id="main-mail-list">
+                <colgroup><col class="col-dot"><col class="col-sender"><col><col class="col-date"></colgroup>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
 
           <div class="mail-section" id="section-attendance">
@@ -942,10 +964,12 @@
                 <h3 style="margin:0; font-size:var(--fs-15);">메일함</h3>
                 <span class="mail-badge-messenger mail-badge" style="background:var(--mint-600); color:#fff; font-size:var(--fs-10); font-weight:700; border-radius:10px; padding:2px 8px;">0</span>
               </div>
-              <table class="mail-list" id="inline-mail-list" style="flex:1; overflow-y:auto; padding:6px 18px;">
-                <colgroup><col class="col-dot"><col class="col-sender"><col><col class="col-date"></colgroup>
-                <tbody></tbody>
-              </table>
+              <div class="mail-table-wrap" style="flex:1; overflow-y:auto; overflow-x:hidden; min-width:0; padding:6px 18px;">
+                <table class="mail-list" id="inline-mail-list">
+                  <colgroup><col class="col-dot"><col class="col-sender"><col><col class="col-date"></colgroup>
+                  <tbody></tbody>
+                </table>
+              </div>
             </div>
             <div class="messenger-chat-panel" style="flex:1; display:flex; flex-direction:column; background:#fff; border:none; border-radius:var(--radius-md); box-shadow:var(--shadow-card); overflow:hidden;">
               <div style="padding:16px 20px; border-bottom:1px solid var(--border); background:#F8F9FA;">
@@ -1465,6 +1489,20 @@ function updateDashTime(){
   const hh = now.getHours();
   const mm = now.getMinutes();
   document.getElementById('dash-datetime').textContent = `${y}-${m<10?'0'+m:m}-${d<10?'0'+d:d} ${hh<10?'0'+hh:hh}:${mm<10?'0'+mm:mm}`;
+}
+
+function goHome(){
+  const viewDefault = document.getElementById('view-default');
+  const viewMessenger = document.getElementById('view-messenger');
+  if(viewMessenger && !viewMessenger.classList.contains('hidden')){
+    viewMessenger.classList.add('hidden');
+    viewDefault.classList.remove('hidden');
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  const mainEl = document.querySelector('.dash-main');
+  if(mainEl) mainEl.scrollTop = 0;
 }
 
 function toggleNavDrawer(force){
