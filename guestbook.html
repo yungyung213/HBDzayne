@@ -558,12 +558,31 @@ const IMG_EXT = /\.(jpe?g|png|webp|gif)$/i;
 const IMG_MIN_SIZE = 1000;
 
 const NAME_DISPLAY_ALIASES = {
-  'saya_0905rei': '신비로운의 쟈스민'
+  'saya_0905rei': ['신비로운의 쟈스민', '서언아 당근먹어']
 };
+
+const sessionAliasCache = {};
+function resolveAliasText(rawName){
+  const key = rawName.toLowerCase();
+  const alias = NAME_DISPLAY_ALIASES[key];
+  if(!alias) return null;
+  if(Array.isArray(alias)){
+    if(!(key in sessionAliasCache)){
+      sessionAliasCache[key] = alias[Math.floor(Math.random() * alias.length)];
+    }
+    return sessionAliasCache[key];
+  }
+  return alias;
+}
 function displayName(rawName){
   if(!rawName) return rawName;
-  const alias = NAME_DISPLAY_ALIASES[rawName.toLowerCase()];
+  const alias = resolveAliasText(rawName);
   return alias ? alias : ('@' + rawName);
+}
+function displayNameForThanks(rawName){
+  if(!rawName) return rawName;
+  const alias = resolveAliasText(rawName);
+  return alias ? ('@' + alias) : ('@' + rawName);
 }
 
 function shuffleArray(arr){
@@ -678,7 +697,7 @@ async function initBackgroundSlides(){
       function paintNameGroup(){
         const group = [];
         for(let i = 0; i < groupSize; i++) group.push(names[(nameIdx + i) % names.length]);
-        thanksEl.textContent = group.map(n => displayName(n)).join('\u00A0\u00A0');
+        thanksEl.textContent = group.map(n => displayNameForThanks(n)).join('\u00A0\u00A0');
         nameIdx = (nameIdx + groupSize) % names.length;
       }
       function renderNameGroup(first){
