@@ -26,6 +26,7 @@
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
+  /* 컬러/폰트 변수 */
   :root{
     --navy-900:#132238; --navy-800:#132238; --navy-700:#333D4B;
     --mint-600:#29AAA6; --mint-500:#29AAA6; --mint-dark:#178D89;
@@ -42,6 +43,7 @@
     --fs-15:15px; --fs-16:16px; --fs-18:18px; --fs-20:20px; --fs-24:24px; --fs-32:32px;
     --header-h:68px;
   }
+  /* 리셋 + 기본 폰트 */
   *{box-sizing:border-box;}
   html{height:100%;}
   body{margin:0;padding:0;overflow-x:hidden;}
@@ -56,6 +58,7 @@
   .field input:focus-visible, .field select:focus-visible,
   textarea.answer-input:focus-visible, input.answer-input:focus-visible, select.answer-input:focus-visible{outline:none;}
 
+  /* 로그인 화면 */
   #screen-login{position:relative; overflow:hidden; background:#fff;}
   .login-bg-blob{
     position:absolute; width:75vmax; height:75vmax; max-width:900px; max-height:900px;
@@ -74,6 +77,7 @@
   @keyframes loginBlobMove2{0%{transform:translate(0,0) scale(1);}50%{transform:translate(-14vw,-10vh) scale(1.08);}100%{transform:translate(8vw,-18vh) scale(0.96);}}
   .login-card{position:relative; z-index:1;}
 
+  /* 계정 재인증(생일 퀴즈) 화면 */
   #screen-identity{position:relative; overflow:hidden; background:#fff;}
   .id-bg-blob{
     position:absolute; width:70vmax; height:70vmax; max-width:820px; max-height:820px;
@@ -92,6 +96,7 @@
   @keyframes idBlobWave2{0%{transform:translate(0,0) scale(1);}30%{transform:translate(-18vw,8vh) scale(1.1);}60%{transform:translate(-4vw,-8vh) scale(0.95);}100%{transform:translate(0,0) scale(1);}}
   .wizard-card{position:relative; z-index:1;}
   #screen-quiz{position:relative; overflow:hidden; background:#fff;}
+  /* 로그인 카드 + 인풋 */
   .login-card{background:var(--card); width:100%; max-width:380px; border:none; border-radius:var(--radius-lg); padding:44px 30px 32px; box-shadow:var(--shadow-card);}
   .login-logo{display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px;}
   .login-logo .mark{height:64px;width:auto;min-width:64px; display:flex;align-items:center;justify-content:center; overflow:hidden;}
@@ -113,6 +118,7 @@
   .btn-secondary{width:100%;background:#F2F4F6;color:var(--navy-800);border:none;padding:15px;border-radius:var(--radius-sm);font-size:var(--fs-15);font-weight:700;cursor:pointer;margin-top:10px;}
   .login-footnote{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-size:var(--fs-11);color:#B0B8C1;line-height:1.6;text-align:center;}
 
+  /* 안내 팝업(사원증 재발급 알림 등) 카드 */
   .simple-card{background:var(--card);width:100%;max-width:380px;border:none;border-radius:var(--radius-lg);padding:44px 32px;text-align:center;box-shadow:var(--shadow-card);}
   .simple-card .icon{font-size:var(--fs-32);margin-bottom:16px;}
   .simple-card h2{font-size:var(--fs-18);margin:0 0 10px;color:var(--navy-800);font-weight:700;}
@@ -123,6 +129,7 @@
   .notice-headline{font-size:var(--fs-16);line-height:1.5;font-weight:500;color:var(--navy-800);margin:0 0 28px;letter-spacing:-0.2px;}
   .notice-box .highlight{color:var(--mint-600);}
 
+  /* 재인증/퀴즈 위저드 카드 */
   .wizard-card{background:var(--card);width:100%;max-width:420px;border:none;border-radius:var(--radius-lg);padding:38px 28px 32px;box-shadow:var(--shadow-card);}
   .wizard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
   .wizard-title{font-size:var(--fs-14);font-weight:700;color:var(--navy-800);}
@@ -145,6 +152,7 @@
   .choice.selected .radio{border-color:var(--mint-600);}
   .choice.selected .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--mint-600);}
 
+  /* 생일 입력용 월/일 휠 피커 */
   .step-centered{display:flex;flex-direction:column;align-items:center;}
   .wheel-row{display:flex;gap:14px;justify-content:center;margin-bottom:6px;}
   .wheel-col{width:120px;}
@@ -158,6 +166,7 @@
   .wheel-highlight{position:absolute;top:51px;left:0;right:0;height:48px;border-radius:8px;border:1.5px solid var(--mint-600);pointer-events:none;background:rgba(0,180,216,0.07);transition:transform .12s ease, background .12s ease;}
   .wheel-highlight.pulse{transform:scale(1.04);background:rgba(28,140,134,0.14);}
 
+  /* 로딩 화면 스피너 */
   .loading-card{display:flex;flex-direction:column;align-items:center;gap:18px;}
   .spinner{width:54px;height:54px;border-radius:50%;border:5px solid #DCE2E8;border-top-color:var(--mint-600);animation:spin 0.9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
@@ -173,8 +182,10 @@
   }
   select.answer-input:focus{border-color:var(--mint-600); background-color:#fff;}
 
+  /* ===== 대시보드 화면 ===== */
   #screen-dashboard{align-items:stretch;padding:0;}
   .dash-wrap{width:100%;display:flex;flex-direction:column;min-height:100vh;background:var(--bg-app);}
+  /* 상단바 (로고, 메뉴, 세션 타이머) */
   .dash-topbar{background:#fff;color:var(--text-dark);padding:0 20px;height:var(--header-h);display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);}
   .dash-topbar .brand{display:flex;align-items:center;gap:10px;font-size:var(--fs-15);font-weight:700;color:var(--text-dark);flex:0 0 auto;white-space:nowrap;}
   .dash-topbar .brand .mark{height:36px;width:auto;min-width:36px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-11);overflow:hidden;}
@@ -194,6 +205,7 @@
   .dash-main{flex:1;padding:32px 32px 48px;overflow-y:visible;width:100%;box-sizing:border-box;}
   .dash-notice{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:22px 22px;margin-bottom:20px;}
 
+  /* 메인 배너 + 프로필 카드 + 방명록 위젯 레이아웃 */
   .hero-stack{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,0.75fr);grid-template-areas:"banner profile" "msgcard msgcard";gap:24px;margin-bottom:24px;}
   .hero-banner{grid-area:banner;position:relative; border-radius:20px; overflow:hidden; min-height:680px; max-height:820px; height:74vh; box-shadow:var(--shadow-elevated); background:#0F1B2A;}
   .hero-banner-slides{position:absolute; inset:0;}
@@ -248,6 +260,7 @@
     .hero-banner-dots{right:20px; bottom:16px;}
   }
 
+  /* 방명록 미리보기 위젯 (홈 화면에 몇 개만 보여줌) */
   .msg-composer-card{grid-area:msgcard;background:#fff; border:1px solid var(--border); border-radius:14px;padding:24px; box-shadow:var(--shadow-card);}
   .msg-composer-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
   .msg-composer-head h3{font-size:var(--fs-16); font-weight:700; color:var(--navy-800); margin:0;}
@@ -264,6 +277,7 @@
   .notice-row{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:8px 0;border-bottom:1px solid var(--divider);font-size:var(--fs-14);color:var(--text-dark);}
   .notice-row:last-child{border-bottom:none;}
   .notice-row .tag{color:var(--text-muted);font-size:var(--fs-12);}
+  /* 통계 카드 그리드 (외래예약, 결재 등) */
   .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media(max-width:560px){.dash-grid{grid-template-columns:1fr 1fr; gap:10px;}
     .stat-card{padding:12px 10px; gap:8px;}
@@ -286,6 +300,7 @@
   .mini-bar.today{background:var(--mint-600);}
   .mini-bar-label{font-size:var(--fs-11);color:var(--text-muted2);}
 
+  /* 우하단 플로팅 메신저 버블 */
   .msg-widget{display:none;position:fixed;bottom:20px;right:20px;z-index:80;}
   .msg-bubble{width:44px;height:44px;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;transition:transform .15s;font-size:18px;}
   .msg-bubble:hover{transform:scale(1.05);}
@@ -312,6 +327,7 @@
   .msg-item:hover{background:#FAFAFA;}
   .msg-item.unread{background:rgba(28,140,134,0.04);}
   .msg-unread-dot{width:6px;height:6px;border-radius:50%;background:var(--mint-600);flex:0 0 auto;margin-left:2px;}
+  /* 메신저 채팅방(스레드) 뷰 */
   .thread-header{position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);}
   .thread-header .back-arrow{font-size:var(--fs-24);color:var(--text-muted);cursor:pointer;line-height:1;padding:2px 4px;}
   .thread-avatar{width:32px;height:32px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-12);font-weight:700;}
@@ -330,6 +346,7 @@
 
   @keyframes sectionFlash{0%{box-shadow:0 0 0 3px rgba(0,180,216,0.55);}100%{box-shadow:0 0 0 3px rgba(0,180,216,0);}}
   .section-flash{animation:sectionFlash 1.2s ease-out;}
+  /* 눈 내리는 연출 (러브메일용) */
   @keyframes ambientSnowFall{0%{transform:translate(0,-30px) rotate(0deg); opacity:0;}10%{opacity:0.85;}90%{opacity:0.85;}100%{transform:translate(var(--sway),110vh) rotate(360deg); opacity:0;}}
 
   .help-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#EEF0F3;color:var(--text-muted);font-size:var(--fs-12);font-weight:700;cursor:pointer;vertical-align:middle;}
@@ -343,6 +360,7 @@
   .choice.incorrect .radio{border-color:var(--danger);}
   .choice.incorrect .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--danger);}
 
+  /* 진료 스케줄 캘린더 테이블 */
   .schedule-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
   .schedule-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
   .schedule-section h3{font-size:var(--fs-16);margin:0;color:var(--navy-800);display:flex;align-items:center;gap:6px;font-weight:800;}
@@ -366,6 +384,7 @@
   .sched-mark.out{background:#5B8DEF;}
   .sched-mark.spc{background:#F04452;}
 
+  /* 담당 환자 차트 카드 리스트 */
   .mail-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
   .mail-section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .mail-section h3{font-size:var(--fs-16);margin:0;color:var(--navy-800);font-weight:800;}
@@ -417,6 +436,7 @@
   .mail-detail-box.love-mail-box .mail-detail-head{background:linear-gradient(90deg,#BFDAF7,#F3F9FF);}
   .mail-detail-box.love-mail-box .mail-detail-subject{color:#2E6DA4;}
 
+  /* 메일/편지 상세보기 오버레이 (여기서 러브레터도 열림) */
   .mail-overlay{position:fixed;inset:0;background:rgba(25,31,40,0.5);display:flex;align-items:center;justify-content:center;z-index:100;}
   .mail-detail-box{position:relative;background:#fff;width:92%;max-width:520px;border-radius:var(--radius-md);box-shadow:0 12px 40px rgba(0,0,0,0.22);overflow:hidden;display:flex;flex-direction:column;max-height:80vh;}
   .mail-detail-head{background:var(--navy-900);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;}
@@ -450,6 +470,7 @@
   .love-mail-cta-link{color:#4A90D9;font-weight:700;text-decoration:none;}
   .love-mail-cta-link:hover{text-decoration:underline;}
 
+  /* 메디컬럼(사내 아티클) 카드 그리드 */
   .column-section{background:#fff;border:none;border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:22px 22px;margin-top:20px;}
   .column-section h3{font-size:var(--fs-16);margin:0 0 16px;color:var(--navy-800);font-weight:800;}
   .column-list{display:flex;flex-direction:column;gap:14px;}
@@ -498,6 +519,7 @@
   .column-quote{font-size:var(--fs-15);font-weight:700;color:var(--navy-800);line-height:1.6;margin:18px 0 22px !important;}
   .column-q{font-size:var(--fs-14);}
 
+  /* ===== 반응형 (모바일/태블릿) ===== */
   @media (max-width:480px){
     .login-card, .simple-card, .wizard-card{padding:26px 20px 22px; max-width:100%;}
     .wheel-row{gap:10px; width:100%; justify-content:center;}
@@ -561,6 +583,7 @@
     </div>
   </div>
 
+  <!-- 로그인 화면. 이름+사번 둘 다 맞아야 통과됨 (아래 handleLogin 참고) -->
   <div class="screen" id="screen-login">
     <div class="login-bg-blob"></div>
     <div class="login-bg-blob b2"></div>
@@ -601,6 +624,7 @@
     </div>
   </div>
 
+  <!-- 재인증 4단계: 이름 -> 생일(휠피커) -> 부서 -> 사번 -->
   <div class="screen" id="screen-identity">
     <div class="id-bg-blob"></div>
     <div class="id-bg-blob b2"></div>
@@ -701,6 +725,7 @@
     </div>
   </div>
 
+  <!-- 개인정보 확인 퀴즈 3단계 (지역/음식/가장 소중한 사람) -->
   <div class="screen" id="screen-quiz">
     <div class="id-bg-blob"></div>
     <div class="id-bg-blob b2"></div>
@@ -752,6 +777,7 @@
     </div>
   </div>
 
+  <!-- 여기서부터가 진짜 대시보드 화면. 다 통과하면 여기로 옴 -->
   <div class="screen" id="screen-dashboard">
     <div class="dash-wrap">
       <div class="dash-topbar">
@@ -1062,6 +1088,7 @@
       </div>
     </div>
 
+    <!-- 방문자가 이 페이지 정체 궁금해할까봐 만든 안내 모달. 저작권 관련해서 한번은 써놔야할것같아서 -->
     <div class="mail-overlay hidden" id="site-info-overlay" onclick="closeSiteInfo(event)">
       <div class="mail-detail-box" onclick="event.stopPropagation()" style="max-width:400px;">
         <div class="mail-detail-head">
@@ -1088,6 +1115,7 @@
 </div>
 
 <script>
+// 화면 전환 상태
 const state = { screen: 'screen-login', user: { name: '', empid: '' }, birthday: { m: 1, d: 1 } };
 
 function go(id){
@@ -1095,10 +1123,12 @@ function go(id){
   const target = document.getElementById(id);
   target.classList.add('active');
   state.screen = id;
+  // 대시보드에서만 메신저 버블 표시
   const widget = document.querySelector('.msg-widget');
   if(widget) widget.style.display = (id === 'screen-dashboard') ? 'flex' : 'none';
 }
 
+// 재방문자는 로그인 화면 스킵
 let _returningUser = false;
 try{ _returningUser = localStorage.getItem('akso_intranet_registered') === '1'; }catch(e){}
 
@@ -1108,6 +1138,7 @@ if(_returningUser){
   cycleLoadingMessages('loading-start-text', ['사원증 재인증을 시작합니다...','재인증 시스템에 접속하는 중입니다...','보안 인증 모듈을 불러오는 중...','접속 환경을 확인하는 중...'], 3600, () => go('screen-login'));
 }
 
+// 로그인 검증
 function handleLogin(){
   const name = document.getElementById('in-name').value.trim();
   const empid = document.getElementById('in-empid').value.trim();
@@ -1129,6 +1160,7 @@ function startIdentity(){
   });
 }
 
+// ===== 계정 재인증 위저드 (이름/생일/부서/사번 4단계) =====
 let idStepIdx = 0;
 const idStepsTotal = 4;
 
@@ -1167,6 +1199,7 @@ function showIdStep(idx){
   renderIdDots();
 }
 
+// 4단계 정답값은 전부 하드코딩
 function validateIdStep(idx){
   if(idx === 0){
     const val = document.getElementById('id-name').value.trim();
@@ -1205,6 +1238,7 @@ function cycleLoadingMessages(id, msgs, totalTime, onDone){
   setTimeout(() => { clearInterval(interval); onDone(); }, totalTime);
 }
 
+// 생일 휠 피커
 function initIdentity(){
   const mEl = document.getElementById('wheel-month');
   const dEl = document.getElementById('wheel-day');
@@ -1260,6 +1294,7 @@ function updateWheelCenter(el){
 
 function toggleHelp(id){ document.getElementById(id).classList.toggle('hidden'); }
 
+// ===== 개인정보 확인 퀴즈 (거주지/음식/소중한 사람 3단계) =====
 let quizStepIdx = 0;
 const quizStepsTotal = 3;
 let quizAnswers = {region:null, food:null, person:''};
@@ -1292,7 +1327,7 @@ document.getElementById('quiz-food-list').addEventListener('click', e => {
   const correct = c.dataset.value === '마카롱';
   c.classList.add(correct ? 'selected' : 'incorrect');
   const foodErrorEl = document.getElementById('quiz-food-error');
-  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.?' : ;
+  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.?' : '';
   foodErrorEl.classList.toggle('show', !correct);
   quizAnswers.food = c.dataset.value;
   document.getElementById('quiz-next-btn').disabled = false;
@@ -1325,6 +1360,7 @@ function renderProfile(){
   if(nameEl) nameEl.innerHTML = `${name}<span class="profile-empid-inline">사번 ${empid}</span>`;
 }
 
+// 대시보드 진입 및 초기 렌더
 function enterDashboard(){
   try{
     if(!quizAnswers.person){
@@ -1364,6 +1400,7 @@ function quizStep(dir){
 function startDashboardClocks(){
   updateDashTime();
   setInterval(updateDashTime, 1000);
+  // 세션 타이머
   let sec = 3600;
   setInterval(() => {
     sec--;
@@ -1378,6 +1415,7 @@ function startDashboardClocks(){
   renderScheduleTable();
 }
 
+// 진료 스케줄 캘린더
 function renderScheduleTable(){
   const el = document.getElementById('sched-table');
   if(!el) return;
@@ -1443,6 +1481,7 @@ function renderScheduleTable(){
       <tr>${pmHtml}</tr>
     </tbody>`;
 
+  // 생일 칸으로 스크롤
   const scrollWrap = document.getElementById('sched-scroll-wrap');
   if(scrollWrap){
     const birthdayDay = 5;
@@ -1465,6 +1504,7 @@ function updateScrollTopBtn(){
 }
 window.addEventListener('scroll', updateScrollTopBtn, {passive:true});
 document.addEventListener('scroll', updateScrollTopBtn, {passive:true, capture:true});
+// 스크롤 위치 체크
 setInterval(updateScrollTopBtn, 600);
 updateScrollTopBtn();
 
@@ -1553,6 +1593,7 @@ function switchDashView(view, btn, sectionId){
   }
 }
 
+// 메신저 메시지 데이터
 const MSG_DATE = "2048-09-05";
 const REQUIRED_PEOPLE = [
   {dept:"심장외과", name:"곽헌", role:"전공의"},
@@ -1638,6 +1679,7 @@ function shuffleArr(arr){
   }
   return a;
 }
+// 문구 셔플 헬퍼
 function makeCycler(arr){
   let pool = shuffleArr(arr);
   let idx = 0;
@@ -1658,6 +1700,7 @@ function randTimeMinutes(idx, total){
   return `${pad2(Math.floor(m/60))}:${pad2(m%60)}`;
 }
 
+// 메시지 목록 생성
 function generateMessages(total){
   const nextGeneric = makeCycler(GENERIC_TEMPLATES);
   const nextLearnerPool = makeCycler(GENERIC_TEMPLATES.concat(LEARNER_TEMPLATES));
@@ -1736,6 +1779,7 @@ function renderMessages(targetId = 'msg-list-view'){
 }
 updateMsgBadge();
 
+// 메신저 채팅방 대화 스크립트
 const CARDIAC_TEAM_LINES = [
   "교수님, 이번 주 컨퍼런스 자료 준비했습니다.",
   "이번 달 당직표 초안 보내드립니다, 확인 부탁드려요.",
@@ -1920,6 +1964,7 @@ function addMinutes(date, time, deltaMin){
   dt.setMinutes(dt.getMinutes()+deltaMin);
   return { date: `${dt.getFullYear()}-${pad2b(dt.getMonth()+1)}-${pad2b(dt.getDate())}`, time: `${pad2b(dt.getHours())}:${pad2b(dt.getMinutes())}` };
 }
+// 채팅 스레드 구성
 function buildThread(m){
   const bubbles = [];
   const isKwak = (m.name === '곽헌');
@@ -2002,6 +2047,7 @@ function closeInlineThread(){
   document.getElementById('inline-msg-list-wrap').classList.remove('hidden');
 }
 
+// 메일함 데이터
 const MAIL_DATA = [
   { id: 1, unread: true, sender: "임천시 흉부외과학회", from: "academic@imcheoncity.world",
     subject: "[긴급] 2048 임천시 학술대회 초청 강연 연사 확정 요청",
@@ -2235,6 +2281,7 @@ function closeMail(e){
 
 function launchConfetti(){ startAmbientSnow(); }
 
+// 눈 내리는 연출
 function startAmbientSnow(){
   stopAmbientSnow();
   const overlay = document.getElementById('mail-overlay');
@@ -2270,6 +2317,7 @@ function stopAmbientSnow(){
   if(c) c.remove();
 }
 
+// 환자 차트 데이터
 function buildPatientData(){
   const loveName = (quizAnswers.person || '').trim() || '이름 모를 그녀';
   return [
@@ -2472,6 +2520,7 @@ function closePatientChart(e){
   }
 }
 
+// 방명록 API
 const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
 
 function escapeHtmlGb(str){
@@ -2532,6 +2581,7 @@ async function loadGuestbookWidget(){
 }
 setInterval(loadGuestbookWidget, 8000);
 
+// 메인 배너 슬라이드
 let heroBannerTimer = null;
 let heroSlideIdx = 0;
 let heroSwipeInit = false;
@@ -2611,6 +2661,7 @@ function initHeroSwipe(){
 }
 
 let loveMailInserted = false;
+// 러브레터 삽입
 function insertLoveMail(){
   if(loveMailInserted) return;
   loveMailInserted = true;
@@ -2666,6 +2717,7 @@ function toggleLoveAudio(){
   }
 }
 
+// 메디컬럼 데이터
 const PROFILE_IMG_URL = "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_profile.png";
 const COLUMN_DATA = [
   {
@@ -2763,6 +2815,7 @@ function openColumn(idx){
   document.getElementById('mail-overlay').classList.remove('hidden');
 }
 
+// 공지사항 데이터
 const NOTICE_DATA = [
   { subject: "2048년 하반기 정기 건강검진 일정 안내", dept: "인사팀", date: "2048-09-01",
     content: "2048년 하반기 임직원 정기 건강검진을 아래와 같이 실시합니다.<br><br>1. 대상: 전 임직원<br>2. 기간: 2048년 9월 15일 ~ 10월 31일<br>3. 장소: 본관 3층 건강검진센터<br><br>검진 8시간 전부터 금식해 주시기 바라며, 인트라넷을 통해 사전 예약 후 방문 부탁드립니다." },
