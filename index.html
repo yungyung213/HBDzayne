@@ -65,13 +65,13 @@
     border-radius:50%; pointer-events:none; z-index:0;
     background:radial-gradient(circle at 35% 35%, rgba(41,170,166,0.38), rgba(41,170,166,0.12) 55%, rgba(41,170,166,0) 76%);
     filter:blur(10px); top:-25%; left:-25%;
-    animation:loginBlobMove 20s ease-in-out infinite alternate;
+    animation:loginBlobMove 10s ease-in-out infinite alternate;
   }
   .login-bg-blob.b2{
     width:60vmax; height:60vmax; max-width:700px; max-height:700px;
     background:radial-gradient(circle at 60% 40%, rgba(41,170,166,0.28), rgba(41,170,166,0.08) 55%, rgba(41,170,166,0) 76%);
     top:auto; left:auto; bottom:-25%; right:-20%;
-    animation:loginBlobMove2 24s ease-in-out infinite alternate;
+    animation:loginBlobMove2 12s ease-in-out infinite alternate;
   }
   @keyframes loginBlobMove{0%{transform:translate(0,0) scale(1);}50%{transform:translate(18vw,14vh) scale(1.12);}100%{transform:translate(-8vw,20vh) scale(0.94);}}
   @keyframes loginBlobMove2{0%{transform:translate(0,0) scale(1);}50%{transform:translate(-14vw,-10vh) scale(1.08);}100%{transform:translate(8vw,-18vh) scale(0.96);}}
@@ -750,7 +750,7 @@
         <div class="step-label">CHECK #2</div>
         <div class="step-q">내가 좋아하는 음식은?</div>
         <div class="choice-list" id="quiz-food-list">
-          <div class="choice" data-value="물"><span class="radio"></span>당근 케이크</div>
+          <div class="choice" data-value="당근 케이크"><span class="radio"></span>당근 케이크</div>
           <div class="choice" data-value="당근"><span class="radio"></span>당근</div>
           <div class="choice" data-value="마카롱"><span class="radio"></span>마카롱</div>
         </div>
@@ -1139,10 +1139,16 @@ if(_returningUser){
 }
 
 // 로그인 검증
+function isZayneName(val){
+  const names = ['이서언', '黎深', 'レイ', 'Zayne'];
+  const v = (val || '').trim();
+  return names.some(n => n.toLowerCase() === v.toLowerCase());
+}
+
 function handleLogin(){
   const name = document.getElementById('in-name').value.trim();
   const empid = document.getElementById('in-empid').value.trim();
-  if(name === '이서언' && empid === '002571'){
+  if(isZayneName(name) && empid === '002571'){
     state.user = {name, empid};
     document.getElementById('login-error').style.display = 'none';
     document.getElementById('notice-reissue').classList.remove('hidden');
@@ -1203,7 +1209,7 @@ function showIdStep(idx){
 function validateIdStep(idx){
   if(idx === 0){
     const val = document.getElementById('id-name').value.trim();
-    const ok = val === '이서언';
+    const ok = isZayneName(val);
     document.getElementById('id-name-error').classList.toggle('show', !ok);
     return ok;
   }
@@ -1327,7 +1333,7 @@ document.getElementById('quiz-food-list').addEventListener('click', e => {
   const correct = c.dataset.value === '마카롱';
   c.classList.add(correct ? 'selected' : 'incorrect');
   const foodErrorEl = document.getElementById('quiz-food-error');
-  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.?' : '';
+  foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.' : '';
   foodErrorEl.classList.toggle('show', !correct);
   quizAnswers.food = c.dataset.value;
   document.getElementById('quiz-next-btn').disabled = false;
@@ -2726,7 +2732,7 @@ function openLoveLetterEditor(e){
     <div class="mail-detail-box love-mail-box" onclick="event.stopPropagation()">
       <div class="mail-detail-head">
         <div style="flex:1;min-width:0;">
-          <div class="mail-detail-subject" style="margin-bottom:8px;">당신의 진짜 마음을 남겨보세요.</div>
+          <div class="mail-detail-subject" style="margin-bottom:8px;">진짜 마음을 남겨보세요</div>
           <div class="mail-detail-meta">받는사람: 이서언</div>
         </div>
         <span class="mail-detail-close" onclick="document.getElementById('love-letter-editor-overlay').remove()" style="font-size:var(--fs-20);">✕</span>
@@ -2774,7 +2780,7 @@ function saveLoveLetter(){
 
 function revertLoveLetter(e){
   if(e) e.stopPropagation();
-  if(!confirm('맨 처음 편지 내용으로 되돌릴까요?(페이지 제작자의 내용) 지금까지 새로 쓴 내용은 사라집니다.')) return;
+  if(!confirm('맨 처음 편지 내용으로 되돌릴까요? 지금까지 새로 쓴 내용은 사라집니다.')) return;
   try{
     localStorage.removeItem('akso_love_letter_raw');
     localStorage.removeItem('akso_love_letter');
@@ -2826,7 +2832,7 @@ function toggleLoveAudio(){
 const PROFILE_IMG_URL = "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/main_profile.png";
 const COLUMN_DATA = [
   {
-    author: "이서언", dept: "심장외과 l 주임교수", email: "seoeon.lee@akso.com", avatar: PROFILE_IMG_URL,
+    author: "이서언", dept: "심장외과 l 주임교수 l Evol-Cardiac 의학연구실(AEC) 연구 팀장", email: "seoeon.lee@akso.com", avatar: PROFILE_IMG_URL,
     title: "깊이 있는 연구, 세심한 집도의 기록", date: "2048-09-01", views: 24638, image: "https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/interview2.jpg",
     body: `<p class="column-eyebrow">[ SPECIAL FEAT l 이달의 AKSO ] 심장외과 이서언 교수 인터뷰</p>
 <p><b class="column-q">Q. 심장외과센터는 어떤 곳인지 소개해주실 수 있을까요?</b><br>저희 AKSO 병원 심장외과센터는 선천성 심질환 교정, 대동맥 재생, 심방중격 결손 회복 등 고난도 심장 수술을 전문으로 하는 핵심 진료 센터입니다. 진단부터 집도, 회복까지 전 과정을 한 팀이 끝까지 책임지는 구조로 운영하고 있고, 그 덕분에 다른 병원에서 어렵다고 돌아섰던 환자분들도 저희 센터를 많이 찾아주십니다.</p>
