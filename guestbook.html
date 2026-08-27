@@ -1193,7 +1193,7 @@ function saveMessageImage(){
 
 function shareToTwitter(){
   if(!lastSubmitted) return;
-  const text = `${lastSubmitted.message}\n#이서언생일축하해 #2026_HBD_SEOEON_2026 #2026_HBD_Zayne`;
+  const text = `${lastSubmitted.message}\n#이서언생일축하해 #2026_HBD_SEOEON #2026_HBD_Zayne`;
   const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
   window.open(url, '_blank');
 }
