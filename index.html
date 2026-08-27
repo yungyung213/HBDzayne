@@ -2033,16 +2033,19 @@ function openThread(idx){
   const m = messages[idx];
   if(!m.read){ m.read = true; updateMsgBadge(); renderMessages('msg-list-view'); }
   renderThreadInto(m, document.getElementById('thread-avatar'), document.getElementById('thread-dept'), document.getElementById('thread-name'), document.getElementById('thread-messages'));
+  document.getElementById('msg-list-view').classList.add('hidden');
+  document.getElementById('msg-thread-view').classList.remove('hidden');
 }
 function closeThread(){
   document.getElementById('msg-thread-view').classList.add('hidden');
   document.getElementById('msg-list-view').classList.remove('hidden');
 }
-
 function openInlineThread(idx){
   const m = messages[idx];
   if(!m.read){ m.read = true; updateMsgBadge(); renderMessages('inline-msg-list'); }
   renderThreadInto(m, document.getElementById('inline-thread-avatar'), document.getElementById('inline-thread-dept'), document.getElementById('inline-thread-name'), document.getElementById('inline-thread-messages'));
+  document.getElementById('inline-msg-list-wrap').classList.add('hidden');
+  document.getElementById('inline-msg-thread-wrap').classList.remove('hidden');
 }
 function closeInlineThread(){
   document.getElementById('inline-msg-thread-wrap').classList.add('hidden');
