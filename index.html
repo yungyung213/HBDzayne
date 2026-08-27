@@ -202,7 +202,7 @@
   .dash-sidebar .menu-item.active{background:transparent;color:var(--mint-600);border-bottom-color:var(--mint-600);font-weight:700;}
   .dash-nav-overlay{display:none;position:fixed;inset:0;background:rgba(15,20,30,0.42);z-index:199;}
   .dash-nav-overlay.open{display:block;}
-  .dash-main{flex:1;padding:32px 32px 48px;overflow-y:visible;width:100%;box-sizing:border-box;}
+  .dash-main{flex:1;padding:16px 32px 48px;overflow-y:visible;width:100%;box-sizing:border-box;}
   .dash-notice{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:22px 22px;margin-bottom:20px;}
 
   /* 메인 배너 + 프로필 카드 + 방명록 위젯 레이아웃 */
@@ -2031,10 +2031,8 @@ function renderThreadInto(m, avatarEl, deptEl, nameEl, messagesEl){
 }
 function openThread(idx){
   const m = messages[idx];
-  if(!m.read){ m.read = true; updateMsgBadge(); }
+  if(!m.read){ m.read = true; updateMsgBadge(); renderMessages('msg-list-view'); }
   renderThreadInto(m, document.getElementById('thread-avatar'), document.getElementById('thread-dept'), document.getElementById('thread-name'), document.getElementById('thread-messages'));
-  document.getElementById('msg-list-view').classList.add('hidden');
-  document.getElementById('msg-thread-view').classList.remove('hidden');
 }
 function closeThread(){
   document.getElementById('msg-thread-view').classList.add('hidden');
@@ -2043,10 +2041,8 @@ function closeThread(){
 
 function openInlineThread(idx){
   const m = messages[idx];
-  if(!m.read){ m.read = true; updateMsgBadge(); }
+  if(!m.read){ m.read = true; updateMsgBadge(); renderMessages('inline-msg-list'); }
   renderThreadInto(m, document.getElementById('inline-thread-avatar'), document.getElementById('inline-thread-dept'), document.getElementById('inline-thread-name'), document.getElementById('inline-thread-messages'));
-  document.getElementById('inline-msg-list-wrap').classList.add('hidden');
-  document.getElementById('inline-msg-thread-wrap').classList.remove('hidden');
 }
 function closeInlineThread(){
   document.getElementById('inline-msg-thread-wrap').classList.add('hidden');
