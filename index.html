@@ -2231,7 +2231,7 @@ function buildMailRow(mail, idx){
   row.innerHTML = `
     <td><div class="mail-unread-dot ${mail.unread ? '' : 'read'}"></div></td>
     <td class="mail-sender">${mail.sender}</td>
-    <td class="mail-subject-line"><span class="subj">${mail.special ? '💌 ' : ''}${mail.subject}</span> — ${mail.preview}</td>
+    <td class="mail-subject-line"><span class="subj">${mail.special ? '☃️ ' : ''}${mail.subject}</span> — ${mail.preview}</td>
     <td class="mail-date">${stripYear(mail.date)}</td>`;
   return row;
 }
@@ -2341,7 +2341,7 @@ function buildPatientData(){
         ["2048-02-14", "안색이 유독 창백해 산소포화도까지 재확인했으나 98%로 정상. 그래도 분명 무리했을 거다. 다음엔 먼저 쉬라고 말해야겠다."],
         ["2047-12-13", "정기 심초음파 결과 특이 소견 없음. 검사 수치는 문제없지만 본인이 스스로를 잘 안 챙기는 편이라 계속 신경 쓰인다."],
         ["2047-10-11", "흉부 X-ray 및 활력징후 모두 정상 범위. 많이 웃었던 하루였다. 그 모습 보니 나도 모르게 마음이 놓였다."],
-        ["2047-09-19", "오늘은 유난히 힘든 하루였어.<br>하루 종일 정신없이 뛰어다니다 겨우 앉았는데, 어느새 또 네 차트를 열어놓고 있었어. 딱히 확인할 건 없었는데 한참 네 이름만 바라봤어. 아마 오늘은 평소보다 네가 많이 보고 싶었던 모양이야.<br><br>핸드폰도 그제야 제대로 봤어. 부재중 전화 세 통, 오늘따라 유독 협회 점심이 맛없었다는 이야기, 후추바나나 같은 특이한 신상 마카롱은 어떤 맛이 좋겠냐는 질문, 그렇게 갖고 싶어 하던 굿즈를 드디어 뽑았다는 자랑까지.<br><br>그걸 하나씩 읽다 보니 나도 모르게 웃었어. 디저트를 고를 때도, 좋은 일이 생겼을 때도 네가 자연스럽게 나를 떠올렸다는 게 좋았나 봐. 하루 종일 네 목소리가 듣고 싶었는데 너도 그동안 몇 번이나 나를 찾았다는 걸 알고 나니, 사실 미안한 마음보다 기쁜 마음이 조금 더 컸어.내가 너를 그리워한 만큼, 네 하루에도 내가 머물렀던 것 같아서.<br><br>.<br><br>잘 먹고, 잘 웃고, 좋은 일이 있었다는 것만으로 퍽퍽한 내 하루까지 조금 괜찮아지는 게 참 신기해.<br><br>힘든 날이면 평소보다 네 생각이 많이 나. 밥은 잘 챙겨 먹었는지, 임무를 나갈 땐 네 몸부터 잘 챙기고 있는지, 내가 늦으면 혹시 기다리고 있지는 않을지.<br><br>이런 마음까지 네게 보여주면 괜히 걱정할 테니까 오늘도 여기에만 남겨둘게.<br>네가 모르는 곳에 이렇게 몇 줄을 적고 나면,<br>이상하게 조금은 너를 만난 것 같거든.<br><br>오늘은 유난히 네가 보고 싶어.<br>네 목소리도, 얼굴도."],
+        ["2047-09-19", "오늘은 유난히 힘든 하루였어.<br>하루 종일 정신없이 뛰어다니다 겨우 앉았는데, 어느새 또 네 차트를 열어놓고 있더군. 딱히 확인할 건 없었는데 한참 네 이름만 바라봤어. 아마 오늘은 평소보다 네가 많이 보고 싶었던 모양이야.<br><br>핸드폰도 그제야 제대로 봤어. 부재중 전화 세 통, 오늘따라 협회 점심이 유독 맛없었다는 이야기, 소금라즈베리, 후추바나나 같은 특이한 신상 마카롱은 어떤 맛이 좋겠냐는 질문, 그렇게 갖고 싶어 하던 굿즈를 드디어 뽑았다는 자랑까지.<br><br>그걸 하나씩 읽다 보니 나도 모르게 웃었어. 디저트를 고를 때도, 좋은 일이 생겼을 때도 네가 자연스럽게 나를 떠올렸다는 게 좋았나 봐. 사실 미안한 마음보다 기쁜 마음이 조금 더 컸어. 내가 너를 그리워한 만큼, 네 하루에도 내가 머물렀던 것 같아서.<br><br>잘 먹고, 잘 웃고, 좋은 일이 있었다는 것만으로 퍽퍽한 내 하루까지 조금 괜찮아지는 게 참 신기하지.<br><br>힘든 날이면 평소보다 네 생각이 많이 나. 밥은 잘 챙겨 먹었는지, 임무를 나갈 땐 네 몸부터 잘 챙기고 있는지, 내가 늦으면 혹시 기다리고 있지는 않을지.<br><br>이런 마음까지 네게 보여주면 괜히 걱정할 테니까 오늘도 여기에만 남겨둘게.<br>네가 모르는 곳에 이렇게 몇 줄을 적고 나면,<br>이상하게 조금은 너를 만난 것 같거든.<br><br>오늘은 유난히 네가 보고 싶어.<br>네 목소리도, 얼굴도."],
         ["2047-06-07", "심박 리듬 안정적, 부정맥 소견 없음. 그래도 습관처럼 한 번 더 확인하게 된다."],
         ["2047-04-05", "혈압·맥박 모두 정상 범위였지만 오늘따라 말이 없었다. 무슨 일이 있었던 건 아닌지 괜히 신경이 쓰인다."],
         ["2047-02-01", "수술 부위 및 심기능 회복 경과 전반적으로 양호. 그 모습에 나도 모르게 마음을 놓았다."],
@@ -2685,7 +2685,7 @@ const DEFAULT_LOVE_LETTER = `<p>사랑하는 이서언, 서언 오빠에게.</p>
   
 function buildLoveMailBody(letterHtml, name){
   return `<div style="border-bottom:1px solid #ddd; padding-bottom:10px; font-size:var(--fs-12); color:#666; margin-bottom:16px; line-height:1.6;">
-⚠️ 외부에서 발송된 메일입니다.
+⚠️ 외부에서 발송된 메일입니다. 회신 시 주의하세요.
 </div>
 ${letterHtml}
 <div class="mail-sign" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -2716,7 +2716,7 @@ function insertLoveMail(){
   const letterBody = savedLetter || DEFAULT_LOVE_LETTER;
 
   MAIL_DATA.unshift({
-    id: 0, unread: true, special: true, sender: name, from: "personal.mail@gmail.com",
+    id: 0, unread: true, special: true, sender: name, from: "MC@gmail.com",
     subject: "사랑하는 서언오빠에게",
     preview: `사랑하는 이서언, 서언 오빠에게. 어느새 오빠와 함께 보내는 세 번째 생일이야.`,
     date: savedDate || "2048-09-05",
