@@ -250,7 +250,7 @@
   .msg-slide{flex:0 0 auto;width:260px;}
   .msg-slide.card-focus{z-index:5;}
   .msg-slide-card{
-    position:relative;overflow:hidden;width:100%;min-height:280px;
+    position:relative;overflow:hidden;width:100%;min-height:360px;
     background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:22px;
     backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
     box-shadow:var(--shadow-sm);padding:22px 20px;
@@ -275,8 +275,8 @@
     50%{transform:translate(35%,45%) scale(1.2);}
     100%{transform:translate(-15%,60%) scale(0.9);}
   }
-  .msg-slide-text{position:relative;font-size:14px;line-height:1.65;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;text-align:center;}
-  .msg-slide-name{position:relative;font-size:12.5px;font-weight:700;color:var(--accent);letter-spacing:0.3px;
+  .msg-slide-text{position:relative;font-size:16px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;text-align:center;}
+  .msg-slide-name{position:relative;font-size:13.5px;font-weight:700;color:var(--accent);letter-spacing:0.3px;
     align-self:flex-end;text-align:right;word-break:break-word;}
   .msg-slide-empty{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-faint);text-align:center;}
   .content{max-width:560px;margin:0 auto;padding:0 18px 90px;position:relative;z-index:1;}
@@ -288,10 +288,10 @@
     color:var(--accent);text-align:center;margin:0 0 8px;
   }
   .section-title{font-family:var(--sans);font-size:18px;font-weight:500;color:var(--ink);margin:0 0 26px;line-height:1.35;}
-  .gallery-header{max-width:600px;margin:0 auto;padding:0 24px;text-align:center;}
+  .gallery-header{max-width:600px;margin:150px auto 0;padding:0 24px;text-align:center;transition:margin-top .4s ease;}
+  #gallery-header.compact{margin-top:20px;}
   .gallery-label-outer{margin:0 0 8px;}
   .gallery-caption{font-family:var(--sans);font-size:18px;font-weight:500;color:var(--ink);margin:0 0 26px;line-height:1.55;}
-  #pv-header{margin-top:56px;}
   .pv-slider-row{display:flex;align-items:center;gap:10px;max-width:1040px;margin:18px auto 44px;padding:0 10px;}
   .pv-slider-wrap{
     flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;overflow-y:visible;padding:6px 4px 10px;
@@ -412,6 +412,9 @@
     .msg-slide{width:260px;transition:transform .3s ease;}
     .msg-slide.card-focus{transform:scale(1.18);z-index:2;}
     .msg-slide.card-focus .msg-slide-card{zoom:1;box-shadow:0 14px 40px rgba(0,0,0,0.35);}
+    html{scroll-snap-type:y mandatory;}
+    body{scroll-snap-type:y mandatory;}
+    .scene{scroll-snap-align:center;scroll-snap-stop:always;}
   }
 </style>
 </head>
@@ -460,6 +463,7 @@
 <audio id="bgm" loop preload="none" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/audio/Zayne%20BGM%20%F0%9F%8E%B6%20-%20Iceborn%20Warmth%20%20Love%20and%20Deepspace.mp3"></audio>
 
 <div id="screen-main">
+  <div class="scene" id="scene-intro">
   <div class="love-note" id="love-note" onclick="revealForm(event)">
     <h2 class="love-note-title"><span class="ln-line">A Warm <span class="ln-pretight">Light </span><span class="ln-swash-t">T</span>hrough</span><span class="ln-line ln-line2"><span class="ln-pretight-d">the </span><span class="ln-swash-d">D</span>istant Silence</span></h2>
     <p class="love-note-body">아득한 고요를 지나 당신에게 닿은 따뜻한 온기<br>늘 깊은 온기로 곁에 머물러준 당신에게<br>오늘만큼은 온전히 당신만을 향한 마음들이 쏟아지기를.</p>
@@ -510,6 +514,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </div>
     </div>
+  </div>
   </div>
   </div>
 
@@ -906,7 +911,7 @@ function revealForm(e){
     fadeInReveal(stage, 'flex', formCard);
     showGalleryShortcut();
   } else {
-    formCard.scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('scene-intro').scrollIntoView({behavior:'smooth', block:'center'});
   }
 }
 
@@ -1118,12 +1123,18 @@ async function submitGuestbook(){
     fireSparkles();
     const postArrow = document.getElementById('post-submit-arrow');
     if(postArrow) postArrow.style.display = 'flex';
+    const galleryHeaderEl = document.getElementById('gallery-header');
+    if(galleryHeaderEl) galleryHeaderEl.classList.add('compact');
     if(isMobileView){
       setTimeout(() => {
         const rect = document.getElementById('gb-form-section').getBoundingClientRect();
         const elCenter = rect.top + window.scrollY + rect.height / 2;
         const targetY = elCenter - window.innerHeight / 2;
         window.scrollTo({top: Math.max(0, targetY), behavior:'smooth'});
+      }, 80);
+    } else {
+      setTimeout(() => {
+        document.getElementById('scene-intro').scrollIntoView({behavior:'smooth', block:'center'});
       }, 80);
     }
     nameEl.value = '';
