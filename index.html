@@ -222,6 +222,8 @@
   .hero-banner-dot{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.45); cursor:pointer; transition:background .2s, width .2s, border-radius .2s; border:none; padding:0; position:relative;}
   .hero-banner-dot::before{content:"";position:absolute;top:-10px;left:-4px;right:-4px;bottom:-10px;}
   .hero-banner-dot.active{background:#fff; width:28px; border-radius:3px;}
+  .hero-banner-slide.urgent-slide{background:linear-gradient(135deg,#5C0F0D 0%, #2B0605 62%, #150202 100%);}
+  .hero-banner-slide.urgent-slide .hero-banner-overlay{background:linear-gradient(to top, rgba(15,3,3,0.85) 0%, rgba(60,10,10,0.3) 45%, rgba(60,10,10,0.05) 75%);}
   .hero-profile{grid-area:profile;background:#fff; border:1px solid var(--border); border-radius:16px;padding:24px; box-shadow:var(--shadow-card);display:flex; flex-direction:column;min-height:680px; max-height:820px; height:74vh;}
   .profile-photo-wrap{position:relative; flex:0 0 auto; width:100%; margin-bottom:16px; display:flex;}
   .profile-photo{position:relative;flex:none; width:100%; aspect-ratio:4/5; max-height:100%; border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:var(--fs-12);font-weight:600;overflow:hidden; background:#F5F7F9;}
@@ -277,6 +279,9 @@
   .notice-row{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:8px 0;border-bottom:1px solid var(--divider);font-size:var(--fs-14);color:var(--text-dark);}
   .notice-row:last-child{border-bottom:none;}
   .notice-row .tag{color:var(--text-muted);font-size:var(--fs-12);}
+  .notice-row.urgent-row{background:#FDEBEB;margin:0 -14px;padding:8px 14px;border-radius:10px;border-bottom:1px solid rgba(217,45,32,0.12);}
+  .notice-row.urgent-row .tag{color:var(--danger);font-weight:600;}
+  .urgent-badge{display:inline-block;background:var(--danger);color:#fff;font-size:11px;font-weight:800;letter-spacing:0.3px;padding:3px 8px;border-radius:6px;margin-right:6px;vertical-align:middle;line-height:1.3;}
   /* 통계 카드 그리드 (외래예약, 결재 등) */
   .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media(max-width:560px){.dash-grid{grid-template-columns:1fr 1fr; gap:10px;}
@@ -301,18 +306,27 @@
   .mini-bar-label{font-size:var(--fs-11);color:var(--text-muted2);}
 
   /* 우하단 플로팅 메신저 버블 */
-  .msg-widget{display:none;position:fixed;bottom:20px;right:20px;z-index:80;}
+  .msg-widget{display:none;position:fixed;bottom:46px;right:20px;z-index:80;}
   .msg-bubble{width:44px;height:44px;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;transition:transform .15s;font-size:18px;}
   .msg-bubble:hover{transform:scale(1.05);}
-  .scroll-top-btn{position:fixed; z-index:95; right:20px; bottom:76px; width:44px; height:44px; border-radius:50%; background:#fff; border:1px solid var(--border);box-shadow:0 4px 14px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; cursor:pointer;color:var(--navy-800); opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .2s, transform .2s, visibility .2s;}
+  .scroll-top-btn{position:fixed; z-index:95; right:20px; bottom:102px; width:44px; height:44px; border-radius:50%; background:#fff; border:1px solid var(--border);box-shadow:0 4px 14px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; cursor:pointer;color:var(--navy-800); opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .2s, transform .2s, visibility .2s;}
   .scroll-top-btn.show{opacity:1; visibility:visible; transform:translateY(0);}
   .msg-bubble .badge-count{position:absolute;top:-3px;right:-3px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
-  .msg-panel{position:fixed;bottom:98px;right:20px;width:320px;max-width:88vw;max-height:70vh;background:#fff;border-radius:var(--radius-md);box-shadow:0 10px 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;z-index:80;border:none;}
+  .msg-panel{position:fixed;bottom:124px;right:20px;width:420px;height:560px;min-width:280px;min-height:340px;max-width:88vw;max-height:70vh;background:#fff;border-radius:var(--radius-md);box-shadow:0 10px 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;z-index:80;border:none;}
+  .msg-resize-edge{position:absolute;z-index:6;}
+  .msg-resize-n{top:-4px;left:10px;right:10px;height:8px;cursor:ns-resize;}
+  .msg-resize-s{bottom:-4px;left:10px;right:10px;height:8px;cursor:ns-resize;}
+  .msg-resize-e{right:-4px;top:10px;bottom:10px;width:8px;cursor:ew-resize;}
+  .msg-resize-w{left:-4px;top:10px;bottom:10px;width:8px;cursor:ew-resize;}
+  .msg-resize-ne{top:-4px;right:-4px;width:14px;height:14px;cursor:nesw-resize;}
+  .msg-resize-nw{top:-4px;left:-4px;width:14px;height:14px;cursor:nwse-resize;}
+  .msg-resize-se{bottom:-4px;right:-4px;width:14px;height:14px;cursor:nwse-resize;}
+  .msg-resize-sw{bottom:-4px;left:-4px;width:14px;height:14px;cursor:nesw-resize;}
   .msg-panel.open{display:flex;}
   .msg-panel-head{background:var(--navy-900);color:#fff;padding:8px 14px;font-size:var(--fs-13);font-weight:700;display:flex;justify-content:space-between;align-items:center;flex:0 0 auto;}
   .msg-panel-head .close-x{cursor:pointer;color:#B9C3D0;font-size:var(--fs-14);}
   .msg-panel-body{overflow-y:auto;padding:6px 0;flex:1;background:#FFFFFF;}
-  .msg-item{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;opacity:0;transform:translateY(6px);animation:msgIn .35s forwards;}
+  .msg-item{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;opacity:0;transform:translateY(6px);animation:msgIn .35s forwards;position:relative;}
   @keyframes msgIn{to{opacity:1;transform:translateY(0);}}
   .msg-item .avatar{width:36px;height:36px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#2B3A55;font-size:var(--fs-13);font-weight:700;}
   .msg-item .msg-dept{font-size:var(--fs-10);color:var(--text-muted);font-weight:400;margin-bottom:2px;}
@@ -326,6 +340,7 @@
   .msg-item{cursor:pointer;}
   .msg-item:hover{background:#FAFAFA;}
   .msg-item.unread{background:rgba(28,140,134,0.04);}
+  .pin-star{position:absolute; top:10px; right:14px; font-size:13px; color:#F5A623; line-height:1;}
   .msg-unread-dot{width:6px;height:6px;border-radius:50%;background:var(--mint-600);flex:0 0 auto;margin-left:2px;}
   /* 메신저 채팅방(스레드) 뷰 */
   .thread-header{position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);}
@@ -433,8 +448,16 @@
   .mail-row.love-mail .mail-unread-dot{background:#5B9BD5;}
   .mail-row.love-mail .mail-subject-line .subj{color:#2E6DA4;}
   .mail-row.love-mail .mail-sender{color:#2E6DA4;}
+  .mail-row.urgent-mail{background:linear-gradient(90deg,#FBE1E1,#FFFFFF);}
+  .mail-row.urgent-mail .mail-unread-dot{background:var(--danger);}
+  .mail-row.urgent-mail .mail-subject-line .subj{color:var(--danger);}
+  .mail-row.urgent-mail .mail-sender{color:var(--danger);}
   .mail-detail-box.love-mail-box .mail-detail-head{background:linear-gradient(90deg,#BFDAF7,#F3F9FF);}
   .mail-detail-box.love-mail-box .mail-detail-subject{color:#2E6DA4;}
+  .mail-detail-box.love-mail-box .mail-detail-head .mail-detail-meta{color:#4A78AC;}
+  .mail-detail-box.urgent-box .mail-detail-head{background:linear-gradient(90deg,#F3B9B9,#FFF4F4);}
+  .mail-detail-box.urgent-box .mail-detail-subject{color:var(--danger);}
+  .mail-detail-box.urgent-box .mail-detail-head .mail-detail-meta{color:#B23A3A;}
 
   /* 메일/편지 상세보기 오버레이 (여기서 러브레터도 열림) */
   .mail-overlay{position:fixed;inset:0;background:rgba(25,31,40,0.5);display:flex;align-items:center;justify-content:center;z-index:100;}
@@ -445,6 +468,7 @@
   .mail-detail-close{cursor:pointer;color:#B9C3D0;font-size:var(--fs-18);flex:0 0 auto;margin-left:12px;}
   .mail-detail-body{padding:20px 22px;overflow-y:auto;font-size:var(--fs-13);line-height:1.8;color:var(--text-dark);flex:1;}
   .chart-section-title{font-size:var(--fs-13);font-weight:800;color:var(--navy-800);margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--navy-800);}
+  .mail-detail-body .chart-section-title:first-child{margin-top:0;}
   .chart-table{width:100%;border-collapse:collapse;font-size:var(--fs-12);margin-bottom:4px;}
   .chart-table th, .chart-table td{border:1px solid #E3E7ED;padding:8px 10px;text-align:left;vertical-align:top;}
   .chart-table th{background:#F5F7FA;color:var(--text-muted);font-weight:700;width:110px;white-space:nowrap;}
@@ -529,10 +553,11 @@
     .dash-topbar .brand .mark{height:28px;}
     .dash-topbar .meta{font-size:var(--fs-10); margin-left:auto;}
     .dash-main{padding:16px 16px 44px !important;}
-    .msg-panel{position:fixed; top:50%; left:50%; right:auto; bottom:auto;transform:translate(-50%,-50%);width:90vw; max-width:360px; max-height:78vh;}
-    .msg-widget{right:14px; bottom:14px;}
+    .msg-panel{position:fixed; top:50%; left:50%; right:auto; bottom:auto;transform:translate(-50%,-50%);width:90vw; max-width:360px; height:70vh; max-height:78vh; overflow:hidden;}
+    .msg-resize-edge{display:none;}
+    .msg-widget{right:14px; bottom:40px;}
     .msg-bubble{width:40px; height:40px; font-size:16px;}
-    .scroll-top-btn{right:14px; bottom:70px;}
+    .scroll-top-btn{right:14px; bottom:96px;}
     .messenger-tab-layout{flex-direction:column; height:auto !important; gap:16px !important;}
     .messenger-tab-layout .messenger-chat-panel{display:none !important;}
     .messenger-tab-layout .messenger-mail-panel{flex:1 1 auto !important; min-height:60vh;}
@@ -790,8 +815,8 @@
           <div class="menu-item" onclick="switchDashView('default', this, 'section-column')">메디컬럼</div>
           <div class="menu-item active" onclick="switchDashView('default', this, 'section-patient-chart')">환자차트</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-schedule')">진료 스케줄</div>
+          <div class="menu-item" onclick="switchDashView('default', this, 'section-mail')">메일함</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-attendance')">인사/근태</div>
-          <div class="menu-item" onclick="switchDashView('messenger', this)">메신저</div>
         </div>
         <div class="meta"><span id="dash-datetime"></span> · 인증 세션 <span id="dash-timer" class="timer">59:59</span> · <a href="#" class="topbar-logout" onclick="logoutIntranet(); return false;">로그아웃</a></div>
       </div>
@@ -803,7 +828,16 @@
           <div class="hero-stack">
             <div class="hero-banner" id="hero-banner">
               <div class="hero-banner-slides" id="hero-banner-slides">
-                <div class="hero-banner-slide active" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/banner_img/banner_1.jpeg'); cursor:pointer;" onclick="location.href='guestbook.html'" title="축하 메시지 보러 가기">
+                <div class="hero-banner-slide urgent-slide active" style="cursor:pointer;" onclick="openNotice(0)" title="긴급 공지 보기">
+                  <div class="hero-banner-overlay"></div>
+                  <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
+                  <div class="hero-banner-content">
+                    <span class="urgent-badge" style="margin-bottom:8px;">긴급</span>
+                    <h1 class="hero-banner-title">중앙구 이재민 주둔지<br>의료지원 협조 요청</h1>
+                    <div class="hero-banner-msg">헌터 협회의 긴급 의료지원 요청 공지를 확인해주세요.</div>
+                  </div>
+                </div>
+                <div class="hero-banner-slide" style="background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/banner_img/banner_1.jpeg'); cursor:pointer;" onclick="location.href='guestbook.html'" title="축하 메시지 보러 가기">
                   <div class="hero-banner-overlay"></div>
                   <img class="hero-banner-mark" src="https://raw.githubusercontent.com/yungyung213/HBDzayne/main/images/logo_white.png" alt="AKSO HOSPITAL">
                   <div class="hero-banner-content">
@@ -985,7 +1019,7 @@
 
         <div id="view-messenger" class="hidden">
           <div class="messenger-tab-layout" style="display:flex; gap:20px; height:calc(100vh - 100px); min-height:500px;">
-            <div class="messenger-mail-panel" style="flex:1.2; display:flex; flex-direction:column; background:#fff; border:none; border-radius:var(--radius-md); box-shadow:var(--shadow-card); overflow:hidden;">
+            <div class="messenger-mail-panel" style="flex:1; display:flex; flex-direction:column; background:#fff; border:none; border-radius:var(--radius-md); box-shadow:var(--shadow-card); overflow:hidden;">
               <div style="padding:16px 20px; border-bottom:1px solid var(--border); background:#F8F9FA; display:flex; justify-content:space-between; align-items:center;">
                 <h3 style="margin:0; font-size:var(--fs-15);">메일함</h3>
                 <span class="mail-badge-messenger mail-badge" style="background:var(--mint-600); color:#fff; font-size:var(--fs-10); font-weight:700; border-radius:10px; padding:2px 8px;">0</span>
@@ -997,10 +1031,7 @@
                 </table>
               </div>
             </div>
-            <div class="messenger-chat-panel" style="flex:1; display:flex; flex-direction:column; background:#fff; border:none; border-radius:var(--radius-md); box-shadow:var(--shadow-card); overflow:hidden;">
-              <div style="padding:16px 20px; border-bottom:1px solid var(--border); background:#F8F9FA;">
-                <h3 style="margin:0; font-size:var(--fs-15);">메신저</h3>
-              </div>
+            <div class="messenger-chat-panel" style="display:none;">
               <div class="msg-panel-body" id="inline-msg-list-wrap" style="flex:1; overflow-y:auto;">
                 <div id="inline-msg-list"></div>
               </div>
@@ -1076,7 +1107,7 @@
     </div>
 
     <div class="mail-overlay hidden" id="notice-overlay" onclick="closeNotice(event)">
-      <div class="mail-detail-box" onclick="event.stopPropagation()">
+      <div class="mail-detail-box" id="notice-detail-box" onclick="event.stopPropagation()">
         <div class="mail-detail-head">
           <div style="flex:1; min-width:0;">
             <div class="mail-detail-subject" id="notice-popup-subject" style="margin-bottom:8px;"></div>
@@ -1090,7 +1121,7 @@
 
     <!-- 방문자가 이 페이지 정체 궁금해할까봐 만든 안내 모달. 저작권 관련해서 한번은 써놔야할것같아서 -->
     <div class="mail-overlay hidden" id="site-info-overlay" onclick="closeSiteInfo(event)">
-      <div class="mail-detail-box" onclick="event.stopPropagation()" style="max-width:400px;">
+      <div class="mail-detail-box" onclick="event.stopPropagation()" style="max-width:560px;">
         <div class="mail-detail-head">
           <div style="flex:1;min-width:0;">
             <div class="mail-detail-subject">페이지 안내</div>
@@ -1098,11 +1129,12 @@
           <span class="mail-detail-close" onclick="closeSiteInfo()">✕</span>
         </div>
         <div class="mail-detail-body">
-          <p>안녕하세요. 에루입니다. :)</p>
+          <p>안녕하세요. 에루입니다. :)<br>서언이의 생일을 축하해 주시는 모든 분들께 감사의 인사를 전합니다.</p>
           <p>본 페이지는 2026년 9월 『러브앤딥스페이스』 이서언의 생일을 축하하기 위해 개인이 제작한 비공식/비영리 팬페이지입니다. PaperGames 및 『러브앤딥스페이스』 공식 운영진과는 관련이 없습니다.</p>
           <p>『러브앤딥스페이스』의 명칭, 캐릭터, 이미지 및 원작 설정에 관한 권리는 PaperGames를 비롯한 각 권리자에게 있습니다. 본 페이지에 추가된 기관, 인물, 사건 등의 설정은 연출을 위해 창작된 허구이며 실제와 관련이 없습니다.</p>
           <p>본 페이지는 상업적 이익을 목적으로 하지 않습니다. 권리 침해 우려가 있는 콘텐츠는 권리자의 정당한 요청이 확인되는 경우 신속히 수정하거나 삭제하겠습니다.</p>
-          <p>페이지 내 의료적 내용들은 OpenAI의 도움을 받아 구성되었습니다.</p>
+          <p>로그인, 보안 알람 및 시스템 검증 화면은 몰입을 위한 연출로 실제 작동하지 않습니다. 입력한 이름은 화면에만 일시적으로 표시되며 수집/저장되지 않습니다. 유사 페이지를 이용한 피싱에 주의해 주세요. 단, 생일 방명록에 작성한 닉네임과 메시지는 게시 및 운영을 위해 저장됩니다.</p>
+          <p>페이지 내 의료 내용은 창작 목적으로 OpenAI의 도움을 받아 구성되었으며, 실제 의료 정보나 진단을 대신하지 않습니다.</p>
           <p>추가 문의 사항은 트위터 <b><a href="https://x.com/eru_eru_25" target="_blank" rel="noopener" style="color:var(--mint-600); text-decoration:none;">@eru_eru_25</a></b>로 연락 부탁드립니다. :)</p>
         </div>
       </div>
@@ -1376,6 +1408,7 @@ function enterDashboard(){
   }catch(e){}
   renderProfile();
   insertLoveMail();
+  insertDeploymentMail();
   renderFrequentPatients();
   loadGuestbookWidget();
   initHeroBanner();
@@ -1603,7 +1636,7 @@ function switchDashView(view, btn, sectionId){
 const MSG_DATE = "2048-09-05";
 const REQUIRED_PEOPLE = [
   {dept:"심장외과", name:"곽헌", role:"전공의"},
-  {dept:"간호부",   name:"소원", role:"수간호사"},
+  {dept:"간호부",   name:"소원", role:"간호사"},
   {dept:"심장외과", name:"주영민", role:"임상강사"}
 ];
 const DEPT_POOL = ["내과","외과","소아청소년과","산부인과","정형외과","신경과","신경외과","안과","이비인후과","피부과","심장외과","흉부외과","비뇨의학과","재활의학과","정신건강의학과","가정의학과","응급의학과","마취통증의학과","영상의학과","진단검사의학과","치과","간호부","원무팀","인사팀","전산팀","교육수련부"];
@@ -1612,6 +1645,28 @@ const GIVEN_POOL_FEMALE = ["서연","하은","서아","지민","세아","소율"
 const GIVEN_POOL_MALE = ["민서","도윤","지훈","태오","도현","하람","태겸","준혁","유겸","승모","유진","시우","예준","은우","시윤","하진","주안","건우","현우","민준","도경"];
 const GIVEN_POOL = GIVEN_POOL_FEMALE.concat(GIVEN_POOL_MALE);
 const CONGRATS_EMOJIS = ["🎂","🎉","😊","🌷","💐"];
+const DEPLOY_WISH_BY_NAME = {
+  "곽헌": "교수님, 생신인데 하필 오늘 이런 일이 생길 줄은 몰랐습니다.. 중앙구 상황이 심상치 않다던데 정말 걱정됩니다. 무리하지 마시고 꼭 다치지 않고 돌아오세요. 돌아오시면 그때 다시 축하드리겠습니다.",
+  "소원": "교수님, 생신 축하드리는데 마음이 편치가 않네요. 중앙구 상황이 심각하다고 들었어요.. 부디 몸 조심하시고 꼭 무사히 돌아오세요. 기다리고 있겠습니다.",
+  "주영민": "교수님, 생신 축하드립니다. 중앙구 의료지원 나가신다는 소식 들었습니다. 상황이 상황인 만큼 부디 몸 성히 다녀오시길 바랍니다."
+};
+const EMERGENCY_DEPTS = ["심장외과","흉부외과","응급의학과"];
+const DEPLOY_CONCERN_TEMPLATES = [
+  "교수님, 생신 축하드립니다. 중앙구 지원 나가신다는 소식 들었어요, 부디 몸 조심하세요.",
+  "생신 축하드려요 교수님. 이번 중앙구 파견, 무사히 다녀오시길 바랍니다.",
+  "교수님 생신 축하드립니다. 중앙구 상황이 심각하다고 들었는데, 부디 다치지 마시고 돌아오세요."
+];
+const DEPLOY_TOGETHER_TEMPLATES = [
+  "교수님, 생신 축하드립니다. 저도 이번 중앙구 지원에 함께 나갑니다, 현장에서 뵙겠습니다.",
+  "생신 축하드려요 교수님. 저도 이번에 같이 파견 나가니 거기서 뵐게요, 서로 몸 조심해요.",
+  "교수님 생신 축하드립니다. 저도 중앙구 지원조에 포함됐습니다, 거기서 뵙겠습니다."
+];
+const SAFE_TRAVEL_FOLLOWUPS = [
+  "그나저나 이번에 중앙구 의료지원 나가신다면서요, 조심히 다녀오세요.",
+  "참, 이번에 중앙구 쪽 지원 나가신다고 들었어요. 몸 조심하세요.",
+  "듣자 하니 오늘 중앙구 의료지원으로 출동하신다던데, 부디 안전하게 다녀오시길 바랍니다.",
+  "그리고 이번 중앙구 지원 건, 조심히 다녀오세요 교수님."
+];
 const ADMIN_DEPTS = ["원무팀","인사팀","전산팀","교육수련부"];
 const DOCTOR_ROLES = ["교수", "부교수", "조교수", "임상강사", "전공의"];
 function roleGroup(role){
@@ -1626,7 +1681,7 @@ function roleForDept(dept){
 }
 const GENERIC_TEMPLATES = [
   "이서언 교수님, 생신을 진심으로 축하드립니다.",
-  "교수님, 생신 축하드립니다. 건강하고 보람찬 한 해 되시길 바랍니다.",
+  "교수님, 생신 축하드립니다. 항상 건강하고 평안한 나날 되시길 바랍니다.",
   "생신 축하드립니다, 교수님. 늘 든든히 의지하고 있습니다.",
   "이서언 교수님, 생신 축하드립니다. 건강하게 한 해 보내시길 바랍니다.",
   "교수님, 생신을 축하드립니다. 앞으로도 건강하시길 바랍니다.",
@@ -1710,23 +1765,42 @@ function randTimeMinutes(idx, total){
 function generateMessages(total){
   const nextGeneric = makeCycler(GENERIC_TEMPLATES);
   const nextLearnerPool = makeCycler(GENERIC_TEMPLATES.concat(LEARNER_TEMPLATES));
+  const nextDeployConcern = makeCycler(DEPLOY_CONCERN_TEMPLATES);
+  const nextDeployTogether = makeCycler(DEPLOY_TOGETHER_TEMPLATES);
   function nextTextFor(role){
     return ["전공의","임상강사","조교수"].includes(role) ? nextLearnerPool() : nextGeneric();
   }
-  const list = REQUIRED_PEOPLE.map(p=>({dept:p.dept, name:p.name, role:p.role, text:nextTextFor(p.role)}));
+  const list = REQUIRED_PEOPLE.map(p=>({dept:p.dept, name:p.name, role:p.role, text: DEPLOY_WISH_BY_NAME[p.name] || nextTextFor(p.role)}));
   while(list.length < total){
     const dept = pickRandom(DEPT_POOL);
     const role = roleForDept(dept);
     const given = pickRandom(GIVEN_POOL);
-    let text = nextTextFor(role);
-    if(GIVEN_POOL_FEMALE.includes(given) && Math.random() < 0.5){
-      text += ' ' + pickRandom(CONGRATS_EMOJIS);
+    let text;
+    let isDeployMsg = false;
+    if(EMERGENCY_DEPTS.includes(dept) && Math.random() < 0.45){
+      text = (Math.random() < 0.5) ? nextDeployConcern() : nextDeployTogether();
+      isDeployMsg = true;
+    } else {
+      text = nextTextFor(role);
+      if(GIVEN_POOL_FEMALE.includes(given) && Math.random() < 0.5){
+        text += ' ' + pickRandom(CONGRATS_EMOJIS);
+      }
     }
-    list.push({ dept: dept, name: pickRandom(SURNAME_POOL) + given, role: role, text: text });
+    const followup = (!isDeployMsg && Math.random() < 0.35) ? pickRandom(SAFE_TRAVEL_FOLLOWUPS) : null;
+    list.push({ dept: dept, name: pickRandom(SURNAME_POOL) + given, role: role, text: text, followup: followup });
   }
   list.forEach((m, idx)=>{ m.time = randTimeMinutes(idx, list.length); m.date = MSG_DATE; m.read = false; });
-  list.sort((a,b)=> a.time.localeCompare(b.time));
-  return list;
+  // 곽헌·소원은 아침 일찍 축하 메시지를 보낸 것으로 하고, 목록 최상단에 고정
+  const kwakMsg = list.find(m => m.name === '곽헌');
+  if(kwakMsg) kwakMsg.time = '07:32';
+  const sowonMsg = list.find(m => m.name === '소원');
+  if(sowonMsg) sowonMsg.time = '07:38';
+  list.sort((a,b)=> b.time.localeCompare(a.time));
+  const pinnedOrder = ['곽헌', '소원'];
+  const pinned = pinnedOrder.map(name => list.find(m => m.name === name)).filter(Boolean);
+  pinned.forEach(m => { m.pinned = true; });
+  const rest = list.filter(m => !pinnedOrder.includes(m.name));
+  return pinned.concat(rest);
 }
 
 const AVATAR_COLORS = ["#8FC7C2","#A9C8F0","#F5C6A5","#CBB3E0","#F0AFAF","#A8D8EA","#B7DFB0","#F3C6DD","#F2D49C","#B7B9E8","#9FD9CE","#E3B6E8","#CDE0A0","#F4B6C2","#C3B3E8","#A9DDE6"];
@@ -1741,14 +1815,14 @@ const messages = generateMessages(43);
 let messengerOpened = false;
 function toggleMessenger(){
   const panel = document.getElementById('msg-panel');
-  const bubble = document.querySelector('.msg-widget .msg-bubble');
+  const scrollBtn = document.getElementById('scroll-top-btn');
   const isOpen = panel.classList.contains('open');
   if(isOpen){
     panel.classList.remove('open');
-    if(bubble) bubble.style.visibility = 'visible', bubble.style.opacity = '1', bubble.style.pointerEvents = 'auto';
+    if(scrollBtn) scrollBtn.classList.remove('msg-open');
   } else {
     panel.classList.add('open');
-    if(bubble){ bubble.style.opacity = '0'; bubble.style.pointerEvents = 'none'; bubble.style.visibility = 'hidden'; }
+    if(scrollBtn) scrollBtn.classList.add('msg-open');
     closeThread();
     if(!messengerOpened){ messengerOpened = true; renderMessages('msg-list-view'); }
   }
@@ -1758,16 +1832,78 @@ function updateMsgBadge(){
   document.getElementById('msg-count').textContent = unread;
 }
 
+// 메신저 창 크기 조절 (테두리 어디든 드래그)
+(function initMsgPanelResize(){
+  const panel = document.getElementById('msg-panel');
+  if(!panel) return;
+  const minW = 280, minH = 340;
+  let dragging = false, dir = '', startX = 0, startY = 0, startRect = null;
+
+  function toFreeform(){
+    const rect = panel.getBoundingClientRect();
+    panel.style.left = rect.left + 'px';
+    panel.style.top = rect.top + 'px';
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+    return rect;
+  }
+  function begin(clientX, clientY, direction){
+    dir = direction;
+    startX = clientX; startY = clientY;
+    startRect = toFreeform();
+    dragging = true;
+    document.body.style.userSelect = 'none';
+  }
+  function move(clientX, clientY){
+    if(!dragging) return;
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+    const maxW = window.innerWidth * 0.92;
+    const maxH = window.innerHeight * 0.85;
+    let left = startRect.left, top = startRect.top, w = startRect.width, h = startRect.height;
+    if(dir.includes('e')) w = Math.min(maxW, Math.max(minW, startRect.width + dx));
+    if(dir.includes('s')) h = Math.min(maxH, Math.max(minH, startRect.height + dy));
+    if(dir.includes('w')){
+      w = Math.min(maxW, Math.max(minW, startRect.width - dx));
+      left = startRect.left + (startRect.width - w);
+    }
+    if(dir.includes('n')){
+      h = Math.min(maxH, Math.max(minH, startRect.height - dy));
+      top = startRect.top + (startRect.height - h);
+    }
+    panel.style.width = w + 'px';
+    panel.style.height = h + 'px';
+    panel.style.left = left + 'px';
+    panel.style.top = top + 'px';
+  }
+  function end(){
+    dragging = false;
+    document.body.style.userSelect = '';
+  }
+  ['n','s','e','w','ne','nw','se','sw'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'msg-resize-edge msg-resize-' + d;
+    panel.appendChild(el);
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); begin(e.clientX, e.clientY, d); });
+    el.addEventListener('touchstart', (e) => { const t = e.touches[0]; if(t) begin(t.clientX, t.clientY, d); }, {passive:true});
+  });
+  window.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
+  window.addEventListener('mouseup', end);
+  window.addEventListener('touchmove', (e) => { const t = e.touches[0]; if(t) move(t.clientX, t.clientY); }, {passive:true});
+  window.addEventListener('touchend', end);
+})();
+
 function renderMessages(targetId = 'msg-list-view'){
   const listView = document.getElementById(targetId);
   if(!listView) return;
   listView.innerHTML = '';
   messages.forEach((m, idx)=>{
     const row = document.createElement('div');
-    row.className = 'msg-item' + (m.read ? '' : ' unread');
+    row.className = 'msg-item' + (m.read ? '' : ' unread') + (m.pinned ? ' pinned' : '');
     row.style.animationDelay = (idx*0.02)+'s';
     row.onclick = () => (targetId === 'msg-list-view') ? openThread(idx) : openInlineThread(idx);
     row.innerHTML = `
+      ${m.pinned ? '<span class="pin-star" title="고정된 메시지">★</span>' : ''}
       <div class="avatar" style="background:${avatarColorFor(m.dept)}">${m.name.charAt(0)}</div>
       <div style="flex:1;min-width:0;">
         <div class="msg-dept">${m.dept}</div>
@@ -1777,7 +1913,7 @@ function renderMessages(targetId = 'msg-list-view'){
           <span class="time">${m.time}</span>
           ${m.read ? '' : '<span class="msg-unread-dot"></span>'}
         </div>
-        <div class="text">${m.text}</div>
+        <div class="text">${m.followup || m.text}</div>
       </div>`;
     listView.appendChild(row);
   });
@@ -1876,7 +2012,6 @@ const KWAK_WORK_LINES = [
   "오늘 좀 피곤하긴 한데 그래도 힘내보겠습니다 교수님ㅎㅎ",
   "교수님, 논문 리뷰 자료 공유드립니다.",
   "이번 주 세미나 발표자로 제가 배정됐어요. 조금 떨리네요.",
-  "교수님 저 어제 당직이었는데 다행히 조용했습니다 ㅎㅎ",
   "회의실 예약 변경됐습니다, 확인 부탁드립니다.",
   "교수님 저 오늘 실수할 뻔했는데 겨우 넘겼습니다 ㅎㅎ 앞으로 더 조심하겠습니다",
   "저 이번에 케이스 하나 맡았는데 열심히 해보겠습니다 교수님!",
@@ -1907,18 +2042,17 @@ const CASUAL_OUT_LINES = [
   "확인했어. 기본만 챙기면 문제없어.",
   "알겠어. 끝까지 챙겨봐.",
   "그래, 원칙대로만 하면 돼.",
-  "잘 하고 있네. 그대로만 가자.",
   "수고했어. 다음에도 이렇게 꼼꼼히.",
-  "알겠어. 무리하지 말고.",
+  "그래, 알겠어. 잘 준비해봐.",
   "확인했어. 절차는 지켜야지.",
   "수고 많았어. 다음도 이 자세로.",
   "확인. 하나씩 처리하면 돼, 조급해하지 말고.",
-  "그래, 잘 진행되고 있어.",
+  "그래, 항상 수고가 많아.",
   "알겠어. 사소한 것도 놓치지 말고.",
   "확인했어. 계속 이렇게만 해줘.",
   "그래, 수고했다.",
   "그렇게 하면 돼. 기본은 잊지 말고.",
-  "잘했어. 다음에도 침착하게.",
+  "그래, 그 기세로 계속 가자.",
   "밥은 먹었어? 챙겨가면서 해.",
   "너무 무리하지 마. 몸부터 챙겨.",
   "고생했다. 오늘은 일찍 들어가서 쉬어."
@@ -1926,13 +2060,12 @@ const CASUAL_OUT_LINES = [
 const KWAK_DATING_REPLIES = [
   "그런 건 나도 잘 몰라. 진심이면 통해.",
   "연애도 결국 기본은 신뢰랑 책임이야.",
-  "사람마다 다르니까 내가 함부로 말하긴 어렵네.",
   "업무에 지장 없는 선에서 알아서 잘 해봐.",
   "나한테 물을 게 아니라 네가 진지하게 생각해볼 문제야.",
-  "다만 사람 대하는 데 있어 기본은 지켜.",
+  "사람 대하는데 있어서 기본은 지켜야 해. 진심으로 다가가야 하고.",
   "나도 그런 쪽은 잘 몰라서 해줄 말이 없다.",
   "상대 배려하는 게 먼저야.",
-  "그런 고민은 시간 지나면 자연히 풀리기도 해.",
+  "그런 고민은 너무 조급해하지 마, 시간이 지나면 자연스럽게 풀리기도 하니까.",
   "내가 그런 쪽으로 조언해줄 입장은 아니야."
 ];
 const KWAK_GRIEF_SCENE = [
@@ -1940,14 +2073,18 @@ const KWAK_GRIEF_SCENE = [
   {side:'in', text:'저 오늘 담당하던 환자분이 돌아가셨어요. 처음 겪는 일도 아닌데 왜 이렇게 힘든지 모르겠습니다.'},
   {side:'out', text:'지금 어디지?'},
   {side:'in', text:'병동 비상계단이요. 잠깐 나와있습니다.'},
-  {side:'out', text:'본관 뒤편 정원 벤치 알지. 거기로 가 있어.'},
+  {side:'out', text:'본관 뒤편 정원 벤치 알지. 거기로 가.'},
   {side:'in', text:'거긴 왜요...?'},
   {side:'out', text:'그 벤치, CCTV 사각지대야. 거기서는 잠깐 울어도 아무도 몰라.'},
   {side:'in', text:'...교수님도 거기서 자주 우셨나요?'},
-  {side:'out', text:'아니, 난 수술에 실패했을 때만 거기 가서 해 뜨는 걸 보곤 했어.'},
+  {side:'out', text:'아니, 난 수술에 실패했을 때 거기 가서 해 뜨는 걸 보곤 했어.'},
   {side:'out', text:'내일도 해는 뜨는데, 그걸 더 이상 볼 수 없는 사람이 생긴다는 게 의사를 오래 할수록 제일 힘든 부분이더군.'},
   {side:'out', text:'오늘 밤엔 실컷 울어도 되고, 새벽엔 그 환자분 몫까지 해 뜨는 거 보고 와도 돼.'},
   {side:'in', text:'...감사합니다 교수님..'}
+];
+const KWAK_NIGHT_SHIFT_SCENE = [
+  {side:'in', text:'교수님 저 어제 당직이었는데 다행히 조용했습니다 ㅎㅎ'},
+  {side:'in', text:'조용? 아니아니 취소입니다!!!'}
 ];
 function outLinesFor(m){
   if(m.name === '소원') return SOWON_OUT_LINES;
@@ -2009,8 +2146,17 @@ function buildThread(m){
       bubbles.push({side:b.side, text:b.text, date:dtG.date, time:dtG.time});
       dtG = addMinutes(dtG.date, dtG.time, 1 + Math.floor(Math.random()*3));
     });
+    let dtN = randomPastDateTime(1, 6);
+    KWAK_NIGHT_SHIFT_SCENE.forEach((b, ni) => {
+      bubbles.push({side:b.side, text:b.text, date:dtN.date, time:dtN.time});
+      dtN = addMinutes(dtN.date, dtN.time, 1 + Math.floor(Math.random()*2));
+    });
   }
   bubbles.push({side:'in', text:m.text, date:m.date, time:m.time});
+  if(m.followup){
+    const dtF = addMinutes(m.date, m.time, 1 + Math.floor(Math.random()*3));
+    bubbles.push({side:'in', text:m.followup, date:dtF.date, time:dtF.time});
+  }
   bubbles.sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
   return bubbles;
 }
@@ -2054,6 +2200,26 @@ function closeInlineThread(){
 
 // 메일함 데이터
 const MAIL_DATA = [
+  { id: 0.5, unread: true, urgent: true, sender: "헌터 협회", from: "unicorn.ops@hunter-assoc.world",
+    subject: "[긴급] 중앙구 이재민 주둔지 의료지원 협조 요청",
+    preview: "중앙구 이재민 주둔지 일대 고공격성 A형 유랑체 변이 발생, 긴급 의료지원 협조를 요청드립니다.", date: "2048-09-05",
+    body: `<p>수신: AKSO병원</p>
+<p>발신: 헌터 협회</p>
+<p>중앙구 이재민 주둔지 일대에서 고공격성 A형 유랑체 변이가 발생함에 따라, 부상자 치료 및 이재민 보호를 위한 긴급 의료지원을 요청드립니다.</p>
+<p><strong>1. 임무 등급 :</strong> S급<br>
+<strong>2. 영향 범위 :</strong> 중앙구-크로성<br>
+<strong>3. 예상 지원 기간 :</strong> 1개월<br>
+<strong>4. 사태 분류 :</strong> 고공격성 A형 유랑체 변이</p>
+<p><strong>5. 현장 상황</strong><br>
+• 주요 간선도로 다수 봉쇄<br>
+• 이상 에너지 파동 대폭 상승<br>
+• 서부 지역 통신 신호 완전 두절</p>
+<p><strong>6. 요청 사항</strong><br>
+• 응급의료 인력 및 현장 의료지원팀 파견<br>
+• 중증 부상자 수용을 위한 응급 병상 확보<br>
+• 의약품·응급처치 물자 및 환자 이송 수단 지원</p>
+<p>현재 현장 접근과 통신이 제한된 긴급 상황입니다. 병원 내 의료지원 및 현장 파견이 가능한 인력의 적극적인 협조를 요청드립니다.</p>
+<div class="mail-sign">헌터 협회<br>unicorn.ops@hunter-assoc.world</div>` },
   { id: 1, unread: true, sender: "임천시 흉부외과학회", from: "academic@imcheoncity.world",
     subject: "[긴급] 2048 임천시 학술대회 초청 강연 연사 확정 요청",
     preview: "이서언 교수님께 임천시 학술대회 기조강연 연사를 공식 요청드립니다.", date: "2048-09-04",
@@ -2225,12 +2391,13 @@ const MAIL_DATA = [
 
 function buildMailRow(mail, idx){
   const row = document.createElement('tr');
-  row.className = 'mail-row ' + (mail.unread ? 'unread' : 'read') + (mail.special ? ' love-mail' : '');
+  row.className = 'mail-row ' + (mail.unread ? 'unread' : 'read') + (mail.special || mail.blueMail ? ' love-mail' : '') + (mail.urgent ? ' urgent-mail' : '');
   row.onclick = () => openMail(idx);
+  const subjHtml = mail.urgent ? mail.subject.replace(/^\[긴급\]\s*/, '<span class="urgent-badge">긴급</span> ') : (mail.special ? '☃️ ' : '') + mail.subject;
   row.innerHTML = `
     <td><div class="mail-unread-dot ${mail.unread ? '' : 'read'}"></div></td>
     <td class="mail-sender">${mail.sender}</td>
-    <td class="mail-subject-line"><span class="subj">${mail.special ? '☃️ ' : ''}${mail.subject}</span> — ${mail.preview}</td>
+    <td class="mail-subject-line"><span class="subj">${subjHtml}</span> — ${mail.preview}</td>
     <td class="mail-date">${stripYear(mail.date)}</td>`;
   return row;
 }
@@ -2239,14 +2406,14 @@ function renderMailList(){
   if(mainList){
     const tbody = mainList.querySelector('tbody');
     tbody.innerHTML = '';
-    MAIL_DATA.slice(0, 15).forEach((mail, idx)=> tbody.appendChild(buildMailRow(mail, idx)));
-    if(MAIL_DATA.length > 15){
+    MAIL_DATA.slice(0, 20).forEach((mail, idx)=> tbody.appendChild(buildMailRow(mail, idx)));
+    if(MAIL_DATA.length > 20){
       const more = document.createElement('tr');
       const td = document.createElement('td');
       td.colSpan = 4;
       td.style.cssText = 'text-align:center;padding:10px 0 2px;font-size:var(--fs-12);color:var(--mint-600);font-weight:600;cursor:pointer;';
       td.textContent = `메일함 전체 보기 (${MAIL_DATA.length}) →`;
-      td.onclick = () => document.querySelector('.dash-sidebar .menu-item[onclick*="messenger"]').click();
+      td.onclick = () => document.querySelector('.dash-sidebar .menu-item[onclick*="section-mail"]').click();
       more.appendChild(td);
       tbody.appendChild(more);
     }
@@ -2263,10 +2430,11 @@ function renderMailList(){
 function openMail(idx){
   const mail = MAIL_DATA[idx];
   mail.unread = false;
-  document.getElementById('mail-detail-subject').textContent = mail.subject;
+  document.getElementById('mail-detail-subject').innerHTML = mail.urgent ? mail.subject.replace(/^\[긴급\]\s*/, '<span class="urgent-badge">긴급</span> ') : mail.subject;
   document.getElementById('mail-detail-meta').textContent = `발신: ${mail.sender} <${mail.from}>  ·  ${stripYear(mail.date)}`;
   document.getElementById('mail-detail-body').innerHTML = mail.body;
-  document.getElementById('mail-detail-box').classList.toggle('love-mail-box', !!mail.special);
+  document.getElementById('mail-detail-box').classList.toggle('love-mail-box', !!(mail.special || mail.blueMail));
+  document.getElementById('mail-detail-box').classList.toggle('urgent-box', !!mail.urgent);
   document.getElementById('mail-overlay').classList.remove('hidden');
   const headerBtn = document.getElementById('love-audio-header-btn');
   if(mail.special){ renderLoveMailPlayer(); launchConfetti(); }
@@ -2340,7 +2508,7 @@ function buildPatientData(){
         ["2048-02-14", "안색이 유독 창백해 산소포화도까지 재확인했으나 98%로 정상. 그래도 분명 무리했을 거다. 다음엔 먼저 쉬라고 말해야겠다."],
         ["2047-12-13", "정기 심초음파 결과 특이 소견 없음. 검사 수치는 문제없지만 본인이 스스로를 잘 안 챙기는 편이라 계속 신경 쓰인다."],
         ["2047-10-11", "흉부 X-ray 및 활력징후 모두 정상 범위. 많이 웃었던 하루였다. 그 모습 보니 나도 모르게 마음이 놓였다."],
-        ["2047-09-19", "오늘은 유난히 힘든 하루였어.<br>하루 종일 정신없이 뛰어다니다 겨우 앉았는데, 어느새 또 네 차트를 열어놓고 있더군. 딱히 확인할 건 없었는데 한참 네 이름만 바라봤어. 아마 오늘은 평소보다 네가 많이 보고 싶었던 모양이야.<br><br>핸드폰도 그제야 제대로 봤어. 부재중 전화 세 통, 오늘따라 협회 점심이 유독 맛없었다는 이야기, 소금라즈베리, 후추바나나 같은 특이한 신상 마카롱은 어떤 맛이 좋겠냐는 질문, 그렇게 갖고 싶어 하던 굿즈를 드디어 뽑았다는 자랑까지.<br><br>그걸 하나씩 읽다 보니 나도 모르게 웃었어. 디저트를 고를 때도, 좋은 일이 생겼을 때도 네가 자연스럽게 나를 떠올렸다는 게 좋았나 봐. 사실 미안한 마음보다 기쁜 마음이 조금 더 컸어. 내가 너를 그리워한 만큼, 네 하루에도 내가 머물렀던 것 같아서.<br><br>잘 먹고, 잘 웃고, 좋은 일이 있었다는 것만으로 퍽퍽한 내 하루까지 조금 괜찮아지는 게 참 신기하지.<br><br>힘든 날이면 평소보다 네 생각이 많이 나. 밥은 잘 챙겨 먹었는지, 임무를 나갈 땐 네 몸부터 잘 챙기고 있는지, 내가 늦으면 혹시 기다리고 있지는 않을지.<br><br>이런 마음까지 네게 보여주면 괜히 걱정할 테니까 오늘도 여기에만 남겨둘게.<br>네가 모르는 곳에 이렇게 몇 줄을 적고 나면,<br>이상하게 조금은 너를 만난 것 같거든.<br><br>오늘은 유난히 네가 보고 싶어.<br>네 목소리도, 얼굴도."],
+        ["2047-09-19", "오늘은 유난히 힘든 하루였어.<br>하루 종일 정신없이 뛰어다니다 겨우 앉았는데, 어느새 또 네 차트를 열어놓고 있더군. 딱히 확인할 건 없었는데 한참 네 이름만 바라봤어. 아마 오늘은 평소보다 네가 많이 보고 싶었던 모양이야.<br><br>핸드폰도 그제야 제대로 봤어. 부재중 전화 세 통, 오늘따라 협회 점심이 유독 맛없었다는 이야기, 소금라즈베리, 후추바나나 같은 특이한 신상 마카롱은 어떤 맛이 좋겠냐는 질문, 그렇게 갖고 싶어 하던 굿즈를 드디어 뽑았다는 자랑까지.<br><br>그걸 하나씩 읽다 보니 나도 모르게 웃었어. 디저트를 고를 때도, 좋은 일이 생겼을 때도 네가 자연스럽게 나를 떠올렸다는 게 좋았나 봐. 사실 미안한 마음보다 기쁜 마음이 조금 더 컸어. 내가 너를 그리워한 만큼, 네 하루에도 내가 머물렀던 것 같았거든.<br><br>잘 먹고, 잘 웃고, 좋은 일이 있었다는 것만으로 퍽퍽한 내 하루까지 조금 괜찮아지는 게 참 신기하지.<br><br>힘든 날이면 평소보다 네 생각이 많이 나. 밥은 잘 챙겨 먹었는지, 임무를 나갈 땐 네 몸부터 잘 챙기고 있는지, 내가 늦으면 혹시 기다리고 있지는 않을지.<br><br>이런 마음까지 네게 보여주면 괜히 걱정할 테니까 오늘도 여기에만 남겨둘게.<br>네가 모르는 곳에 이렇게 몇 줄을 적고 나면,<br>이상하게 조금은 너를 만난 것 같거든.<br><br>오늘은 유난히 네가 보고 싶어.<br>네 목소리도, 얼굴도."],
         ["2047-06-07", "심박 리듬 안정적, 부정맥 소견 없음. 그래도 습관처럼 한 번 더 확인하게 된다."],
         ["2047-04-05", "혈압·맥박 모두 정상 범위였지만 오늘따라 말이 없었다. 무슨 일이 있었던 건 아닌지 괜히 신경이 쓰인다."],
         ["2047-02-01", "수술 부위 및 심기능 회복 경과 전반적으로 양호. 그 모습에 나도 모르게 마음을 놓았다."],
@@ -2672,13 +2840,14 @@ const DEFAULT_LOVE_LETTER = `<p>사랑하는 이서언, 서언 오빠에게.</p>
 <p>그러다 문득 알았어.<br>나도 모르는 사이에 오빠가 내 하루의 아주 많은 곳에 자리 잡고 있었구나 하고.</p>
 <p>서론이 너무 길었다!<br>생일 정말 정말 축하해, 오빠.</p>
 <p>태어나줘서 고맙고, 힘든 시간들을 잘 버텨내고, 나에게 와줘서 정말 고마워.</p>
-<p>사실 '내게 와줘서 고맙다'는 말을 어떻게 써야 마음이 전해질지 모르겠어 이 부분만 몇 번이나 썼다 지웠어. 오빠 혼자 지나온 수많은 시간을 전부 알 수는 없겠지만, 그 시간들을 잘 지나와줬기 때문에, 지금의 내가 오빠 옆에서 생일도 축하해주고 이렇게 평범하고 즐거운 하루들을 함께 보낼 수 있는 거겠지.</p>
+<p>사실 '내게 와줘서 고맙다'는 말을 어떻게 써야 마음이 전해질지 모르겠어서 이 부분만 몇 번이나 썼다 지웠어. 오빠 혼자 지나온 수많은 시간을 전부 알 수는 없겠지만, 그 시간들을 잘 지나와줬기 때문에, 지금의 내가 오빠 옆에서 생일도 축하해주고 이렇게 평범하고도 즐거운 하루들을 함께 보낼 수 있는 거겠지.</p>
 <p>그래서 오늘만큼은 오빠가 하고 싶은 대로,<br>마음 가는 대로 행복하게 보냈으면 좋겠어.</p>
-<p>나는 아직 오빠만큼 든든하지도 않고 가끔은 못 미더울지도 모르지만, 적어도 내 옆에 있을 때만큼은 아무런 걱정 없이 마음 놓고 쉬었으면 해. (오늘은 특별히 샤워 한 시간 해도 용서해 줄게!)</p>
+<p>나는 오빠만큼 든든하지도 않고 가끔은 못 미더울지도 모르지만, 적어도 내 옆에 있을 때만큼은 아무런 걱정 없이 마음 놓고 쉬었으면 해. (오늘은 특별히 샤워 한 시간 해도 용서해 줄게!)</p>
 <p>나는 언제 어디서든 늘 이서언, 서언 오빠 생각을 하고 있을 거야.<br>앞으로 좋은 일이 생기면 제일 먼저 같이 기뻐하고 싶고, 힘든 날이 오면 그날도 함께 지나가고 싶어.<br>그렇게 오빠 곁에 오래오래 있고 싶어.</p>
 <p>다시 한번 생일 진심으로 축하해.<br>나에게 와줘서 정말 고맙고, 많이 사랑해, 이서언.</p>
 <p>+ 멋있게 쓰고 싶었는데 글솜씨가 없어서 생각했던 것보다 더 어렵네.. 그래도 내 진심만큼은 오빠한테 잘 전해졌을 거라고 믿어 의심치 않아!</p>
-<p>+ 모두가 잠든 새벽에 이 메일을 쓰고 있어. 소파를 보니까 오빠는 또 꾸벅꾸벅 졸고 있네. 졸리면 먼저 들어가서 자면 될 텐데 굳이 저러고 기다리고 있는 게 귀엽기도 하지만 조금 안쓰럽기도 하고.. 아마 저런 모습을 볼 때마다 오빠를 더 좋아하게 되는 것 같아.</p>
+<p>+ 이 메일은 오빠를 만나고 있을 시간에 맞춰 예약 메일로 걸어 뒀어. 분명 같이 있는데 도착하면 깜짝 놀라겠지? 오빠의 표정이 벌써부터 눈에 선해!</p>
+<p>+ 여러 번 쓰고 지우다 보니 벌써 늦은 새벽이 되었네. 소파를 보니까 오빠는 또 꾸벅꾸벅 졸고 있네. 졸리면 먼저 들어가서 자면 될 텐데 굳이 저러고 기다리고 있는 게 귀엽기도 하지만 조금 안쓰럽기도 하고.. 아마 저런 모습을 볼 때마다 귀엽다고 생각하는걸 보니 이건 치료약도 없는 심각한 이서언 중독증이 맞겠지?</p>
 <p>평소에는 그렇게 어른스럽고 뭐든 다 잘할 것처럼 굴면서,<br>내 옆에서는 이렇게 귀여운 눈사람이 되는 것도 좋아.<br>그러니까 이제 그만 졸고 얼른 자러 가자-</p>
 <p>귀여운 나의 검은 고양이 씨,<br>정말 많이 좋아해.🐈‍⬛</p>`;
   
@@ -2698,6 +2867,127 @@ ${letterHtml}
 <div class="love-mail-cta">
   <div class="love-mail-cta-text">오빠를 향한 마음, 나만 전한 게 아니었어.<br><a class="love-mail-cta-link" href="https://yungyung213.github.io/HBDzayne/guestbook.html">다른 사람들의 축하 인사도 보러 가기 →</a></div>
 </div>`;
+}
+
+const DEPLOYMENT_LETTER = `<p>서언오빠,</p>
+<p>사실.. 오늘을 위해서 이것저것 준비했었거든.<br>내 행동을 보면 분명 티가 났을텐데 애써 모른척해주는 오빠가 얼마나 고맙던지...<br>준비하면서 오빠가 어떤 표정을 지을지, 입꼬리 각도는 또 얼마나 올라갈지 상상하면서 준비하는 내내 즐거웠는데, 갑자기 긴급출동 명령을 받았어.</p>
+<p>하필 오늘이라니... 너무너무 속상하고 아쉽지만 오빠라면 이해해 줄 거라고 믿어. 오빠는 내가 어떤 선택을 하든 나를 믿어줄 사람이라는걸 아니까, 이번에도 그 믿음에 기대어 잘 다녀올께. 이번엔 다치지 않겠다고 약속해!</p>
+<p>아린이가 AKSO병원에서도 지원을 나온다고 알려줬어. 그 말을 듣자마자 당연하게도 오빠가 올거라고 생각했구. 오빠는 이런 일이 생기면 누구보다 제일 먼저 나서는 사람이니까. 역시 오빠답다는 생각이 들었지만 솔직히 많이 걱정되고 이런 위험한 환경에 오지 않았으면 좋겠다는 생각을 했어.. 오빠도 같은 생각이겠지?</p>
+<p>지금은 집결지로 이동하는 차 안이야.<br>오늘이 지나기 전에는 꼭 다시 축하해 주고 싶어서 이렇게 또 메일을 써.</p>
+<p>몸 성히 잘 다녀올게. 오빠도 꼭 무사했으면 좋겠어.</p>
+<p>우리 둘 다 아무 일 없이 돌아와서,<br>조금은 미뤄진 생일을 함께 축하할 수 있기를 바라.</p>
+<p>사랑해 이서언.</p>`;
+
+function buildDeployMailBody(letterHtml, name){
+  return `${letterHtml}
+<div class="mail-sign" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+  <span>- ${name} -</span>
+  <span style="display:flex; gap:6px; flex:0 0 auto;">
+    <button type="button" onclick="revertDeployLetter(event)" style="background:#F2F4F6; border:1px solid var(--border); color:var(--navy-800); font-weight:400; font-size:var(--fs-11); border-radius:8px; padding:5px 10px; cursor:pointer; white-space:nowrap;">되돌리기</button>
+    <button type="button" onclick="openDeployLetterEditor(event)" style="background:#4A90D9; border:none; color:#fff; font-weight:400; font-size:var(--fs-11); border-radius:8px; padding:5px 10px; cursor:pointer; white-space:nowrap;">새로 쓰기</button>
+  </span>
+</div>`;
+}
+
+let deploymentMailInserted = false;
+// 출동 전 두 번째 편지 삽입 (생일축하 메일보다 위)
+function insertDeploymentMail(){
+  if(deploymentMailInserted) return;
+  deploymentMailInserted = true;
+  const name = (quizAnswers.person || '').trim() || '이름 모를 그녀';
+  let savedLetter = '';
+  let savedDate = '';
+  try{
+    savedLetter = localStorage.getItem('akso_deploy_letter') || '';
+    savedDate = localStorage.getItem('akso_deploy_letter_date') || '';
+  }catch(e){}
+  const letterBody = savedLetter || DEPLOYMENT_LETTER;
+
+  MAIL_DATA.unshift({
+    id: -1, unread: true, blueMail: true, sender: name, from: "MC@gmail.com",
+    subject: "미안해 오빠.. 갑자기 출동하게 됐어",
+    preview: `오늘을 위해 이것저것 준비했었는데.. 갑자기 긴급출동 명령을 받았어. 그래도 몸 성히 다녀올게.`,
+    date: savedDate || "2048-09-05",
+    body: buildDeployMailBody(letterBody, name)
+  });
+}
+
+function openDeployLetterEditor(e){
+  if(e) e.stopPropagation();
+  let current = '';
+  try{ current = localStorage.getItem('akso_deploy_letter_raw') || ''; }catch(err){}
+  const overlay = document.createElement('div');
+  overlay.className = 'mail-overlay';
+  overlay.id = 'deploy-letter-editor-overlay';
+  overlay.onclick = (ev) => { if(ev.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="mail-detail-box love-mail-box" onclick="event.stopPropagation()">
+      <div class="mail-detail-head">
+        <div style="flex:1;min-width:0;">
+          <div class="mail-detail-subject" style="margin-bottom:8px;">❄️출동 전 마지막 인사를 남겨보세요❄️</div>
+          <div class="mail-detail-meta">받는사람: 이서언</div>
+        </div>
+        <span class="mail-detail-close" onclick="document.getElementById('deploy-letter-editor-overlay').remove()" style="font-size:var(--fs-20);">✕</span>
+      </div>
+      <div class="mail-detail-body">
+        <textarea id="deploy-letter-textarea" placeholder="남기고 싶은 마음을 자유롭게 적어주세요" style="width:100%; min-height:260px; border:1.5px solid var(--border); border-radius:10px; padding:14px; font-family:inherit; font-size:var(--fs-13); line-height:1.7; resize:vertical; box-sizing:border-box; outline:none;" onfocus="this.style.borderColor='#4A90D9';" onblur="this.style.borderColor='var(--border)';">${current}</textarea>
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button type="button" class="btn-ghost" style="flex:0 0 auto;" onclick="document.getElementById('deploy-letter-editor-overlay').remove()">취소</button>
+          <button type="button" class="btn-next" style="flex:1; background:#4A90D9;" onclick="saveDeployLetter()">저장하기</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=> document.getElementById('deploy-letter-textarea')?.focus(), 50);
+}
+
+function saveDeployLetter(){
+  const ta = document.getElementById('deploy-letter-textarea');
+  if(!ta) return;
+  const raw = ta.value.trim();
+  if(!raw){ alert('내용을 입력해주세요.'); return; }
+  const html = raw.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n');
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const dd = String(now.getDate()).padStart(2,'0');
+  const dateStr = `2048-${mm}-${dd}`;
+  try{
+    localStorage.setItem('akso_deploy_letter_raw', raw);
+    localStorage.setItem('akso_deploy_letter', html);
+    localStorage.setItem('akso_deploy_letter_date', dateStr);
+  }catch(e){}
+
+  const name = (quizAnswers.person || '').trim() || '이름 모를 그녀';
+  const mail = MAIL_DATA.find(m => m.blueMail);
+  if(mail){
+    mail.body = buildDeployMailBody(html, name);
+    mail.date = dateStr;
+  }
+
+  document.getElementById('deploy-letter-editor-overlay').remove();
+  closeMail();
+  const idx = MAIL_DATA.findIndex(m => m.blueMail);
+  if(idx !== -1) openMail(idx);
+}
+
+function revertDeployLetter(e){
+  if(e) e.stopPropagation();
+  if(!confirm('맨 처음 편지 내용으로 되돌릴까요? 지금까지 새로 쓴 내용은 사라집니다.')) return;
+  try{
+    localStorage.removeItem('akso_deploy_letter_raw');
+    localStorage.removeItem('akso_deploy_letter');
+    localStorage.removeItem('akso_deploy_letter_date');
+  }catch(err){}
+
+  const name = (quizAnswers.person || '').trim() || '이름 모를 그녀';
+  const mail = MAIL_DATA.find(m => m.blueMail);
+  if(mail){
+    mail.body = buildDeployMailBody(DEPLOYMENT_LETTER, name);
+    mail.date = '2048-09-05';
+  }
+  closeMail();
+  const idx = MAIL_DATA.findIndex(m => m.blueMail);
+  if(idx !== -1) openMail(idx);
 }
 
 let loveMailInserted = false;
@@ -2924,6 +3214,7 @@ function openColumn(idx){
       </div>
     </div>`;
   document.getElementById('mail-detail-box').classList.remove('love-mail-box');
+  document.getElementById('mail-detail-box').classList.remove('urgent-box');
   const headerBtn = document.getElementById('love-audio-header-btn');
   if(headerBtn) headerBtn.classList.add('hidden');
   document.getElementById('mail-overlay').classList.remove('hidden');
@@ -2931,6 +3222,8 @@ function openColumn(idx){
 
 // 공지사항 데이터
 const NOTICE_DATA = [
+  { subject: "[긴급] 중앙구 이재민 주둔지 의료지원 협조 요청", dept: "헌터 협회", date: "2048-09-05", urgent: true,
+    content: `수신: AKSO병원<br>발신: 헌터 협회<br><br>중앙구 이재민 주둔지 일대에서 고공격성 A형 유랑체 변이가 발생함에 따라, 부상자 치료 및 이재민 보호를 위한 긴급 의료지원을 요청드립니다.<br><br><strong>1. 임무 등급 :</strong> S급<br><strong>2. 영향 범위 :</strong> 중앙구-크로성<br><strong>3. 예상 지원 기간 :</strong> 1개월<br><strong>4. 사태 분류 :</strong> 고공격성 A형 유랑체 변이<br><br><strong>5. 현장 상황</strong><br>• 주요 간선도로 다수 봉쇄<br>• 이상 에너지 파동 대폭 상승<br>• 서부 지역 통신 신호 완전 두절<br><br><strong>6. 요청 사항</strong><br>• 응급의료 인력 및 현장 의료지원팀 파견<br>• 중증 부상자 수용을 위한 응급 병상 확보<br>• 의약품·응급처치 물자 및 환자 이송 수단 지원<br><br>현재 현장 접근과 통신이 제한된 긴급 상황입니다. 병원 내 의료지원 및 현장 파견이 가능한 인력은 아래의 '지원하기' 버튼을 눌러 신청해 주시기 바랍니다.<br><br><button type="button" disabled style="width:100%;padding:14px;border:none;border-radius:12px;background:#EDF0F2;color:#8A93A0;font-size:var(--fs-14);font-weight:700;cursor:default;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>지원이 완료 되었습니다</button>` },
   { subject: "2048년 하반기 정기 건강검진 일정 안내", dept: "인사팀", date: "2048-09-01",
     content: "2048년 하반기 임직원 정기 건강검진을 아래와 같이 실시합니다.<br><br>1. 대상: 전 임직원<br>2. 기간: 2048년 9월 15일 ~ 10월 31일<br>3. 장소: 본관 3층 건강검진센터<br><br>검진 8시간 전부터 금식해 주시기 바라며, 인트라넷을 통해 사전 예약 후 방문 부탁드립니다." },
   { subject: "전자의무기록(EMR) 시스템 정기 점검 예정", dept: "전산팀", date: "2048-09-02",
@@ -2941,25 +3234,33 @@ const NOTICE_DATA = [
     content: "오는 9월 25일 개최되는 '2048 AKSO 심장외과 학술 컨퍼런스' 참가 신청이 이번 주 금요일 마감됩니다.<br><br>현재 잔여석이 얼마 남지 않았으니 참가를 희망하시는 교수님 및 전공의 여러분께서는 서둘러 신청해 주시기 바랍니다. 신청은 인트라넷 교육수련부 메뉴에서 가능합니다." }
 ];
 
+function noticeSubjectHtml(n){
+  if(n.urgent){
+    return '<span class="urgent-badge">긴급</span> ' + n.subject.replace(/^\[긴급\]\s*/, '');
+  }
+  return n.subject;
+}
+
 function renderNoticeBoard(){
   const board = document.getElementById('notice-board');
   board.innerHTML = '';
   NOTICE_DATA.forEach((n, idx) => {
     const row = document.createElement('div');
-    row.className = 'notice-row';
+    row.className = 'notice-row' + (n.urgent ? ' urgent-row' : '');
     row.style.cursor = 'pointer';
     row.onclick = () => openNotice(idx);
-    row.innerHTML = `<span>${n.subject}</span><span class="tag">${n.dept}</span>`;
+    row.innerHTML = `<span>${noticeSubjectHtml(n)}</span><span class="tag">${n.dept}</span>`;
     board.appendChild(row);
   });
 }
 
 function openNotice(idx){
   const n = NOTICE_DATA[idx];
-  document.getElementById('notice-popup-subject').textContent = n.subject;
+  document.getElementById('notice-popup-subject').innerHTML = noticeSubjectHtml(n);
   document.getElementById('notice-popup-dept').textContent = n.dept;
   document.getElementById('notice-popup-date').textContent = stripYear(n.date);
   document.getElementById('notice-popup-content').innerHTML = n.content;
+  document.getElementById('notice-detail-box').classList.toggle('urgent-box', !!n.urgent);
   document.getElementById('notice-overlay').classList.remove('hidden');
 }
 
