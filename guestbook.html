@@ -80,7 +80,7 @@
     position:fixed;inset:0;z-index:-1;
     background:linear-gradient(185deg, rgba(10,18,24,0.54) 0%, rgba(10,18,24,0.6) 40%, rgba(8,14,19,0.78) 100%);
   }
-  .snow-layer{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;}
+  .snow-layer{position:fixed;inset:0;z-index:58;pointer-events:none;overflow:hidden;}
   .snowflake{
     position:absolute;top:-5vh;color:#fff;user-select:none;
     animation-name:snowFall;animation-timing-function:linear;animation-iteration-count:infinite;
@@ -162,6 +162,31 @@
     font-family:var(--sans);font-size:12px;font-weight:600;
   }
   .gallery-shortcut:hover{background:rgba(20,31,38,0.72);}
+  .side-nav{
+    position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:9;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+  }
+  .side-nav-dot{
+    width:9px;height:9px;padding:0;border-radius:50%;cursor:pointer;
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.16);
+    display:flex;align-items:center;justify-content:center;color:transparent;font-size:0;
+    transition:background .2s ease, transform .25s ease, color .2s ease, font-size .2s ease;
+  }
+  .side-nav-dot:hover{background:rgba(255,255,255,0.32);}
+  .side-nav-dot.locked{opacity:0.28;cursor:default;pointer-events:none;}
+  .side-nav-dot.active{
+    width:auto;height:auto;background:transparent;border-color:transparent;
+    color:var(--accent);font-size:13px;transform:scale(1.05);
+  }
+  .side-nav-dot.active::before{content:'❄';}
+  @media(min-width:641px){
+    .side-nav-dot[data-section="lovenote"]{display:none;}
+  }
+  @media(max-width:640px){
+    .side-nav{right:9px;gap:11px;}
+    .side-nav-dot{width:8px;height:8px;}
+    .side-nav-dot.active{font-size:11px;}
+  }
   .hero-eyebrow-arc{position:relative;z-index:1;width:min(64vw,260px);aspect-ratio:320/56;height:auto;margin:0 auto -6px;display:block;}
   .hero-eyebrow-arc text{
     font-family:var(--title-font);font-weight:500;font-size:14px;letter-spacing:1px;
@@ -232,7 +257,7 @@
   .hero-credit{
     font-family:var(--sans);font-size:12px;color:var(--ink-faint);margin:0 0 34px;font-weight:500;letter-spacing:0.3px;
   }
-  .msg-slider-row{display:flex;align-items:center;gap:10px;max-width:1040px;margin:18px auto 44px;padding:0 10px;}
+  .msg-slider-row{display:flex;align-items:center;gap:10px;max-width:min(94vw,1400px);margin:18px auto 8px;padding:0 16px;}
   .slider-arrow{
     width:44px;height:44px;flex:0 0 auto;cursor:pointer;
     display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
@@ -243,11 +268,12 @@
   .slider-arrow:active{transform:scale(0.88);}
   .slider-arrow svg{width:22px;height:22px;}
   .msg-slider-wrap{
-    flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;overflow-y:visible;padding:26px 4px 30px;
-    scrollbar-width:none;
+    flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;overflow-y:visible;padding:26px 30px 30px;
+    scrollbar-width:none;cursor:grab;
   }
+  .msg-slider-wrap.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none;}
   .msg-slider-wrap::-webkit-scrollbar{display:none;}
-  .msg-slide{flex:0 0 auto;width:260px;}
+  .msg-slide{flex:0 0 auto;width:260px;transition:margin .3s ease, transform .3s ease;}
   .msg-slide.card-focus{z-index:5;}
   .msg-slide-card{
     position:relative;overflow:hidden;width:100%;min-height:360px;
@@ -261,7 +287,6 @@
   }
   .msg-slide.card-focus .msg-slide-card{
     box-shadow:0 14px 40px rgba(0,0,0,0.35);
-    zoom:1.1;
   }
   .msg-slide-blob{
     position:absolute;width:120%;aspect-ratio:1/1;border-radius:50%;pointer-events:none;
@@ -278,7 +303,144 @@
   .msg-slide-text{position:relative;font-size:16px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;text-align:center;}
   .msg-slide-name{position:relative;font-size:13.5px;font-weight:700;color:var(--accent);letter-spacing:0.3px;
     align-self:flex-end;text-align:right;word-break:break-word;}
+  .msg-slide-name[data-id]{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  .delete-hint{
+    max-width:1040px;margin:10px auto 40px;padding:0 20px;text-align:center;
+    font-family:var(--sans);font-size:11px;color:var(--ink-faint);letter-spacing:0.2px;line-height:1.7;
+  }
   .msg-slide-empty{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-faint);text-align:center;}
+  .modal-overlay{
+    position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+    background:rgba(8,14,19,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:20px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    position:relative;
+    width:100%;max-width:320px;border-radius:22px;
+    background:var(--glass-bg-strong);border:1px solid var(--glass-border);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+    padding:26px 22px 22px;text-align:center;
+  }
+  .modal-loading{
+    position:absolute;inset:0;border-radius:22px;
+    background:rgba(8,14,19,0.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;
+    font-size:34px;color:var(--accent);
+  }
+  .modal-loading.show{display:flex;}
+  .credits-modal-card{max-width:400px;max-height:80vh;overflow-y:auto;text-align:left;}
+  .credits-modal-close{
+    position:absolute;top:14px;right:14px;width:32px;height:32px;
+    cursor:pointer;color:var(--ink);background:transparent;border:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .credits-modal-close svg{width:16px;height:16px;}
+  .credits-section{margin-top:28px;}
+  .credits-section h3{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--accent);margin:0 0 14px;}
+  .credits-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .credits-list li{font-family:var(--sans);font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .credits-list a{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
+  .credits-placeholder{color:var(--ink-faint);font-style:italic;}
+  .modal-title{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink);margin:0 0 8px;}
+  .modal-desc{font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);margin:0 0 18px;line-height:1.5;}
+  .modal-input{
+    width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.08);
+    border:1px solid var(--glass-border);color:var(--ink);font-family:var(--sans);font-size:14px;
+    outline:none;box-sizing:border-box;margin-bottom:8px;
+  }
+  .modal-input:focus{outline:2px solid var(--accent);}
+  .modal-error{font-size:11.5px;color:#FFB4C6;margin:0 0 14px;min-height:14px;text-align:center;}
+  .modal-btn-row{display:flex;gap:10px;}
+  .modal-btn{flex:1;padding:11px 0;border-radius:12px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;transition:opacity .15s;}
+  .modal-btn:hover{opacity:0.85;}
+  .modal-btn:disabled{opacity:0.5;cursor:default;}
+  .modal-btn-cancel{background:rgba(255,255,255,0.08);color:var(--ink-soft);}
+  .modal-btn-confirm{background:var(--accent);color:#0d1b22;}
+  .toast{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.92);
+    z-index:60;padding:16px 26px;border-radius:20px;max-width:80vw;
+    background:rgba(20,31,38,0.92);border:1px solid var(--glass-border);color:var(--ink);
+    font-family:var(--sans);font-size:13px;font-weight:600;text-align:center;
+    opacity:0;pointer-events:none;transition:opacity .3s ease, transform .3s ease;
+    box-shadow:0 20px 50px rgba(0,0,0,0.45);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .toast.error{color:#FFB4C6;}
+  @keyframes snowSpin{to{transform:rotate(360deg);}}
+  .btn-spinner{display:inline-block;animation:snowSpin .9s linear infinite;}
+  .view-all-btn{
+    display:block;margin:0 auto 10px;padding:9px 22px;border-radius:20px;
+    background:rgba(255,255,255,0.08);border:1px solid var(--glass-border);color:var(--ink-soft);
+    font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;
+    transition:background .15s;
+  }
+  .view-all-btn:hover{background:rgba(255,255,255,0.15);}
+  .gallery-modal-overlay{
+    position:fixed;inset:0;z-index:55;
+    background:rgba(8,14,19,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    padding:24px 16px;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .3s ease, visibility 0s linear .3s;
+  }
+  .gallery-modal-overlay.show{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:opacity .3s ease;
+  }
+  .gallery-modal{
+    max-width:1040px;width:100%;margin:0 auto;position:relative;box-sizing:border-box;
+    transform:translateY(16px) scale(0.98);opacity:0;
+    transition:transform .4s cubic-bezier(.22,1,.36,1), opacity .32s ease;
+  }
+  .gallery-modal-overlay.show .gallery-modal{transform:translateY(0) scale(1);opacity:1;}
+  .gallery-modal-close{
+    position:sticky;top:0;float:right;
+    width:38px;height:38px;border-radius:50%;cursor:pointer;color:var(--ink);
+    background:rgba(20,31,38,0.7);border:1px solid var(--glass-border);
+    display:flex;align-items:center;justify-content:center;z-index:2;
+  }
+  .gallery-modal-close svg{width:16px;height:16px;}
+  .gallery-modal-header{text-align:center;padding:16px 10px 6px;clear:both;}
+  .envelope-grid{
+    display:flex;flex-wrap:wrap;justify-content:center;
+    gap:24px;padding:18px 6px 44px;
+  }
+  @keyframes envelopePopIn{
+    from{opacity:0;transform:translateY(24px) scale(0.95);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .envelope{width:240px;position:relative;opacity:0;animation:envelopePopIn .65s cubic-bezier(.22,1,.36,1) forwards;}
+  .envelope-inner{
+    position:relative;width:100%;aspect-ratio:3/4;cursor:pointer;
+    transition:transform .58s cubic-bezier(.34,1.15,.64,1);
+    transform-style:preserve-3d;
+  }
+  .envelope.open .envelope-inner{transform:rotateY(180deg);}
+  .envelope-sparkle-layer{position:absolute;inset:-70px;pointer-events:none;z-index:3;}
+  .envelope-face, .envelope-letter{
+    position:absolute;inset:0;border-radius:18px;box-sizing:border-box;overflow:hidden;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  }
+  .envelope-face{
+    background-color:rgba(255,255,255,0.08);background-size:cover;background-position:center;
+    border:1px solid var(--glass-border);
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    padding:18px;
+  }
+  .envelope-face::before{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:56%;
+    background:linear-gradient(180deg, rgba(8,14,19,0) 0%, rgba(8,14,19,0.72) 100%);
+  }
+  .envelope-name{position:relative;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);text-align:center;word-break:break-word;text-shadow:0 1px 6px rgba(0,0,0,0.5);}
+  .envelope-letter{
+    transform:rotateY(180deg);
+    background:var(--glass-bg-strong);border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    padding:22px 20px;
+    display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+  }
+  .envelope-letter-text{font-family:var(--sans);font-size:14px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;overflow-y:auto;}
+  .envelope-letter-name{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--accent);text-align:right;}
   .content{max-width:560px;margin:0 auto;padding:0 18px 90px;position:relative;z-index:1;}
   .glass-card{
     text-align:center;padding:10px 10px 26px;
@@ -292,31 +454,6 @@
   #gallery-header.compact{margin-top:20px;}
   .gallery-label-outer{margin:0 0 8px;}
   .gallery-caption{font-family:var(--sans);font-size:18px;font-weight:500;color:var(--ink);margin:0 0 26px;line-height:1.55;}
-  .pv-slider-row{display:flex;align-items:center;gap:10px;max-width:1040px;margin:18px auto 44px;padding:0 10px;}
-  .pv-slider-wrap{
-    flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;overflow-y:visible;padding:6px 4px 10px;
-    scrollbar-width:none;
-  }
-  .pv-slider-wrap::-webkit-scrollbar{display:none;}
-  .pv-slide{flex:0 0 auto;width:min(84vw,520px);}
-  .pv-slide-card{
-    position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;
-    background:var(--glass-bg);border:1px solid var(--glass-border);
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    box-shadow:var(--shadow-sm);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .pv-slide-card iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .pv-play-btn{
-    width:56px;height:56px;border-radius:50%;flex:0 0 auto;
-    background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.4);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .pv-play-btn svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
-  .pv-slide-label{
-    position:absolute;bottom:14px;left:0;right:0;text-align:center;
-    font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);letter-spacing:0.2px;
-  }
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
   .form-row{margin-bottom:14px;text-align:center;}
   .form-row label{display:block;font-size:12px;color:var(--ink-faint);margin-bottom:7px;font-weight:600;letter-spacing:0.2px;text-align:center;}
@@ -373,7 +510,7 @@
   }
   .share-btn:hover{background:rgba(255,255,255,0.15);}
   .share-btn svg{width:14px;height:14px;}
-  .share-hint{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:8px;line-height:1.6;}
+  .share-hint{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:20px;line-height:1.6;}
   .site-footer{
     text-align:center;padding:34px 20px 40px;font-size:11.5px;color:var(--ink-faint);
     font-family:var(--sans);letter-spacing:0.2px;
@@ -388,32 +525,40 @@
     .content-head{padding:44px 16px 4px;}
     .glass-card{padding:20px;border-radius:20px;}
     .content{padding:0 14px 70px;}
-    .msg-slider-row{gap:4px;padding:0 4px;}
-    .slider-arrow{width:34px;height:34px;}
-    .slider-arrow svg{width:18px;height:18px;}
-    .msg-slider-wrap{gap:12px;}
+    .msg-slider-row{gap:2px;padding:0 2px;}
+    .slider-arrow{width:28px;height:28px;}
+    .slider-arrow svg{width:16px;height:16px;}
+    .msg-slider-wrap{gap:10px;padding:20px 6px 24px;}
+    .msg-slide{width:58vw;}
+    .msg-slide-card{aspect-ratio:13/18;min-height:0;padding:16px 14px;}
+    .msg-slide-text{font-size:13px;line-height:1.55;}
   }
   @media(max-width:640px){
     .love-note, #stage-form, #stage-gallery{display:none;opacity:0;transition:opacity .6s ease;}
     .love-note{min-height:100vh;min-height:100dvh;display:none;flex-direction:column;justify-content:center;box-sizing:border-box;}
     #stage-form{min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;box-sizing:border-box;}
     #stage-gallery{min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;box-sizing:border-box;}
-    .msg-slider-row{max-width:100%;padding:0 8px;gap:8px;}
-    .msg-slide{width:56vw;}
-    .slider-arrow{width:34px;height:34px;}
+    .msg-slider-row{max-width:100%;padding:0 6px;gap:6px;}
+    .msg-slide{width:60vw;}
+    .msg-slide.card-focus{transform:scale(1.12);z-index:2;margin:0 8px;}
+    .msg-slide-card{aspect-ratio:13/18;min-height:0;padding:18px 16px;}
+    .msg-slide-text{font-size:13.5px;}
+    .slider-arrow{width:32px;height:32px;}
     .thanks-list{padding-top:14px;}
     .site-footer{padding-top:5px;}
     .gallery-shortcut{display:none;}
     .gallery-shortcut.show{display:flex;}
+    .envelope{width:min(76vw, calc(100vw - 64px));}
   }
   @media(min-width:641px){
     .section-arrow{display:none;}
-    .msg-slider-row{max-width:1040px;padding:0 10px;}
+    .msg-slider-row{max-width:min(94vw,1400px);padding:0 16px;}
     .msg-slide{width:260px;transition:transform .3s ease;}
-    .msg-slide.card-focus{transform:scale(1.18);z-index:2;}
+    .msg-slide.card-focus{transform:scale(1.1);z-index:2;margin:0 13px;}
     .msg-slide.card-focus .msg-slide-card{zoom:1;box-shadow:0 14px 40px rgba(0,0,0,0.35);}
     html{scroll-snap-type:y mandatory;}
     body{scroll-snap-type:y mandatory;}
+    html.no-snap, html.no-snap body{scroll-snap-type:none;}
     .scene{scroll-snap-align:center;scroll-snap-stop:always;}
   }
 </style>
@@ -423,6 +568,68 @@
 <div class="page-bg" id="page-bg"></div>
 <div class="page-overlay"></div>
 <div class="snow-layer" id="snow-layer"></div>
+
+<div class="modal-overlay" id="delete-modal-overlay">
+  <div class="modal-card">
+    <div class="modal-title">메시지를 삭제할까요?</div>
+    <p class="modal-desc">작성하실 때 입력하신 비밀번호를 넣어주세요.</p>
+    <input type="password" class="modal-input" id="delete-modal-input" placeholder="비밀번호">
+    <div class="modal-error" id="delete-modal-error"></div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-cancel" id="delete-modal-cancel">취소</button>
+      <button class="modal-btn modal-btn-confirm" id="delete-modal-confirm">삭제</button>
+    </div>
+    <div class="modal-loading" id="delete-modal-loading"><span class="btn-spinner">❄</span></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="credits-modal-overlay">
+  <div class="modal-card credits-modal-card">
+    <button class="credits-modal-close" id="credits-modal-close" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="modal-title">사용 리소스 및 출처</div>
+    <p class="modal-desc">이 웹페이지에는 다음과 같은 외부 리소스가 사용되었습니다. 각 저작물의 권리는 해당 제작자 및 제공처에 있습니다.<br>사용 리소스는 비영리 목적으로 사용되었으며 문제 시 삭제하겠습니다.</p>
+    <div class="credits-section">
+      <h3>폰트</h3>
+      <ul class="credits-list">
+        <li>Pretendard - <a href="https://cactus.tistory.com/306" target="_blank" rel="noopener">cactus.tistory.com</a></li>
+        <li>Playfair Display / Mrs Saint Delafield - <a href="https://fonts.google.com/" target="_blank" rel="noopener">Google Fonts</a></li>
+        <li>고운바탕(Gowun Batang) - <a href="https://github.com/yangheeryu/Gowun-Batang" target="_blank" rel="noopener">yangheeryu/Gowun-Batang</a></li>
+      </ul>
+    </div>
+    <div class="credits-section">
+      <h3>음원</h3>
+      <ul class="credits-list">
+        <li>곡 제목 : <a href="https://youtu.be/4UXoUpL8ox4?si=dd68dZt4f0dpqOQC" target="_blank" rel="noopener">Timeless Verse</a></li>
+        <li>수록 앨범 : 《Deepspace Odyssey (Love and Deepspace Original Soundtracks Vol. 3)》</li>
+      </ul>
+    </div>
+    <div class="credits-section">
+      <h3>이미지</h3>
+      <ul class="credits-list">
+        <li>카드 내 이미지 : <a href="https://www.pexels.com/ko-kr/" target="_blank" rel="noopener">pexels</a></li>
+        <li>눈 플레이크 : <a href="https://kr.pinterest.com/pin/674414112995032140/" target="_blank" rel="noopener">Pinterest</a></li>
+        <li>눈결정 : <a href="https://kr.pinterest.com/pin/1149543873634254565/" target="_blank" rel="noopener">Pinterest</a></li>
+        <li>눈결정(목도리) : <a href="https://kr.pinterest.com/pin/635922409919795191/" target="_blank" rel="noopener">Pinterest</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-modal-overlay" id="gallery-modal-overlay">
+  <div class="gallery-modal">
+    <button class="gallery-modal-close" id="gallery-modal-close" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="gallery-modal-header">
+      <div class="section-label-outer gallery-label-outer">✦ Gentle Warmth Reaching You ✦</div>
+      <p class="gallery-caption">당신에게 닿은 다정한 온기들<br>서언아 생일 축하해!</p>
+    </div>
+    <div class="envelope-grid" id="envelope-grid"></div>
+  </div>
+</div>
 
 <div class="top-nav">
   <div class="top-nav-left">
@@ -483,6 +690,13 @@
           <div class="msg-input-blob"></div>
         </div>
       </div>
+      <div class="form-row">
+        <label for="gb-password" class="sr-only">삭제용 비밀번호</label>
+        <div class="msg-input-wrap msg-input-wrap-name">
+          <input id="gb-password" type="password" maxlength="50" placeholder="[선택] 비밀번호 (암호화 되어 저장됩니다.)">
+          <div class="msg-input-blob"></div>
+        </div>
+      </div>
       <div class="form-row form-row-message">
         <label for="gb-message" class="sr-only">축하 메시지</label>
         <div class="msg-input-wrap">
@@ -509,7 +723,7 @@
           공유하기
         </button>
       </div>
-      <div class="share-hint" id="share-hint" style="display:none;">🌟"이미지 저장"을 누르면 마음을 함께해주신 분들의 사진이 랜덤 배경으로 담긴 이미지가 만들어져요!<br>귀여운 사진들도 함께 공유해보세요!</div>
+      <div class="share-hint" id="share-hint" style="display:none;">[이미지 저장]을 누르면 마음을 함께해 주신 분들의<br>사진으로 만든 랜덤 배경에 메세지가 담긴 이미지가 만들어져요!<br>사진도 함께 공유해 보세요!◟̆◞̆♡</div>
       <div class="section-arrow" id="post-submit-arrow" style="display:none;" onclick="revealGallery(event)" aria-label="방명록 보러가기">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </div>
@@ -535,35 +749,8 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
     </button>
   </div>
-
-  <div class="gallery-header" id="pv-header">
-    <div class="section-label-outer gallery-label-outer">✦ When Embers Rise✦</div>
-    <p class="gallery-caption">2026 생일 PV 「소란이 시작될 때」</p>
-  </div>
-
-  <div class="pv-slider-row" id="pv-slider-row">
-    <button class="slider-arrow" onclick="pvSlidePrev()" aria-label="이전 영상">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-    <div class="pv-slider-wrap" id="pv-slider-wrap">
-      <div class="pv-slide">
-        <div class="pv-slide-card">
-          <iframe src="https://www.youtube.com/embed/XqbJXVhqXKI?si=4b2NHQfLcVE9CjN2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="pv-slide">
-        <div class="pv-slide-card">
-          <div class="pv-play-btn">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
-          </div>
-          <div class="pv-slide-label">영상 준비 중이에요</div>
-        </div>
-      </div>
-    </div>
-    <button class="slider-arrow" onclick="pvSlideNext()" aria-label="다음 영상">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
-  </div>
+  <button class="view-all-btn" id="view-all-btn" onclick="openGalleryModal()">메시지 전체보기</button>
+  <p class="delete-hint">닉네임을 10초간 누르면 삭제할 수 있어요. (비밀번호 필요)</p>
 
   <div class="thanks-list">
     <div class="thanks-label">✦이미지 도움 주신 감사한 분들✦</div>
@@ -571,7 +758,7 @@
   </div>
 
   <footer class="site-footer">
-    Made by <a href="https://x.com/eru_eru_25" target="_blank" rel="noopener">@eru_eru_25</a>
+    Made by <a href="https://x.com/eru_eru_25" target="_blank" rel="noopener">@eru_eru_25</a> / <a href="#" onclick="openCreditsModal(event)">출처 보기</a>
   </footer>
   </div>
 </div>
@@ -579,6 +766,13 @@
 <button class="scroll-top-btn" id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
 </button>
+
+<nav class="side-nav" id="side-nav" aria-label="섹션 이동">
+  <button class="side-nav-dot" data-section="landing" aria-label="처음으로"></button>
+  <button class="side-nav-dot" data-section="lovenote" aria-label="메시지"></button>
+  <button class="side-nav-dot" data-section="form" aria-label="방명록 작성"></button>
+  <button class="side-nav-dot" data-section="gallery" aria-label="방명록 보기"></button>
+</nav>
 
 <div class="gallery-shortcut" onclick="revealGallery(event)">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -699,6 +893,14 @@ const CARD_BG_CACHE_KEY = 'akso_gb_card_cache_v1';
 async function loadCardBgImages(){
   return loadImagesFromRepoFolder(CARD_BG_API, CARD_BG_CACHE_KEY);
 }
+
+const ENVELOPE_IMG_API = 'https://api.github.com/repos/yungyung213/HBDzayne/contents/img_card';
+const ENVELOPE_IMG_CACHE_KEY = 'akso_gb_envelope_cache_v1';
+let envelopeCoverImages = [];
+async function loadEnvelopeCoverImages(){
+  envelopeCoverImages = await loadImagesFromRepoFolder(ENVELOPE_IMG_API, ENVELOPE_IMG_CACHE_KEY);
+}
+loadEnvelopeCoverImages();
 
 function decodeImage(url){
   return new Promise((resolve) => {
@@ -874,13 +1076,40 @@ function typewriterReveal(el){
   }
 })();
 
+let returningVisitor = false;
+try{ returningVisitor = localStorage.getItem('akso_gb_visited') === '1'; }catch(e){}
+function markVisited(){
+  if(returningVisitor) return;
+  try{ localStorage.setItem('akso_gb_visited', '1'); }catch(e){}
+}
+
+if(returningVisitor){
+  const glass = document.getElementById('landing-glass');
+  const hint = document.getElementById('landing-hint');
+  if(glass){
+    glass.style.transition = 'none';
+    glass.classList.add('cleared');
+    void glass.offsetWidth;
+    glass.style.transition = '';
+  }
+  if(hint) hint.classList.add('show');
+  const tagline = document.getElementById('hero-tagline');
+  if(tagline){
+    revealChars(tagline, 8);
+    tagline.classList.add('show-rule');
+  }
+  scrollLocked = false;
+}
+
 function goToLoveNote(e){
   if(e) e.stopPropagation();
+  unlockedSections.add('lovenote');
   if(isMobileView){
     fadeInReveal(document.getElementById('love-note'), 'flex');
   } else {
     document.getElementById('love-note').scrollIntoView({behavior:'smooth', block:'start'});
   }
+  updateSideNav();
 }
 
 (function(){
@@ -905,6 +1134,7 @@ function showGalleryShortcut(){
 
 function revealForm(e){
   if(e) e.stopPropagation();
+  unlockedSections.add('form');
   const stage = document.getElementById('stage-form');
   const formCard = document.getElementById('gb-form-section');
   if(isMobileView){
@@ -913,19 +1143,97 @@ function revealForm(e){
   } else {
     document.getElementById('scene-intro').scrollIntoView({behavior:'smooth', block:'center'});
   }
+  updateSideNav();
 }
 
 function revealGallery(e){
   if(e) e.stopPropagation();
+  unlockedSections.add('gallery');
+  markVisited();
   const stage = document.getElementById('stage-gallery');
   const row = document.getElementById('msg-slider-row');
   if(isMobileView){
     fadeInReveal(stage, 'flex', row);
     showGalleryShortcut();
+    setTimeout(initSliderLoop, 80);
   } else {
     row.scrollIntoView({behavior:'smooth', block:'center'});
   }
+  updateSideNav();
 }
+
+const NAV_TARGET_IDS = { landing:'landing', lovenote:'love-note', form:'gb-form-section', gallery:'msg-slider-row' };
+const NAV_STAGE_IDS = { lovenote:'love-note', form:'stage-form', gallery:'stage-gallery' };
+let unlockedSections = new Set(['landing']);
+if(returningVisitor){
+  ['lovenote','form','gallery'].forEach(k => unlockedSections.add(k));
+}
+
+function isSectionRevealed(key){
+  if(key === 'landing') return true;
+  const el = document.getElementById(NAV_STAGE_IDS[key]);
+  if(!el) return false;
+  return getComputedStyle(el).display !== 'none';
+}
+
+function scrollToCenterEl(el){
+  if(!el) return;
+  const rect = el.getBoundingClientRect();
+  const targetY = rect.top + window.scrollY + rect.height / 2 - window.innerHeight / 2;
+  window.scrollTo({top: Math.max(0, targetY), behavior:'smooth'});
+}
+
+function updateSideNav(){
+  document.querySelectorAll('.side-nav-dot').forEach(btn => {
+    const key = btn.dataset.section;
+    const unlocked = unlockedSections.has(key) || isSectionRevealed(key);
+    btn.classList.toggle('locked', !unlocked);
+  });
+}
+
+function navGoTo(key){
+  if(!isMobileView){
+    const el = document.getElementById(NAV_TARGET_IDS[key]);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if(key === 'landing'){
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+  if(isSectionRevealed(key)){
+    scrollToCenterEl(document.getElementById(NAV_TARGET_IDS[key]));
+    return;
+  }
+  if(key === 'lovenote') goToLoveNote();
+  else if(key === 'form') revealForm();
+  else if(key === 'gallery') revealGallery();
+}
+
+document.querySelectorAll('.side-nav-dot').forEach(btn => {
+  btn.addEventListener('click', () => navGoTo(btn.dataset.section));
+});
+updateSideNav();
+
+if('IntersectionObserver' in window){
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const key = Object.keys(NAV_TARGET_IDS).find(k => document.getElementById(NAV_TARGET_IDS[k]) === entry.target);
+      if(!key) return;
+      const dot = document.querySelector(`.side-nav-dot[data-section="${key}"]`);
+      if(!dot) return;
+      if(entry.isIntersecting){
+        document.querySelectorAll('.side-nav-dot.active').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  Object.values(NAV_TARGET_IDS).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) navObserver.observe(el);
+  });
+}
+document.querySelector('.side-nav-dot[data-section="landing"]').classList.add('active');
 
 const bgm = document.getElementById('bgm');
 const audioIcon = document.getElementById('audio-icon');
@@ -943,28 +1251,71 @@ bgm.addEventListener('pause', updateAudioIcon);
 updateAudioIcon();
 function tryAutoplay(){
   bgm.play().catch(()=>{
-    const retry = () => { bgm.play().catch(()=>{}); document.removeEventListener('pointerdown', retry); document.removeEventListener('keydown', retry); };
-    document.addEventListener('pointerdown', retry, { once:true });
-    document.addEventListener('keydown', retry, { once:true });
+    const retry = () => {
+      bgm.play().catch(()=>{});
+      ['pointerdown','keydown','wheel','touchstart'].forEach(evt => document.removeEventListener(evt, retry));
+    };
+    ['pointerdown','keydown','wheel','touchstart'].forEach(evt => document.addEventListener(evt, retry, { once:true, passive:true }));
   });
 }
 tryAutoplay();
 
-const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycby19RvO8SWYbbrN-z1YILhasAKRZ6q5AvIMR1RonI8zi4NV7ZhWMTw6NSjwHy8JRvNb/exec";
+const GUESTBOOK_API_URL = "https://script.google.com/macros/s/AKfycbyOAuLcwGFmRQFTtV1hfYk61-zG-v8g5aKr427u0ekwhLscCFr7jydwjeoEoL8A2I2N/exec";
 
 const nameEl = document.getElementById('gb-name');
+const pwEl = document.getElementById('gb-password');
 const msgEl = document.getElementById('gb-message');
 const countEl = document.getElementById('gb-count');
 const submitBtn = document.getElementById('gb-submit');
 const statusEl = document.getElementById('gb-status');
 const wrapEl = document.getElementById('msg-slider-wrap');
-wrapEl.addEventListener('click', (e) => {
+let cardFocusRevertTimer = null;
+const CARD_FOCUS_MS = 4000;
+let lastFocusedEntryIdx = null;
+
+function unfocusCard(slide){
+  slide.classList.remove('card-focus');
+  document.documentElement.classList.remove('no-snap');
+  setTimeout(startAutoSlide, 400);
+}
+
+let isDragging = false;
+let dragMoved = false;
+let dragStartX = 0;
+let dragStartScroll = 0;
+wrapEl.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  dragMoved = false;
+  dragStartX = e.clientX;
+  dragStartScroll = wrapEl.scrollLeft;
   clearInterval(autoSlideTimer);
+  wrapEl.classList.add('dragging');
+});
+window.addEventListener('mousemove', (e) => {
+  if(!isDragging) return;
+  const dx = e.clientX - dragStartX;
+  if(Math.abs(dx) > 5) dragMoved = true;
+  wrapEl.scrollLeft = dragStartScroll - dx;
+});
+window.addEventListener('mouseup', () => {
+  if(!isDragging) return;
+  isDragging = false;
+  wrapEl.classList.remove('dragging');
+  normalizeLoopScroll();
+  setTimeout(startAutoSlide, 700);
+});
+
+wrapEl.addEventListener('click', (e) => {
+  if(dragMoved){ dragMoved = false; return; }
+  clearInterval(autoSlideTimer);
+  clearTimeout(cardFocusRevertTimer);
   const slide = e.target.closest('.msg-slide');
   if(!slide) return;
   wrapEl.querySelectorAll('.msg-slide.card-focus').forEach(s => { if(s !== slide) s.classList.remove('card-focus'); });
   slide.classList.toggle('card-focus');
+  document.documentElement.classList.toggle('no-snap', !!wrapEl.querySelector('.msg-slide.card-focus'));
   if(slide.classList.contains('card-focus')){
+    lastFocusedEntryIdx = Number(slide.dataset.idx);
     const doCenter = () => {
       const wrapRect = wrapEl.getBoundingClientRect();
       const slideRect = slide.getBoundingClientRect();
@@ -977,9 +1328,141 @@ wrapEl.addEventListener('click', (e) => {
     } else {
       doCenter();
     }
+    cardFocusRevertTimer = setTimeout(() => unfocusCard(slide), CARD_FOCUS_MS);
+  } else {
+    setTimeout(startAutoSlide, 400);
   }
 });
-wrapEl.addEventListener('touchstart', () => clearInterval(autoSlideTimer), { passive:true });
+
+let longPressTimer = null;
+let longPressFired = false;
+const LONG_PRESS_MS = 600;
+
+function clearLongPress(){
+  clearTimeout(longPressTimer);
+  longPressTimer = null;
+}
+
+wrapEl.addEventListener('pointerdown', (e) => {
+  const nameEl2 = e.target.closest('.msg-slide-name[data-id]');
+  if(!nameEl2) return;
+  longPressFired = false;
+  longPressTimer = setTimeout(() => {
+    longPressFired = true;
+    promptDeleteEntry(nameEl2.dataset.id);
+  }, LONG_PRESS_MS);
+});
+['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => {
+  wrapEl.addEventListener(evt, clearLongPress);
+});
+wrapEl.addEventListener('click', (e) => {
+  if(longPressFired && e.target.closest('.msg-slide-name[data-id]')){
+    e.stopPropagation();
+    longPressFired = false;
+  }
+}, true);
+
+const creditsModalOverlay = document.getElementById('credits-modal-overlay');
+function openCreditsModal(e){
+  if(e) e.preventDefault();
+  creditsModalOverlay.classList.add('show');
+}
+function closeCreditsModal(){
+  creditsModalOverlay.classList.remove('show');
+}
+document.getElementById('credits-modal-close').addEventListener('click', closeCreditsModal);
+creditsModalOverlay.addEventListener('click', (e) => {
+  if(e.target === creditsModalOverlay) closeCreditsModal();
+});
+
+const deleteModalOverlay = document.getElementById('delete-modal-overlay');
+const deleteModalInput = document.getElementById('delete-modal-input');
+const deleteModalError = document.getElementById('delete-modal-error');
+const deleteModalCancelBtn = document.getElementById('delete-modal-cancel');
+const deleteModalConfirmBtn = document.getElementById('delete-modal-confirm');
+const deleteModalLoading = document.getElementById('delete-modal-loading');
+const toastEl = document.getElementById('toast');
+let currentDeleteId = null;
+let toastTimer = null;
+
+function showToast(msg, isError){
+  toastEl.textContent = msg;
+  toastEl.classList.toggle('error', !!isError);
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+}
+
+function openDeleteModal(id){
+  currentDeleteId = id;
+  deleteModalError.textContent = '';
+  deleteModalInput.value = '';
+  deleteModalOverlay.classList.add('show');
+  setTimeout(() => deleteModalInput.focus(), 60);
+}
+
+function closeDeleteModal(){
+  deleteModalOverlay.classList.remove('show');
+  currentDeleteId = null;
+}
+
+deleteModalCancelBtn.addEventListener('click', closeDeleteModal);
+deleteModalOverlay.addEventListener('click', (e) => {
+  if(e.target === deleteModalOverlay) closeDeleteModal();
+});
+deleteModalInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') deleteModalConfirmBtn.click();
+});
+deleteModalConfirmBtn.addEventListener('click', async () => {
+  const password = deleteModalInput.value;
+  if(!password){
+    deleteModalError.textContent = '비밀번호를 입력해주세요.';
+    return;
+  }
+  deleteModalError.textContent = '';
+  deleteModalConfirmBtn.disabled = true;
+  deleteModalLoading.classList.add('show');
+  const result = await deleteEntry(currentDeleteId, password);
+  deleteModalLoading.classList.remove('show');
+  deleteModalConfirmBtn.disabled = false;
+  if(result.ok){
+    closeDeleteModal();
+    showToast('메시지가 삭제되었어요.');
+  } else {
+    deleteModalError.textContent = result.error || '삭제에 실패했습니다.';
+  }
+});
+
+function promptDeleteEntry(id){
+  openDeleteModal(id);
+}
+
+async function deleteEntry(id, password){
+  try{
+    const res = await fetch(GUESTBOOK_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete', id, password })
+    });
+    const data = await res.json();
+    if(data.ok){
+      await loadGuestbook();
+      return { ok: true };
+    }
+    return { ok: false, error: data.error || '삭제에 실패했습니다.' };
+  }catch(err){
+    return { ok: false, error: '삭제 요청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
+  }
+}
+let touchResumeTimer = null;
+wrapEl.addEventListener('touchstart', () => {
+  clearInterval(autoSlideTimer);
+  clearTimeout(touchResumeTimer);
+}, { passive:true });
+wrapEl.addEventListener('touchend', () => {
+  clearTimeout(touchResumeTimer);
+  touchResumeTimer = setTimeout(startAutoSlide, 1200);
+}, { passive:true });
 const sharePanelEl = document.getElementById('share-panel');
 const shareHintEl = document.getElementById('share-hint');
 
@@ -995,15 +1478,15 @@ function escapeHtml(str){
 
 let gbEntries = [];
 
-function cardHtml(en){
+function cardHtml(en, idx){
   const dur = (5 + Math.random() * 6).toFixed(1);
   const delay = (-Math.random() * 8).toFixed(1);
   return `
-    <div class="msg-slide">
+    <div class="msg-slide" data-idx="${idx}">
       <div class="msg-slide-card">
         <div class="msg-slide-blob" style="animation-duration:${dur}s;animation-delay:${delay}s;"></div>
         <div class="msg-slide-text">${escapeHtml(en.message)}</div>
-        <div class="msg-slide-name">${escapeHtml(en.name)}</div>
+        <div class="msg-slide-name"${en.deletable ? ` data-id="${escapeHtml(en.id)}"` : ''}>${escapeHtml(en.name)}</div>
       </div>
     </div>`;
 }
@@ -1020,26 +1503,55 @@ function slidePrev(){
 }
 
 let autoSlideTimer = null;
+let loopSetWidth = 0;
+
+function normalizeLoopScroll(){
+  if(!loopSetWidth) return;
+  if(wrapEl.scrollLeft < loopSetWidth * 0.5){
+    wrapEl.scrollLeft += loopSetWidth;
+  } else if(wrapEl.scrollLeft > loopSetWidth * 1.5){
+    wrapEl.scrollLeft -= loopSetWidth;
+  }
+}
+
+let scrollIdleTimer = null;
+wrapEl.addEventListener('scroll', () => {
+  clearTimeout(scrollIdleTimer);
+  scrollIdleTimer = setTimeout(normalizeLoopScroll, 150);
+});
+
 function startAutoSlide(){
   clearInterval(autoSlideTimer);
+  if(!loopSetWidth) return;
   autoSlideTimer = setInterval(() => {
-    if(!wrapEl || wrapEl.scrollWidth <= wrapEl.clientWidth) return;
-    const maxScroll = wrapEl.scrollWidth - wrapEl.clientWidth;
-    if(wrapEl.scrollLeft >= maxScroll - 1){
-      wrapEl.scrollLeft = 0;
-    } else {
-      wrapEl.scrollLeft += 1;
-    }
+    wrapEl.scrollLeft += 1;
+    normalizeLoopScroll();
   }, 35);
 }
 
+function initSliderLoop(){
+  if(!gbEntries.length) return;
+  if(wrapEl.scrollWidth > wrapEl.clientWidth){
+    loopSetWidth = wrapEl.scrollWidth / 3;
+    if(wrapEl.scrollLeft < loopSetWidth * 0.5 || wrapEl.scrollLeft > loopSetWidth * 2.5){
+      wrapEl.scrollLeft = loopSetWidth;
+    }
+    startAutoSlide();
+  }
+}
+
 function renderSlider(){
+  clearInterval(autoSlideTimer);
+  loopSetWidth = 0;
   if(!gbEntries.length){
     wrapEl.innerHTML = `<div class="msg-slide"><div class="msg-slide-card"><div class="msg-slide-empty">아직 도착한<br>축하 메시지가<br>없어요.</div></div></div>`;
     return;
   }
-  wrapEl.innerHTML = gbEntries.map(cardHtml).join('');
-  startAutoSlide();
+  const oneSetHtml = gbEntries.map((en, i) => cardHtml(en, i)).join('');
+  // 처음<->끝이 끊기지 않고 이어지도록 카드 목록을 3벌 복제해서 렌더링
+  wrapEl.innerHTML = oneSetHtml + oneSetHtml + oneSetHtml;
+  wrapEl.scrollLeft = 0;
+  requestAnimationFrame(initSliderLoop);
 }
 
 let gbLoading = false;
@@ -1051,7 +1563,7 @@ async function loadGuestbook(){
     const res = await fetch(GUESTBOOK_API_URL);
     const data = await res.json();
     if(data.ok){
-      const fresh = (data.entries || []).slice().reverse();
+      const fresh = (data.entries || []).slice();
       const freshSignature = JSON.stringify(fresh);
       if(freshSignature !== gbEntriesSignature){
         gbEntries = fresh;
@@ -1095,6 +1607,7 @@ function fireSparkles(){
 async function submitGuestbook(){
   const name = nameEl.value.trim();
   const message = msgEl.value.trim();
+  const password = pwEl.value;
   statusEl.textContent = '';
   statusEl.className = 'status-msg';
   sharePanelEl.classList.remove('show');
@@ -1113,7 +1626,7 @@ async function submitGuestbook(){
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ name, message })
+      body: JSON.stringify({ name, message, password })
     });
     statusEl.textContent = '당신의 마음이 전해졌어요!';
     statusEl.classList.add('ok');
@@ -1138,11 +1651,11 @@ async function submitGuestbook(){
       }, 80);
     }
     nameEl.value = '';
+    pwEl.value = '';
     msgEl.value = '';
     countEl.textContent = '0';
     setTimeout(async () => {
       await loadGuestbook();
-      wrapEl.scrollTo({left: wrapEl.scrollWidth, behavior:'smooth'});
     }, 1200);
   }catch(err){
     statusEl.textContent = '전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
@@ -1267,13 +1780,88 @@ function shareToTwitter(){
 loadGuestbook();
 setInterval(loadGuestbook, 10000);
 
-const pvWrapEl = document.getElementById('pv-slider-wrap');
-function pvSlideNext(){
-  pvWrapEl.scrollBy({left: pvWrapEl.clientWidth * 0.8, behavior:'smooth'});
+function buildEnvelopeGrid(){
+  const grid = document.getElementById('envelope-grid');
+  if(!gbEntries.length){
+    grid.innerHTML = `<div class="msg-slide-empty">아직 도착한<br>축하 메시지가<br>없어요.</div>`;
+    return;
+  }
+  const coverPool = envelopeCoverImages.length ? envelopeCoverImages : FALLBACK_IMAGES;
+  grid.innerHTML = gbEntries.map((en, i) => {
+    const coverUrl = coverPool[Math.floor(Math.random() * coverPool.length)];
+    return `
+    <div class="envelope" data-idx="${i}" style="animation-delay:${Math.min(i * 0.04, 0.5)}s;">
+      <div class="envelope-inner">
+        <div class="envelope-face" style="background-image:url('${coverUrl}');">
+          <div class="envelope-name">${escapeHtml(en.name)}</div>
+        </div>
+        <div class="envelope-letter">
+          <div class="envelope-letter-text">${escapeHtml(en.message)}</div>
+          <div class="envelope-letter-name">${escapeHtml(en.name)}</div>
+        </div>
+      </div>
+      <div class="envelope-sparkle-layer"></div>
+    </div>`;
+  }).join('');
 }
-function pvSlidePrev(){
-  pvWrapEl.scrollBy({left: -pvWrapEl.clientWidth * 0.8, behavior:'smooth'});
+
+function fireSnowBurst(layer){
+  if(!layer) return;
+  layer.innerHTML = '';
+  const count = 10;
+  for(let i = 0; i < count; i++){
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = '❄';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 30 + Math.random() * 50;
+    s.style.setProperty('--bx', (Math.cos(angle) * dist) + 'px');
+    s.style.setProperty('--by', (Math.sin(angle) * dist) + 'px');
+    s.style.left = '50%';
+    s.style.top = '50%';
+    s.style.fontSize = (10 + Math.random() * 10) + 'px';
+    s.style.animationDelay = (Math.random() * 0.12) + 's';
+    layer.appendChild(s);
+  }
+  setTimeout(() => { layer.innerHTML = ''; }, 1300);
 }
+
+document.getElementById('envelope-grid').addEventListener('click', (e) => {
+  const env = e.target.closest('.envelope');
+  if(!env) return;
+  const opening = !env.classList.contains('open');
+  env.classList.toggle('open');
+  if(opening){
+    fireSnowBurst(env.querySelector('.envelope-sparkle-layer'));
+  }
+});
+
+const galleryModalOverlay = document.getElementById('gallery-modal-overlay');
+
+function openGalleryModal(){
+  buildEnvelopeGrid();
+  galleryModalOverlay.scrollTop = 0;
+  galleryModalOverlay.classList.add('show');
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+  if(lastFocusedEntryIdx !== null){
+    const targetEnv = document.querySelector(`.envelope[data-idx="${lastFocusedEntryIdx}"]`);
+    if(targetEnv){
+      setTimeout(() => {
+        targetEnv.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 260);
+    }
+  }
+}
+function closeGalleryModal(){
+  galleryModalOverlay.classList.remove('show');
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('gallery-modal-close').addEventListener('click', closeGalleryModal);
+galleryModalOverlay.addEventListener('click', (e) => {
+  if(e.target === galleryModalOverlay) closeGalleryModal();
+});
 </script>
 </body>
 </html>
