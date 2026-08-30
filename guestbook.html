@@ -80,7 +80,8 @@
     position:fixed;inset:0;z-index:-1;
     background:linear-gradient(185deg, rgba(10,18,24,0.54) 0%, rgba(10,18,24,0.6) 40%, rgba(8,14,19,0.78) 100%);
   }
-  .snow-layer{position:fixed;inset:0;z-index:58;pointer-events:none;overflow:hidden;}
+  .snow-layer{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;}
+  .gallery-modal-overlay .modal-snow-layer{position:absolute;inset:0;z-index:0;}
   .snowflake{
     position:absolute;top:-5vh;color:#fff;user-select:none;
     animation-name:snowFall;animation-timing-function:linear;animation-iteration-count:infinite;
@@ -288,6 +289,9 @@
   .msg-slide.card-focus .msg-slide-card{
     box-shadow:0 14px 40px rgba(0,0,0,0.35);
   }
+  .msg-slide-card.mine{
+    border:1px solid var(--accent);
+  }
   .msg-slide-blob{
     position:absolute;width:120%;aspect-ratio:1/1;border-radius:50%;pointer-events:none;
     background:radial-gradient(circle at 35% 35%, rgba(126,200,242,0.5), rgba(126,200,242,0.12) 55%, rgba(126,200,242,0) 76%);
@@ -303,7 +307,7 @@
   .msg-slide-text{position:relative;font-size:16px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;text-align:center;}
   .msg-slide-name{position:relative;font-size:13.5px;font-weight:700;color:var(--accent);letter-spacing:0.3px;
     align-self:flex-end;text-align:right;word-break:break-word;}
-  .msg-slide-name[data-id]{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  .msg-slide-card[data-id]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
   .delete-hint{
     max-width:1040px;margin:10px auto 40px;padding:0 20px;text-align:center;
     font-family:var(--sans);font-size:11px;color:var(--ink-faint);letter-spacing:0.2px;line-height:1.7;
@@ -336,10 +340,10 @@
     display:flex;align-items:center;justify-content:center;
   }
   .credits-modal-close svg{width:16px;height:16px;}
-  .credits-section{margin-top:28px;}
-  .credits-section h3{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--accent);margin:0 0 14px;}
-  .credits-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
-  .credits-list li{font-family:var(--sans);font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .credits-section{margin-top:16px;}
+  .credits-section h3{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--accent);margin:0 0 6px;}
+  .credits-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+  .credits-list li{font-family:var(--sans);font-size:12px;color:var(--ink-soft);line-height:1.5;}
   .credits-list a{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
   .credits-placeholder{color:var(--ink-faint);font-style:italic;}
   .modal-title{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink);margin:0 0 8px;}
@@ -388,7 +392,7 @@
     transition:opacity .3s ease;
   }
   .gallery-modal{
-    max-width:1040px;width:100%;margin:0 auto;position:relative;box-sizing:border-box;
+    max-width:1040px;width:100%;margin:0 auto;position:relative;z-index:1;box-sizing:border-box;
     transform:translateY(16px) scale(0.98);opacity:0;
     transition:transform .4s cubic-bezier(.22,1,.36,1), opacity .32s ease;
   }
@@ -619,13 +623,14 @@
 </div>
 
 <div class="gallery-modal-overlay" id="gallery-modal-overlay">
+  <div class="snow-layer modal-snow-layer" id="modal-snow-layer"></div>
   <div class="gallery-modal">
     <button class="gallery-modal-close" id="gallery-modal-close" aria-label="닫기">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
     <div class="gallery-modal-header">
       <div class="section-label-outer gallery-label-outer">✦ Gentle Warmth Reaching You ✦</div>
-      <p class="gallery-caption">당신에게 닿은 다정한 온기들<br>서언아 생일 축하해!</p>
+      <p class="gallery-caption">서언이에게 닿은 다정한 마음들<br>서언아 생일 축하해!</p>
     </div>
     <div class="envelope-grid" id="envelope-grid"></div>
   </div>
@@ -682,7 +687,7 @@
   <div class="content">
     <div class="section-label-outer">✦ Leave a message ✦</div>
     <div class="glass-card" id="gb-form-section">
-      <h2 class="section-title">이서언이라는 예쁜 이름 위에,<br>당신의 따뜻한 마음을 살포시 올려주세요.</h2>
+      <h2 class="section-title">이서언이라는 예쁜 이름 위에,<br>생일을 축하하는 따뜻한 마음을 남겨주세요.</h2>
       <div class="form-row">
         <label for="gb-name" class="sr-only">닉네임</label>
         <div class="msg-input-wrap msg-input-wrap-name">
@@ -693,7 +698,7 @@
       <div class="form-row">
         <label for="gb-password" class="sr-only">삭제용 비밀번호</label>
         <div class="msg-input-wrap msg-input-wrap-name">
-          <input id="gb-password" type="password" maxlength="50" placeholder="[선택] 비밀번호 (암호화 되어 저장됩니다.)">
+          <input id="gb-password" type="password" maxlength="50" placeholder="[선택] 비밀번호 (삭제 시 필요하며 암호화 되어 저장됩니다.)">
           <div class="msg-input-blob"></div>
         </div>
       </div>
@@ -723,7 +728,7 @@
           공유하기
         </button>
       </div>
-      <div class="share-hint" id="share-hint" style="display:none;">[이미지 저장]을 누르면 마음을 함께해 주신 분들의<br>사진으로 만든 랜덤 배경에 메세지가 담긴 이미지가 만들어져요!<br>사진도 함께 공유해 보세요!◟̆◞̆♡</div>
+      <div class="share-hint" id="share-hint" style="display:none;">[이미지 저장]을 누르면 함께해 주신 분들의 사진으로 만든<br>랜덤 배경에 작성하신 메세지가 담겨 이미지가 만들어져요!<br>사진도 함께 공유해 보세요! ◟̆◞̆♡</div>
       <div class="section-arrow" id="post-submit-arrow" style="display:none;" onclick="revealGallery(event)" aria-label="방명록 보러가기">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </div>
@@ -735,7 +740,7 @@
   <div id="stage-gallery">
   <div class="gallery-header" id="gallery-header">
     <div class="section-label-outer gallery-label-outer">✦ Gentle Warmth Reaching You ✦</div>
-    <p class="gallery-caption">당신에게 닿은 다정한 온기들<br>서언아 생일 축하해!</p>
+    <p class="gallery-caption">서언이에게 닿은 다정한 마음들<br>서언아 생일 축하해!</p>
   </div>
 
   <div class="msg-slider-row" id="msg-slider-row">
@@ -750,15 +755,15 @@
     </button>
   </div>
   <button class="view-all-btn" id="view-all-btn" onclick="openGalleryModal()">메시지 전체보기</button>
-  <p class="delete-hint">닉네임을 10초간 누르면 삭제할 수 있어요. (비밀번호 필요)</p>
+  <p class="delete-hint">카드를 10초간 누르면 삭제할 수 있어요. (비밀번호 필요)<br>작성된 모든 비밀번호는 9월 7일(월) 0:00분에 모두 삭제됩니다.</p>
 
   <div class="thanks-list">
-    <div class="thanks-label">✦이미지 도움 주신 감사한 분들✦</div>
+    <div class="thanks-label">✦ 배경 이미지 도움 주신 감사한 분들 ✦</div>
     <div class="thanks-names" id="thanks-names">…</div>
   </div>
 
   <footer class="site-footer">
-    Made by <a href="https://x.com/eru_eru_25" target="_blank" rel="noopener">@eru_eru_25</a> / <a href="#" onclick="openCreditsModal(event)">출처 보기</a>
+    Made by <a href="https://x.com/eru_eru_25" target="_blank" rel="noopener">@eru_eru_25</a> / <a href="#" onclick="openCreditsModal(event)">사용 리소스</a>
   </footer>
   </div>
 </div>
@@ -782,22 +787,22 @@
 <canvas id="share-canvas" width="1080" height="1080" style="display:none;"></canvas>
 
 <script>
-(function(){
-  const layer = document.getElementById('snow-layer');
-  const count = 34;
+function spawnSnowflakes(layer, count){
+  if(!layer) return;
   for(let i = 0; i < count; i++){
     const flake = document.createElement('div');
     flake.className = 'snowflake';
     flake.textContent = '❄';
     const size = 6 + Math.random() * 12;
-    flake.style.left = (Math.random() * 100) + 'vw';
+    flake.style.left = (Math.random() * 100) + '%';
     flake.style.fontSize = size + 'px';
     flake.style.opacity = (0.35 + Math.random() * 0.5).toFixed(2);
     flake.style.animationDuration = (9 + Math.random() * 10) + 's';
     flake.style.animationDelay = (-Math.random() * 18) + 's';
     layer.appendChild(flake);
   }
-})();
+}
+spawnSnowflakes(document.getElementById('snow-layer'), 34);
 
 const GALLERY_API = 'https://api.github.com/repos/yungyung213/HBDzayne/contents/GB_Gallery';
 const GALLERY_CACHE_KEY = 'akso_gb_gallery_cache_v1';
@@ -1076,6 +1081,14 @@ function typewriterReveal(el){
   }
 })();
 
+let myEntryIds = [];
+try{ myEntryIds = JSON.parse(localStorage.getItem('akso_gb_my_entries') || '[]'); }catch(e){}
+function addMyEntryId(id){
+  if(!id) return;
+  myEntryIds.push(id);
+  try{ localStorage.setItem('akso_gb_my_entries', JSON.stringify(myEntryIds)); }catch(e){}
+}
+
 let returningVisitor = false;
 try{ returningVisitor = localStorage.getItem('akso_gb_visited') === '1'; }catch(e){}
 function markVisited(){
@@ -1191,10 +1204,20 @@ function updateSideNav(){
   });
 }
 
+let navSnapRestoreTimer = null;
 function navGoTo(key){
   if(!isMobileView){
     const el = document.getElementById(NAV_TARGET_IDS[key]);
-    if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    if(el){
+      document.documentElement.classList.add('no-snap');
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+      clearTimeout(navSnapRestoreTimer);
+      navSnapRestoreTimer = setTimeout(() => {
+        if(!wrapEl.querySelector('.msg-slide.card-focus')){
+          document.documentElement.classList.remove('no-snap');
+        }
+      }, 900);
+    }
     return;
   }
   if(key === 'landing'){
@@ -1270,7 +1293,7 @@ const submitBtn = document.getElementById('gb-submit');
 const statusEl = document.getElementById('gb-status');
 const wrapEl = document.getElementById('msg-slider-wrap');
 let cardFocusRevertTimer = null;
-const CARD_FOCUS_MS = 4000;
+const CARD_FOCUS_MS = 6000;
 let lastFocusedEntryIdx = null;
 
 function unfocusCard(slide){
@@ -1302,7 +1325,11 @@ window.addEventListener('mouseup', () => {
   isDragging = false;
   wrapEl.classList.remove('dragging');
   normalizeLoopScroll();
-  setTimeout(startAutoSlide, 700);
+  setTimeout(() => {
+    if(!wrapEl.querySelector('.msg-slide.card-focus')){
+      startAutoSlide();
+    }
+  }, 700);
 });
 
 wrapEl.addEventListener('click', (e) => {
@@ -1344,19 +1371,19 @@ function clearLongPress(){
 }
 
 wrapEl.addEventListener('pointerdown', (e) => {
-  const nameEl2 = e.target.closest('.msg-slide-name[data-id]');
-  if(!nameEl2) return;
+  const cardEl = e.target.closest('.msg-slide-card[data-id]');
+  if(!cardEl) return;
   longPressFired = false;
   longPressTimer = setTimeout(() => {
     longPressFired = true;
-    promptDeleteEntry(nameEl2.dataset.id);
+    promptDeleteEntry(cardEl.dataset.id);
   }, LONG_PRESS_MS);
 });
 ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => {
   wrapEl.addEventListener(evt, clearLongPress);
 });
 wrapEl.addEventListener('click', (e) => {
-  if(longPressFired && e.target.closest('.msg-slide-name[data-id]')){
+  if(longPressFired && e.target.closest('.msg-slide-card[data-id]')){
     e.stopPropagation();
     longPressFired = false;
   }
@@ -1481,12 +1508,13 @@ let gbEntries = [];
 function cardHtml(en, idx){
   const dur = (5 + Math.random() * 6).toFixed(1);
   const delay = (-Math.random() * 8).toFixed(1);
+  const mineClass = myEntryIds.includes(en.id) ? ' mine' : '';
   return `
     <div class="msg-slide" data-idx="${idx}">
-      <div class="msg-slide-card">
+      <div class="msg-slide-card${mineClass}"${en.deletable ? ` data-id="${escapeHtml(en.id)}"` : ''}>
         <div class="msg-slide-blob" style="animation-duration:${dur}s;animation-delay:${delay}s;"></div>
         <div class="msg-slide-text">${escapeHtml(en.message)}</div>
-        <div class="msg-slide-name"${en.deletable ? ` data-id="${escapeHtml(en.id)}"` : ''}>${escapeHtml(en.name)}</div>
+        <div class="msg-slide-name">${escapeHtml(en.name)}</div>
       </div>
     </div>`;
 }
@@ -1529,11 +1557,32 @@ function startAutoSlide(){
   }, 35);
 }
 
+let hasCenteredOnMine = false;
 function initSliderLoop(){
   if(!gbEntries.length) return;
   if(wrapEl.scrollWidth > wrapEl.clientWidth){
     loopSetWidth = wrapEl.scrollWidth / 3;
-    if(wrapEl.scrollLeft < loopSetWidth * 0.5 || wrapEl.scrollLeft > loopSetWidth * 2.5){
+    let targetLeft = loopSetWidth;
+    let centeringOnMine = false;
+    if(!hasCenteredOnMine && myEntryIds.length){
+      const myId = myEntryIds[myEntryIds.length - 1];
+      const myIdx = gbEntries.findIndex(en => en.id === myId);
+      if(myIdx !== -1){
+        const slides = wrapEl.querySelectorAll('.msg-slide');
+        const middleSlide = slides[gbEntries.length + myIdx];
+        if(middleSlide){
+          const wrapRect = wrapEl.getBoundingClientRect();
+          const slideRect = middleSlide.getBoundingClientRect();
+          const cardCenter = (slideRect.left - wrapRect.left) + wrapEl.scrollLeft + slideRect.width / 2;
+          targetLeft = cardCenter - wrapEl.clientWidth / 2;
+          centeringOnMine = true;
+        }
+      }
+      hasCenteredOnMine = true;
+    }
+    if(centeringOnMine){
+      wrapEl.scrollLeft = Math.max(0, targetLeft);
+    } else if(wrapEl.scrollLeft < loopSetWidth * 0.5 || wrapEl.scrollLeft > loopSetWidth * 2.5){
       wrapEl.scrollLeft = loopSetWidth;
     }
     startAutoSlide();
@@ -1622,12 +1671,15 @@ async function submitGuestbook(){
   submitBtn.disabled = true;
 
   try{
-    await fetch(GUESTBOOK_API_URL, {
+    const res = await fetch(GUESTBOOK_API_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ name, message, password })
     });
+    try{
+      const data = await res.json();
+      if(data && data.id) addMyEntryId(data.id);
+    }catch(parseErr){}
     statusEl.textContent = '당신의 마음이 전해졌어요!';
     statusEl.classList.add('ok');
     lastSubmitted = { name, message };
@@ -1838,19 +1890,16 @@ document.getElementById('envelope-grid').addEventListener('click', (e) => {
 
 const galleryModalOverlay = document.getElementById('gallery-modal-overlay');
 
+let modalSnowSpawned = false;
 function openGalleryModal(){
   buildEnvelopeGrid();
   galleryModalOverlay.scrollTop = 0;
   galleryModalOverlay.classList.add('show');
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
-  if(lastFocusedEntryIdx !== null){
-    const targetEnv = document.querySelector(`.envelope[data-idx="${lastFocusedEntryIdx}"]`);
-    if(targetEnv){
-      setTimeout(() => {
-        targetEnv.scrollIntoView({behavior:'smooth', block:'center'});
-      }, 260);
-    }
+  if(!modalSnowSpawned){
+    spawnSnowflakes(document.getElementById('modal-snow-layer'), 24);
+    modalSnowSpawned = true;
   }
 }
 function closeGalleryModal(){
