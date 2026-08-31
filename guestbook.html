@@ -81,7 +81,7 @@
     background:linear-gradient(185deg, rgba(10,18,24,0.54) 0%, rgba(10,18,24,0.6) 40%, rgba(8,14,19,0.78) 100%);
   }
   .snow-layer{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;}
-  .gallery-modal-overlay .modal-snow-layer{position:absolute;inset:0;z-index:0;}
+  .gallery-modal-overlay .modal-snow-layer{position:fixed;inset:0;z-index:0;}
   .snowflake{
     position:absolute;top:-5vh;color:#fff;user-select:none;
     animation-name:snowFall;animation-timing-function:linear;animation-iteration-count:infinite;
@@ -160,25 +160,34 @@
     display:flex;flex-direction:column;align-items:center;gap:14px;
   }
   .side-nav-dot{
-    width:9px;height:9px;padding:0;border-radius:50%;cursor:pointer;
-    border:1px solid var(--glass-border);background:rgba(255,255,255,0.16);
-    display:flex;align-items:center;justify-content:center;color:transparent;font-size:0;
-    transition:background .2s ease, transform .25s ease, color .2s ease, font-size .2s ease;
+    width:26px;height:26px;padding:0;border-radius:50%;cursor:pointer;
+    border:none;background:transparent;position:relative;flex:0 0 auto;
+    display:block;color:transparent;font-size:0;
+    transition:color .2s ease, font-size .2s ease, transform .25s ease;
   }
-  .side-nav-dot:hover{background:rgba(255,255,255,0.32);}
+  .side-nav-dot::after{
+    content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:9px;height:9px;border-radius:50%;
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.16);
+    transition:background .2s ease, opacity .2s ease;
+  }
+  .side-nav-dot:hover::after{background:rgba(255,255,255,0.32);}
   .side-nav-dot.locked{opacity:0.28;cursor:default;pointer-events:none;}
   .side-nav-dot.active{
-    width:auto;height:auto;background:transparent;border-color:transparent;
-    color:var(--accent);font-size:13px;transform:scale(1.05);
+    color:var(--accent);font-size:18px;transform:scale(1.05);
   }
-  .side-nav-dot.active::before{content:'❄';}
+  .side-nav-dot.active::after{opacity:0;}
+  .side-nav-dot.active::before{
+    content:'❄';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  }
   @media(min-width:641px){
     .side-nav-dot[data-section="lovenote"]{display:none;}
   }
   @media(max-width:640px){
     .side-nav{right:9px;top:64px;transform:none;gap:11px;}
-    .side-nav-dot{width:8px;height:8px;}
-    .side-nav-dot.active{font-size:11px;}
+    .side-nav-dot{width:22px;height:22px;}
+    .side-nav-dot::after{width:7px;height:7px;}
+    .side-nav-dot.active{font-size:15px;}
   }
   .hero-eyebrow-arc{position:relative;z-index:1;width:min(64vw,260px);aspect-ratio:320/56;height:auto;margin:0 auto -6px;display:block;}
   .hero-eyebrow-arc text{
@@ -322,10 +331,10 @@
     position:absolute;inset:0;border-radius:22px;
     background:rgba(8,14,19,0.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
     display:none;align-items:center;justify-content:center;
-    font-size:34px;color:var(--accent);
+    font-size:34px;color:#ffffff;
   }
   .modal-loading.show{display:flex;}
-  .credits-modal-card{max-width:400px;max-height:80vh;overflow-y:auto;text-align:left;}
+  .credits-modal-card{max-width:460px;max-height:80vh;overflow-y:auto;text-align:left;padding:32px 30px 44px;}
   .credits-modal-close{
     position:absolute;top:14px;right:14px;width:32px;height:32px;
     cursor:pointer;color:var(--ink);background:transparent;border:none;
@@ -469,6 +478,19 @@
   .msg-input-wrap textarea{padding-bottom:30px;resize:vertical;}
   .msg-input-wrap textarea::placeholder, .msg-input-wrap input::placeholder{color:rgba(255,255,255,0.55);}
   .msg-input-wrap textarea:focus, .msg-input-wrap input:focus{outline:2px solid var(--accent);}
+  .gb-password-marquee{
+    display:none;position:absolute;inset:0;align-items:center;overflow:hidden;
+    pointer-events:none;
+  }
+  .gb-password-marquee span{
+    display:inline-block;white-space:nowrap;font-size:14px;font-family:var(--sans);
+    color:rgba(255,255,255,0.55);padding-left:100%;
+    animation:pwMarquee 10s linear infinite;
+  }
+  @keyframes pwMarquee{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-100%);}
+  }
   .form-row textarea{min-height:110px;line-height:1.6;}
   .char-count{
     position:absolute;right:14px;bottom:8px;text-align:right;
@@ -517,6 +539,8 @@
   .thanks-label{font-family:var(--sans);font-size:13px;color:var(--accent);letter-spacing:0.3px;margin-bottom:3px;}
   .thanks-names{font-family:var(--sans);font-size:12px;color:var(--ink-faint);line-height:1.5;transition:opacity .5s ease;}
   .thanks-names.fading{opacity:0;}
+  /* 모바일 너비에서 열린 뒤 창을 늘려도(리사이즈) row로 깨지지 않도록, 방향만 항상 고정 (높이/정렬은 PC의 .scene 통합 섹션과 충돌하므로 모바일 전용으로 유지) */
+  .love-note, #stage-form, #stage-gallery{flex-direction:column;}
   @media(max-width:480px){
     .landing{padding:0 16px 48px;}
     .content-head{padding:44px 16px 4px;}
@@ -527,23 +551,27 @@
     .slider-arrow svg{width:16px;height:16px;}
     .msg-slider-wrap{gap:10px;padding:20px 6px 24px;}
     .msg-slide{width:50vw;}
-    .msg-slide-card{aspect-ratio:13/18;min-height:0;padding:16px 14px;}
+    .msg-slide-card{aspect-ratio:13/19;min-height:0;padding:16px 14px;}
     .msg-slide-text{font-size:13px;line-height:1.55;}
   }
   @media(max-width:640px){
-    .love-note, #stage-form, #stage-gallery{display:none;opacity:0;transition:opacity .6s ease;}
-    .love-note{min-height:100vh;min-height:100dvh;display:none;flex-direction:column;justify-content:center;box-sizing:border-box;}
-    #stage-form{min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;box-sizing:border-box;}
-    #stage-gallery{min-height:100vh;min-height:100dvh;min-height:100svh;flex-direction:column;justify-content:center;box-sizing:border-box;}
-    .msg-slider-row{max-width:100%;padding:0 6px;gap:6px;}
+    .love-note, #stage-form, #stage-gallery{display:none;opacity:0;transition:opacity .6s ease;justify-content:center;box-sizing:border-box;min-height:100vh;min-height:100dvh;}
+    #stage-gallery{min-height:100svh;}
+    .love-note{display:none;}
+    .gallery-caption{margin-bottom:12px;}
+    .msg-slider-row{max-width:100%;padding:0 6px;gap:6px;margin-top:6px;}
     .msg-slide{width:52vw;}
     .msg-slide.card-focus{transform:scale(1.12);z-index:2;margin:0 8px;}
-    .msg-slide-card{aspect-ratio:13/18;min-height:0;padding:18px 16px;}
+    .msg-slide-card{aspect-ratio:13/19;min-height:0;padding:18px 16px;}
     .msg-slide-text{font-size:13.5px;}
     .slider-arrow{width:32px;height:32px;}
     .thanks-list{padding-top:14px;}
     .site-footer{padding-top:5px;}
-    .envelope{width:min(76vw, calc(100vw - 64px));}
+    .envelope-grid{gap:10px;padding:14px 6px 32px;}
+    .envelope{width:calc(50vw - 34px);}
+    #gb-password::placeholder{color:transparent;}
+    .gb-password-marquee{display:flex;}
+    #gb-password:not(:placeholder-shown) ~ .gb-password-marquee{display:none;}
   }
   @media(min-width:641px){
     .section-arrow{display:none;}
@@ -556,6 +584,9 @@
     html.no-snap, html.no-snap body{scroll-snap-type:none;}
     .scene{scroll-snap-align:center;scroll-snap-stop:always;}
     .delete-hint{margin-top:22px;}
+    /* PC: 창을 가로로 넓히면 그만큼 카드가 당겨져 채워지도록 그리드로 전환 */
+    .envelope-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+    .envelope{width:100%;max-width:300px;justify-self:center;}
   }
 </style>
 </head>
@@ -586,7 +617,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
     <div class="modal-title">사용 리소스 및 출처</div>
-    <p class="modal-desc">이 웹페이지에는 다음과 같은 외부 리소스가 사용되었습니다. 각 저작물의 권리는 해당 제작자 및 제공처에 있습니다.<br>사용 리소스는 비영리 목적으로 사용되었으며 문제 시 삭제하겠습니다.</p>
+    <p class="modal-desc">이 웹페이지에는 다음과 같은 외부 리소스가 사용되었습니다.<br>각 저작물의 권리는 해당 제작자 및 제공처에 있습니다.<br>사용 리소스는 비영리 목적으로 사용되었으며 문제 시 삭제하겠습니다.</p>
     <div class="credits-section">
       <h3>폰트</h3>
       <ul class="credits-list">
@@ -606,7 +637,6 @@
       <h3>이미지</h3>
       <ul class="credits-list">
         <li>카드 내 이미지 : <a href="https://www.pexels.com/ko-kr/" target="_blank" rel="noopener">pexels</a></li>
-        <li>눈 플레이크 : <a href="https://kr.pinterest.com/pin/674414112995032140/" target="_blank" rel="noopener">Pinterest</a></li>
         <li>눈결정 : <a href="https://kr.pinterest.com/pin/1149543873634254565/" target="_blank" rel="noopener">Pinterest</a></li>
         <li>눈결정(목도리) : <a href="https://kr.pinterest.com/pin/635922409919795191/" target="_blank" rel="noopener">Pinterest</a></li>
       </ul>
@@ -692,6 +722,7 @@
         <div class="msg-input-wrap msg-input-wrap-name">
           <input id="gb-password" type="password" maxlength="50" placeholder="[선택] 비밀번호 (삭제 시 필요하며 암호화 되어 저장됩니다.)">
           <div class="msg-input-blob"></div>
+          <div class="gb-password-marquee" id="gb-password-marquee" aria-hidden="true"><span>[선택] 비밀번호 (삭제 시 필요하며 암호화 되어 저장됩니다.)</span></div>
         </div>
       </div>
       <div class="form-row form-row-message">
@@ -720,7 +751,7 @@
           공유하기
         </button>
       </div>
-      <div class="share-hint" id="share-hint" style="display:none;">[이미지 저장]을 누르면 함께해 주신 분들의 사진으로 만든<br>랜덤 배경에 작성하신 메세지가 담겨 이미지가 만들어져요!<br>사진도 함께 공유해 보세요! ◟̆◞̆♡</div>
+      <div class="share-hint" id="share-hint" style="display:none;">[이미지 저장]을 누르면 함께해 주신 분들의 사진으로 만든<br>랜덤 배경에 작성하신 메세지가 담겨 이미지가 만들어져요!<br>사진도 함께 공유해 보세요! ⟡</div>
       <div class="section-arrow" id="post-submit-arrow" style="display:none;" onclick="revealGallery(event)" aria-label="방명록 보러가기">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </div>
@@ -1720,7 +1751,7 @@ function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
   return lines.length;
 }
 
-function drawShareCanvas(name, message, bgImage){
+function drawShareCanvas(name, message, bgImage, bgUrl){
   const canvas = document.getElementById('share-canvas');
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
@@ -1736,10 +1767,12 @@ function drawShareCanvas(name, message, bgImage){
     ctx.fillRect(0, 0, W, H);
   }
   const SCALE = W / 800;
-  const boxLeft = 70 * SCALE;
-  const boxWidth = 330 * SCALE;
+  // GB_back_9 배경 이미지 사용 시에만 텍스트 위치를 다르게 (그 외에는 기존 위치 그대로 고정)
+  const isBack9 = !!(bgUrl && /GB_back_9/i.test(bgUrl));
+  const boxLeft = (isBack9 ? 40 : 70) * SCALE;
+  const boxWidth = (isBack9 ? 720 : 330) * SCALE;
   const boxCenterX = boxLeft + boxWidth / 2;
-  const msgStartY = 490 * SCALE;
+  const msgStartY = (isBack9 ? 540 : 490) * SCALE;
   const nameGap = 37 * SCALE;
   const nameFontSize = 16 * SCALE;
   const bottomSafeY = H - 60 * SCALE;
@@ -1787,11 +1820,11 @@ async function withShareImage(callback){
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
-    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, img);
+    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, img, bgUrl);
     callback(canvas);
   };
   img.onerror = () => {
-    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, null);
+    const canvas = drawShareCanvas(lastSubmitted.name, lastSubmitted.message, null, bgUrl);
     callback(canvas);
   };
   img.src = bgUrl;
@@ -1820,8 +1853,22 @@ function buildEnvelopeGrid(){
     return;
   }
   const coverPool = envelopeCoverImages.length ? envelopeCoverImages : FALLBACK_IMAGES;
+  // 같은 줄에 같은 이미지가 겹치지 않도록, 최근 사용한 이미지는 피해서 선택
+  const recentWindow = Math.max(0, Math.min(6, coverPool.length - 1));
+  const recentCovers = [];
   grid.innerHTML = gbEntries.map((en, i) => {
-    const coverUrl = coverPool[Math.floor(Math.random() * coverPool.length)];
+    let coverUrl;
+    if(coverPool.length <= 1){
+      coverUrl = coverPool[0];
+    } else {
+      let tries = 0;
+      do {
+        coverUrl = coverPool[Math.floor(Math.random() * coverPool.length)];
+        tries++;
+      } while(recentCovers.includes(coverUrl) && tries < 12);
+    }
+    recentCovers.push(coverUrl);
+    if(recentCovers.length > recentWindow) recentCovers.shift();
     return `
     <div class="envelope" data-idx="${i}" style="animation-delay:${Math.min(i * 0.04, 0.5)}s;">
       <div class="envelope-inner">
