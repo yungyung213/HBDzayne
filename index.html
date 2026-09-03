@@ -200,14 +200,14 @@
   .dash-sidebar .menu-item{padding:0 4px;margin:0 14px;height:44px;flex:0 0 auto;align-self:center;display:flex;align-items:center;font-size:var(--fs-14);font-weight:600;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;border-radius:6px 6px 0 0;}
   .dash-sidebar .menu-item:hover{color:var(--mint-dark);background:var(--mint-hover);}
   .dash-sidebar .menu-item.active{background:transparent;color:var(--mint-600);border-bottom-color:var(--mint-600);font-weight:700;}
-  .dash-nav-overlay{display:none;position:fixed;inset:0;background:rgba(15,20,30,0.42);z-index:199;}
-  .dash-nav-overlay.open{display:block;}
+  .dash-nav-overlay{position:fixed;inset:0;background:rgba(15,20,30,0.42);z-index:199;opacity:0;visibility:hidden;transition:opacity .4s ease, visibility .4s ease;}
+  .dash-nav-overlay.open{opacity:1;visibility:visible;}
   .dash-main{flex:1;padding:16px 32px 48px;overflow-y:visible;width:100%;box-sizing:border-box;}
   .dash-notice{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:22px 22px;margin-bottom:20px;}
 
   /* 메인 배너 + 프로필 카드 + 방명록 위젯 레이아웃 */
-  .hero-stack{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,0.75fr);grid-template-areas:"banner profile" "msgcard msgcard";gap:24px;margin-bottom:24px;}
-  .hero-banner{grid-area:banner;position:relative; border-radius:20px; overflow:hidden; min-height:680px; max-height:820px; height:74vh; box-shadow:var(--shadow-elevated); background:#0F1B2A;}
+  .hero-stack{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,0.75fr);grid-template-areas:"banner profile" "msgcard msgcard";gap:24px;margin-bottom:24px;align-items:start;}
+  .hero-banner{grid-area:banner;position:relative; border-radius:20px; overflow:hidden; min-height:680px; max-height:880px; height:clamp(680px,47vw,880px); box-shadow:var(--shadow-elevated); background:#0F1B2A;}
   .hero-banner-slides{position:absolute; inset:0;}
   .hero-banner-slide{position:absolute; inset:0; background-size:cover; background-position:center center; opacity:0; transition:opacity 1.4s ease;}
   .hero-banner-slide.active{opacity:1; z-index:1;}
@@ -228,10 +228,10 @@
   @media (max-width:859px), (orientation:portrait){
     .hero-banner-slide2{background-image:url('https://raw.githubusercontent.com/yungyung213/HBDzayne/main/banner_img/banner_5.png');}
   }
-  .hero-profile{grid-area:profile;background:#fff; border:1px solid var(--border); border-radius:16px;padding:24px; box-shadow:var(--shadow-card);display:flex; flex-direction:column;min-height:680px; max-height:820px; height:74vh;}
+  .hero-profile{grid-area:profile;background:#fff; border:1px solid var(--border); border-radius:16px;padding:24px; box-shadow:var(--shadow-card);display:flex; flex-direction:column;min-height:680px; max-height:880px; height:clamp(680px,47vw,880px);overflow:hidden;}
   .profile-photo-wrap{position:relative; flex:0 0 auto; width:100%; margin-bottom:16px; display:flex;}
   .profile-photo{position:relative;flex:none; width:100%; aspect-ratio:4/5; max-height:100%; border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:var(--fs-12);font-weight:600;overflow:hidden; background:#F5F7F9;}
-  .profile-photo img{width:100%;height:100%;object-fit:contain;}
+  .profile-photo img{width:100%;height:100%;object-fit:cover;}
   .profile-photo-badge{position:absolute; top:10px; right:10px;height:30px;width:auto;display:flex;align-items:center;justify-content:center;overflow:visible;}
   .profile-photo-badge img{height:100%;width:auto;object-fit:contain;display:block;}
   .profile-info-col{display:contents;}
@@ -265,10 +265,8 @@
     .hero-banner-content{padding:20px 20px 24px;}
     .hero-banner-dots{right:20px; bottom:16px;}
   }
-  /* 아이패드 등 가로모드(짧은 세로 높이)에서 상단 메뉴에 배너가 가리지 않도록 배율 축소 */
-  @media (orientation:landscape) and (max-height:900px){
-    .hero-banner{min-height:0; height:56vh; max-height:520px;}
-    .hero-profile{min-height:0; height:56vh; max-height:520px;}
+  /* 가로 화면에서도 프로필 사진과 세로형 정보 배치를 유지한다. */
+  @media (orientation:landscape) and (max-height:900px) and (max-width:1400px){
     .hero-banner-content{padding:28px 32px;}
     .hero-banner-title{font-size:clamp(18px,2.6vw,30px);}
   }
@@ -285,6 +283,8 @@
   .gb-more-link:hover{color:var(--mint-dark);}
   .gb-empty{font-size:var(--fs-13); color:var(--text-muted2); text-align:center; padding:6px 0;}
   .dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner, #section-column{scroll-margin-top: 112px;}
+  .scroll-reveal{opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease;}
+  .scroll-reveal.revealed{opacity:1; transform:translateY(0);}
   @media (max-width:480px){.dash-notice, .schedule-section, .mail-section, #section-patient-chart, #hero-banner, #section-column{ scroll-margin-top: 12px; }}
   .dash-notice h3{font-size:var(--fs-16);margin:0 0 8px;color:var(--navy-800);display:flex;align-items:center;gap:6px;font-weight:700;}
   .notice-row{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:8px 0;border-bottom:1px solid var(--divider);font-size:var(--fs-14);color:var(--text-dark);}
@@ -318,10 +318,13 @@
 
   /* 우하단 플로팅 메신저 버블 */
   .msg-widget{display:none;position:fixed;bottom:46px;right:20px;z-index:80;}
-  .msg-bubble{width:44px;height:44px;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;transition:transform .15s;font-size:18px;}
-  .msg-bubble:hover{transform:scale(1.05);}
-  .scroll-top-btn{position:fixed; z-index:95; right:20px; bottom:102px; width:44px; height:44px; border-radius:50%; background:#fff; border:1px solid var(--border);box-shadow:0 4px 14px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; cursor:pointer;color:var(--navy-800); opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .2s, transform .2s, visibility .2s;}
+  .msg-bubble{width:44px;height:44px;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;transition:transform .15s, box-shadow .15s;font-size:18px;}
+  .msg-bubble:hover{transform:scale(1.05); box-shadow:0 6px 20px rgba(0,0,0,0.32);}
+  .msg-bubble:active{transform:scale(0.94); box-shadow:0 3px 10px rgba(0,0,0,0.28);}
+  .scroll-top-btn{position:fixed; z-index:95; right:20px; bottom:102px; width:44px; height:44px; border-radius:50%; background:#fff; border:1px solid var(--border);box-shadow:0 4px 14px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; cursor:pointer;color:var(--navy-800); opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .2s, transform .2s, visibility .2s, box-shadow .15s;}
   .scroll-top-btn.show{opacity:1; visibility:visible; transform:translateY(0);}
+  .scroll-top-btn.show:hover{transform:scale(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.28);}
+  .scroll-top-btn.show:active{transform:scale(0.94); box-shadow:0 3px 10px rgba(0,0,0,0.22);}
   .msg-bubble .badge-count{position:absolute;top:-3px;right:-3px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
   .msg-panel{position:fixed;bottom:124px;right:20px;width:420px;height:560px;min-width:280px;min-height:340px;max-width:88vw;max-height:70vh;background:#fff;border-radius:var(--radius-md);box-shadow:0 10px 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;z-index:80;border:none;}
   .msg-resize-edge{position:absolute;z-index:6;}
@@ -379,8 +382,17 @@
   .help-icon:hover{background:var(--mint-100);color:var(--mint-600);}
   .help-popup{margin:-12px 0 16px;font-size:var(--fs-13);color:#00819E;background:var(--mint-100);border:1px solid #B8ECF5;border-radius:var(--radius-sm);padding:10px 14px;line-height:1.6;}
 
+  .split-word{display:inline-block; opacity:0; transform:translateY(14px); animation:splitWordIn .7s ease forwards;}
+  @keyframes splitWordIn{ to{opacity:1; transform:translateY(0);} }
   .field-error{font-size:var(--fs-12);color:var(--danger);margin-top:6px;min-height:14px;opacity:0;transition:opacity .15s;}
   .field-error.show{opacity:1;}
+  @keyframes fieldShake{
+    10%,90%{transform:translateX(-1px);}
+    20%,80%{transform:translateX(2px);}
+    30%,50%,70%{transform:translateX(-4px);}
+    40%,60%{transform:translateX(4px);}
+  }
+  .shake{animation:fieldShake .45s cubic-bezier(.36,.07,.19,.97) both;}
   input.invalid, select.invalid{border-color:var(--danger) !important; background:#FDF3F3;}
   .choice.incorrect{border-color:var(--danger); background:#FDF3F3;}
   .choice.incorrect .radio{border-color:var(--danger);}
@@ -563,6 +575,7 @@
     .dash-topbar .brand{font-size:var(--fs-12);}
     .dash-topbar .brand .mark{height:28px;}
     .dash-topbar .meta{font-size:var(--fs-10); margin-left:auto;}
+    .dash-topbar .meta #dash-datetime-wrap{display:none;}
     .dash-main{padding:16px 16px 44px !important;}
     .msg-panel{position:fixed; top:50%; left:50%; right:auto; bottom:auto;transform:translate(-50%,-50%);width:90vw; max-width:360px; height:70vh; max-height:78vh; overflow:hidden;}
     .msg-resize-edge{display:none;}
@@ -590,7 +603,7 @@
       width:78vw !important; max-width:280px; height:100vh !important;
       background:#fff !important; flex-direction:column !important; align-items:stretch !important; justify-content:flex-start !important;
       overflow-y:auto !important; overflow-x:hidden !important; padding:70px 0 20px !important; z-index:200 !important;
-      box-shadow:2px 0 20px rgba(0,0,0,0.18); transform:translateX(-100%); transition:transform .25s ease; border-bottom:none !important;
+      box-shadow:2px 0 20px rgba(0,0,0,0.18); transform:translateX(-100%); transition:transform .48s cubic-bezier(.32,.72,0,1); border-bottom:none !important;
     }
     .dash-sidebar.open{transform:translateX(0);}
     .dash-sidebar .menu-item{
@@ -827,9 +840,9 @@
           <div class="menu-item active" onclick="switchDashView('default', this, 'section-patient-chart')">환자차트</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-schedule')">진료 스케줄</div>
           <div class="menu-item" onclick="switchDashView('default', this, 'section-mail')">메일함</div>
-          <div class="menu-item" onclick="switchDashView('default', this, 'section-attendance')">인사/근태</div>
+          <div class="menu-item" onclick="switchDashView('default', this, 'section-attendance')">스케줄</div>
         </div>
-        <div class="meta"><span id="dash-datetime"></span> · 인증 세션 <span id="dash-timer" class="timer">59:59</span> · <a href="#" class="topbar-logout" onclick="logoutIntranet(); return false;">로그아웃</a></div>
+        <div class="meta"><span id="dash-datetime-wrap"><span id="dash-datetime"></span> · </span>인증 세션 <span id="dash-timer" class="timer">59:59</span> · <a href="#" class="topbar-logout" onclick="logoutIntranet(); return false;">로그아웃</a></div>
       </div>
       <div class="dash-nav-overlay" id="dash-nav-overlay" onclick="toggleNavDrawer(false)"></div>
       <div class="dash-body">
@@ -907,24 +920,24 @@
             </div>
           </div>
 
-          <div class="dash-notice" id="section-notice">
+          <div class="dash-notice scroll-reveal" id="section-notice">
             <h3>공지사항</h3>
             <div id="notice-board"></div>
           </div>
 
-          <div class="column-section" id="section-column">
+          <div class="column-section scroll-reveal" id="section-column">
             <h3>메디컬럼</h3>
             <div class="column-list" id="column-list"></div>
           </div>
 
-          <div class="mail-section" id="section-patient-chart">
+          <div class="mail-section scroll-reveal" id="section-patient-chart">
             <div class="mail-section-head">
               <h3>담당 환자 차트</h3>
             </div>
             <div id="frequent-patient-list" class="patient-list"></div>
           </div>
 
-          <div class="schedule-section" id="section-schedule">
+          <div class="schedule-section scroll-reveal" id="section-schedule">
             <div class="schedule-section-head">
               <h3>진료 스케쥴</h3>
               <div class="schedule-legend">
@@ -976,7 +989,7 @@
             </div>
           </div>
 
-          <div class="mail-section" id="section-mail">
+          <div class="mail-section scroll-reveal" id="section-mail">
             <div class="mail-section-head">
               <h3>메일함</h3>
             </div>
@@ -988,12 +1001,12 @@
             </div>
           </div>
 
-          <div class="mail-section" id="section-attendance">
+          <div class="mail-section scroll-reveal" id="section-attendance">
             <div class="mail-section-head">
               <h3>근태관리</h3>
             </div>
             <div class="dash-grid" style="margin-bottom:14px;">
-              <div class="stat-card"><span class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7"></path><path d="M9 22V12h6v10"></path><path d="M5 10v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"></path></svg></span><div><div class="label">금일 출근</div><div class="value" style="font-size:var(--fs-16);">휴무 (주말)</div></div></div>
+              <div class="stat-card"><span class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7"></path><path d="M9 22V12h6v10"></path><path d="M5 10v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"></path></svg></span><div><div class="label">금일 출근</div><div class="value" style="font-size:var(--fs-16); color:var(--danger);">외부 지원</div></div></div>
               <div class="stat-card"><span class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4.5 2.5-7 6-7 10.5A7 7 0 0 0 12 20a7 7 0 0 0 7-6.5C19 9 16.5 5.5 12 3z"></path><line x1="12" y1="20" x2="12" y2="10"></line></svg></span><div><div class="label">잔여 연차</div><div class="value">9.5일</div></div></div>
             </div>
             <div class="chart-card" style="margin-bottom:14px;">
@@ -1018,7 +1031,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">09-05 (토)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:#8B95A1; font-weight:600;">휴무</td></tr>
+                <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">09-05 (토)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-muted);">-</td><td style="padding:8px 10px; border-bottom:1px solid var(--border); color:var(--danger); font-weight:600;">외부지원</td></tr>
                 <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">09-04 (금)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:48</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">23:16</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
                 <tr><td style="padding:8px 10px; border-bottom:1px solid var(--border);">09-03 (목)</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">07:55</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">22:48</td><td style="padding:8px 10px; border-bottom:1px solid var(--border);">정상</td></tr>
                 <tr><td style="padding:8px 10px;">09-02 (수)</td><td style="padding:8px 10px;">07:41</td><td style="padding:8px 10px;">23:02</td><td style="padding:8px 10px;">정상</td></tr>
@@ -1207,12 +1220,16 @@ function isZayneName(val){
 function handleLogin(){
   const name = document.getElementById('in-name').value.trim();
   const empid = document.getElementById('in-empid').value.trim();
-  if(isZayneName(name) && empid === '002571'){
+  const nameOk = isZayneName(name);
+  const empidOk = empid === '002571';
+  if(nameOk && empidOk){
     state.user = {name, empid};
     document.getElementById('login-error').style.display = 'none';
     document.getElementById('notice-reissue').classList.remove('hidden');
   } else {
     document.getElementById('login-error').style.display = 'block';
+    if(!nameOk) shakeField(document.getElementById('in-name').closest('.field'));
+    if(!empidOk) shakeField(document.getElementById('in-empid').closest('.field'));
   }
 }
 
@@ -1264,30 +1281,45 @@ function showIdStep(idx){
   renderIdDots();
 }
 
+// 오답 시 흔들림 효과: 대상 요소에 shake 클래스를 다시 걸어 애니메이션을 재생
+function shakeField(el){
+  if(!el) return;
+  el.classList.remove('shake');
+  void el.offsetWidth; // reflow로 애니메이션 재시작 보장
+  el.classList.add('shake');
+}
+
 // 4단계 정답값은 전부 하드코딩
 function validateIdStep(idx){
   if(idx === 0){
-    const val = document.getElementById('id-name').value.trim();
+    const nameEl = document.getElementById('id-name');
+    const val = nameEl.value.trim();
     const ok = isZayneName(val);
     document.getElementById('id-name-error').classList.toggle('show', !ok);
+    if(!ok) shakeField(nameEl);
     return ok;
   }
   if(idx === 1){
     const ok = (state.birthday.m === 9 && state.birthday.d === 5);
     const errEl = document.getElementById('id-birthday-error');
     if(errEl) errEl.classList.toggle('show', !ok);
+    if(!ok) shakeField(document.querySelector('#id-step-1 .wheel-row'));
     return ok;
   }
   if(idx === 2){
-    const val = document.getElementById('id-dept').value;
+    const deptEl = document.getElementById('id-dept');
+    const val = deptEl.value;
     const ok = val === '심장외과';
     document.getElementById('id-dept-error').classList.toggle('show', !ok);
+    if(!ok) shakeField(deptEl);
     return ok;
   }
   if(idx === 3){
-    const val = document.getElementById('id-empid2').value.trim();
+    const empEl = document.getElementById('id-empid2');
+    const val = empEl.value.trim();
     const ok = val === '002571';
     document.getElementById('id-empid2-error').classList.toggle('show', !ok);
+    if(!ok) shakeField(empEl);
     return ok;
   }
   return true;
@@ -1382,6 +1414,7 @@ document.getElementById('quiz-region-list').addEventListener('click', e => {
   const regionErrorEl = document.getElementById('quiz-region-error');
   regionErrorEl.textContent = (c.dataset.value === '서울시') ? '당신의 세계관이 아닙니다.' : (c.dataset.value === '천운시') ? '그녀의 오빠의 구역입니다.' : '틀렸습니다. 다시 선택해주세요.';
   regionErrorEl.classList.toggle('show', !correct);
+  if(!correct) shakeField(c);
   quizAnswers.region = c.dataset.value;
   document.getElementById('quiz-next-btn').disabled = false;
 });
@@ -1394,6 +1427,7 @@ document.getElementById('quiz-food-list').addEventListener('click', e => {
   const foodErrorEl = document.getElementById('quiz-food-error');
   foodErrorEl.textContent = (c.dataset.value === '당근') ? '당신이 좋아해야 할 음식입니다.' : (c.dataset.value === '당근 케이크') ? '당신이 먹어줬으면 하는 음식입니다.' : '';
   foodErrorEl.classList.toggle('show', !correct);
+  if(!correct) shakeField(c);
   quizAnswers.food = c.dataset.value;
   document.getElementById('quiz-next-btn').disabled = false;
 });
@@ -1442,6 +1476,7 @@ function enterDashboard(){
   loadGuestbookWidget();
   initHeroBanner();
   renderColumns();
+  initScrollReveal();
   go('screen-dashboard');
   startDashboardClocks();
   try{
@@ -2446,14 +2481,25 @@ function renderMailList(){
   if(mainList){
     const tbody = mainList.querySelector('tbody');
     tbody.innerHTML = '';
-    MAIL_DATA.slice(0, 20).forEach((mail, idx)=> tbody.appendChild(buildMailRow(mail, idx)));
-    if(MAIL_DATA.length > 20){
+    const visibleCount = 13;
+    MAIL_DATA.forEach((mail, idx)=> {
+      const row = buildMailRow(mail, idx);
+      if(idx >= visibleCount) row.classList.add('mail-row-folded', 'hidden');
+      tbody.appendChild(row);
+    });
+    if(MAIL_DATA.length > visibleCount){
       const more = document.createElement('tr');
       const td = document.createElement('td');
       td.colSpan = 4;
       td.style.cssText = 'text-align:center;padding:10px 0 2px;font-size:var(--fs-12);color:var(--mint-600);font-weight:600;cursor:pointer;';
       td.textContent = `메일함 전체 보기 (${MAIL_DATA.length}) →`;
-      td.onclick = () => document.querySelector('.dash-sidebar .menu-item[onclick*="section-mail"]').click();
+      td.dataset.expanded = '0';
+      td.onclick = () => {
+        const expanded = td.dataset.expanded === '1';
+        tbody.querySelectorAll('.mail-row-folded').forEach(r => r.classList.toggle('hidden', expanded));
+        td.dataset.expanded = expanded ? '0' : '1';
+        td.textContent = expanded ? `메일함 전체 보기 (${MAIL_DATA.length}) →` : '접어두기 ↑';
+      };
       more.appendChild(td);
       tbody.appendChild(more);
     }
@@ -2796,6 +2842,28 @@ async function loadGuestbookWidget(){
 }
 setInterval(loadGuestbookWidget, 8000);
 
+// 내부 섹션 스크롤 리빌
+let scrollRevealInit = false;
+function initScrollReveal(){
+  if(scrollRevealInit) return;
+  scrollRevealInit = true;
+  const targets = document.querySelectorAll('.scroll-reveal');
+  if(!targets.length) return;
+  if(!('IntersectionObserver' in window)){
+    targets.forEach(el => el.classList.add('revealed'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => observer.observe(el));
+}
+
 // 메인 배너 슬라이드
 let heroBannerTimer = null;
 let heroSlideIdx = 0;
@@ -2833,6 +2901,28 @@ function goToHeroSlide(idx){
   heroSlideIdx = idx;
   slides[heroSlideIdx].classList.add('active');
   if(dots[heroSlideIdx]) dots[heroSlideIdx].classList.add('active');
+  // 배너 2·3·4번(인덱스 1~3)만 텍스트 split-reveal 적용 (1번 긴급 슬라이드는 제외)
+  if(heroSlideIdx >= 1 && heroSlideIdx <= 3){
+    triggerSplitReveal(slides[heroSlideIdx]);
+  }
+}
+function triggerSplitReveal(slideEl){
+  if(!slideEl) return;
+  const targets = slideEl.querySelectorAll('.hero-banner-title, .hero-banner-msg');
+  targets.forEach(el => {
+    if(!el.dataset.splitOriginal) el.dataset.splitOriginal = el.innerHTML;
+    const lines = el.dataset.splitOriginal.split(/<br\s*\/?>/i);
+    let delay = 0;
+    const built = lines.map(line => {
+      const words = line.trim().split(/\s+/).filter(Boolean);
+      return words.map(w => {
+        const span = `<span class="split-word" style="animation-delay:${delay}ms">${w}</span>`;
+        delay += 110;
+        return span;
+      }).join(' ');
+    }).join('<br>');
+    el.innerHTML = built;
+  });
 }
 function initHeroSwipe(){
   const wrap = document.getElementById('hero-banner-slides');
@@ -2924,6 +3014,13 @@ const DEPLOYMENT_LETTER = `<p>서언 오빠,</p>
 <p>같은 곳으로 가게 되다니! 정말 큰 행운이야! 그곳에서도 오빠가 곁에 있어준다니! 우리 꼭 함께 무사히 돌아오자.</p>
 <p>조금 늦어져도 괜찮으니까, 우리 돌아오면 제대로 다시 축하하자.<br>준비한 것들은 그때 제대로 보여줄게!</p>
 <p>생일 진심으로 축하해.<br>사랑해, 이서언</p>`;
+<p>사실 곽헌 선생님, 소원 간호사님과 함께 오빠 몰래 작은 파티를 준비하고 있었어. 분명 티가 났을 텐데 모른 척해 준 거지? 오빠가 기뻐할 모습을 상상하면서 잔뜩 들떠 있었는데, 그날 레스토랑에서 받은 연락 하나로 계획이 전부 미뤄져 버렸네.</p>
+<p>처음엔 하필 생일에 떠나야 한다는게 너무 속상했는데, 우리 생각보다 꽤 즐겁게 보낸거 같지? 떠나기 전까지 병원에서 사람들을 챙기는 오빠도 실컷 봤고, 아주머니가 주신 힌트 덕분에 옷장에서는 뜻밖의 보물도 발견했잖아.</p>
+<p>생각했던 생일과는 많이 달라졌지만, 올해도 결국 오빠 곁에 있을 수 있어서 좋아. 그러니까 우리 무사히 잘 다녀오자!</p>
+<p>이것도 추억이라면 추억으로 남길 수 있을 것 같을 정도로 마음이 너무 좋아졌어. 하지만 이런 생일 두 번은 사양할래! 세상이 평안해져서 부디 둘이서 오붓하게 생일을 보낼 수 있는 세상이 오기를 바라.</p>
+<p>돌아오면 미뤄둔 파티도 제대로 하고, 준비한 것도 전부 보여줄게. 한 달쯤 늦으면 어때. 그만큼 더 오래 진심을 담아 축하해주면 되지!</p>
+<p>이따 캠프에서 만나!</p>
+<p>생일 진심으로 축하해.<br>사랑해, 이서언!</p>`;
 
 function buildDeployMailBody(letterHtml, name){
   return `${letterHtml}
@@ -2954,6 +3051,7 @@ function insertDeploymentMail(){
     id: -1, unread: true, blueMail: true, sender: name, from: "MC@gmail.com",
     subject: "서프라이즈 파티에 초대 합니다! (1달 후에!)",
     preview: `사실 오빠 몰래 작은 파티를 준비하고 있었는데.. 갑자기 계획이 멈춰버렸어. 그래도 우리 무사히 다시 만나서 축하하자!`,
+    preview: `사실 곽헌 선생님, 소원 간호사님과 함께 오빠 몰래 작은 파티를 준비하고 있었어.`,
     date: savedDate || "2048-09-05",
     body: buildDeployMailBody(letterBody, name)
   });
@@ -2967,7 +3065,7 @@ function insertVacationMail(){
   const name = (quizAnswers.person || '').trim() || '이름 모를 그녀';
   const vacationMail = {
     id: 24, unread: false, sender: "방동명 원장님", from: "director@akso.com",
-    subject: "Re: [휴가 신청] 생일 당일 휴가 신청드립니다.",
+    subject: "Re: [심장외과 / 휴가 신청] 휴가 신청드립니다.",
     preview: "휴가 승인했으니 아무 걱정 말고 다녀오렴. 생일도 미리 축하한다.",
     date: "2048-09-02",
     body: `<p>서언아,</p>
@@ -2977,7 +3075,7 @@ function insertVacationMail(){
 <div class="mail-sign">방동명</div>
 <hr style="margin:24px 0;border:none;border-top:1px solid var(--border);">
 <div style="font-size:var(--fs-12);color:var(--text-muted);margin-bottom:14px;line-height:1.6;">
-보낸 사람: 이서언<br>받는 사람: 방동명 원장님<br>제목: [휴가 신청] 생일 당일 휴가 신청드립니다.
+보낸 사람: 이서언<br>받는 사람: 방동명 원장님<br>제목: [심장외과 / 휴가 신청] 휴가 신청드립니다.
 </div>
 <p>방 원장님, 안녕하세요.<br>심장외과 이서언입니다.</p>
 <p>개인적인 일정으로 생일을 포함해 며칠간 휴가를 사용하고 싶어 메일드립니다.<br>오랜만에 ${name}와 함께 시간을 보내기로 하여, 가능하다면 해당 기간 동안 쉬고자 합니다.</p>
