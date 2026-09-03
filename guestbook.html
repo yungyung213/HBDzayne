@@ -374,6 +374,20 @@
   .toast.error{color:#FFB4C6;}
   @keyframes snowSpin{to{transform:rotate(360deg);}}
   .btn-spinner{display:inline-block;animation:snowSpin .9s linear infinite;}
+  .guestbook-loading-card{justify-content:center;gap:22px;text-align:center;}
+  .guestbook-loading-spinner{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:74px;height:74px;font-size:54px;line-height:1;color:#fff;
+    filter:drop-shadow(0 0 12px rgba(126,200,242,0.5));
+    animation:snowSpin 1.15s linear infinite;
+  }
+  .guestbook-loading-text{
+    min-height:48px;display:flex;align-items:center;justify-content:center;
+    padding:0 12px;font-family:var(--sans);font-size:14px;line-height:1.65;
+    color:var(--ink-soft);word-break:keep-all;
+    opacity:1;transition:opacity .35s ease;
+  }
+  .guestbook-loading-text.changing{opacity:0;}
   .view-all-btn{
     display:block;margin:0 auto 10px;padding:9px 22px;border-radius:20px;
     background:rgba(255,255,255,0.08);border:1px solid var(--glass-border);color:var(--ink-soft);
@@ -436,7 +450,9 @@
     content:'';position:absolute;left:0;right:0;bottom:0;height:56%;
     background:linear-gradient(180deg, rgba(8,14,19,0) 0%, rgba(8,14,19,0.72) 100%);
   }
-  .envelope-name{position:relative;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink);text-align:center;word-break:break-word;text-shadow:0 1px 6px rgba(0,0,0,0.5);}
+  .envelope-author{position:relative;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,0.5);}
+  .envelope-name{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink);word-break:break-word;}
+  .envelope-date{margin-top:5px;font-family:var(--sans);font-size:10px;font-weight:400;color:rgba(255,255,255,0.62);letter-spacing:0.15px;}
   .envelope-letter{
     transform:rotateY(180deg);
     background:var(--glass-bg-strong);border:1px solid var(--glass-border);
@@ -445,7 +461,9 @@
     display:flex;flex-direction:column;justify-content:space-between;gap:14px;
   }
   .envelope-letter-text{font-family:var(--sans);font-size:14px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word;overflow-y:auto;}
-  .envelope-letter-name{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--accent);text-align:right;}
+  .envelope-letter-author{text-align:right;}
+  .envelope-letter-name{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--accent);}
+  .envelope-letter-date{margin-top:4px;font-family:var(--sans);font-size:10px;font-weight:400;color:var(--ink-faint);letter-spacing:0.15px;}
   /* 카드를 열면(뒤집으면) 그 자리에서 아주 살짝만 커지고(방명록 카드 포커스 정도), 같은 줄의 다른 카드들과는 세로 가운데로 정렬됨 */
   .envelope.open{width:min(78vw,270px);z-index:25;}
   .envelope.open .envelope-inner{aspect-ratio:auto;height:min(46vh,360px);}
@@ -783,7 +801,12 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
     <div class="msg-slider-wrap" id="msg-slider-wrap">
-      <div class="msg-slide"><div class="msg-slide-card"><div class="msg-slide-empty">아직 도착한<br>축하 메시지가<br>없어요.</div></div></div>
+      <div class="msg-slide">
+        <div class="msg-slide-card guestbook-loading-card" role="status" aria-live="polite">
+          <span class="guestbook-loading-spinner" aria-hidden="true">❄</span>
+          <div class="guestbook-loading-text" id="guestbook-loading-text">작성된 메시지가 많아<br>불러오는데 시간이 걸리고 있어요...!</div>
+        </div>
+      </div>
     </div>
     <button class="slider-arrow" onclick="slideNext()" aria-label="다음 메시지">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -1556,6 +1579,25 @@ function escapeHtml(str){
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+function formatEntryDate(entry){
+  const raw = entry.timestamp ?? entry.createdAt ?? entry.created_at ?? entry.datetime ?? entry.date ?? entry.time;
+  if(raw === undefined || raw === null || raw === '') return '';
+  let value = raw;
+  if(typeof value === 'number' && value < 1000000000000) value *= 1000;
+  const parsed = new Date(value);
+  if(Number.isNaN(parsed.getTime())) return String(raw);
+  try{
+    const parts = new Intl.DateTimeFormat('ko-KR', {
+      timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', hour12:false
+    }).formatToParts(parsed);
+    const pick = type => parts.find(part => part.type === type)?.value || '';
+    return `${pick('year')}. ${pick('month')}. ${pick('day')}. ${pick('hour')}:${pick('minute')}`;
+  }catch(err){
+    return String(raw);
+  }
+}
+
 let gbEntries = [];
 
 function cardHtml(en, idx){
@@ -1658,9 +1700,52 @@ function renderSlider(){
 
 let gbLoading = false;
 let gbEntriesSignature = '';
+let gbHasLoadedOnce = false;
+let gbLoadingMessageTimer = null;
+const GB_LOADING_MESSAGES = [
+  '작성된 메시지가 많아<br>불러오는데 시간이 걸리고 있어요...!',
+  '조금만 기다려주세요 ❄'
+];
+
+function showGuestbookLoading(){
+  clearInterval(autoSlideTimer);
+  loopSetWidth = 0;
+  wrapEl.innerHTML = `
+    <div class="msg-slide">
+      <div class="msg-slide-card guestbook-loading-card" role="status" aria-live="polite">
+        <span class="guestbook-loading-spinner" aria-hidden="true">❄</span>
+        <div class="guestbook-loading-text" id="guestbook-loading-text">${GB_LOADING_MESSAGES[0]}</div>
+      </div>
+    </div>`;
+  let messageIndex = 0;
+  clearInterval(gbLoadingMessageTimer);
+  gbLoadingMessageTimer = setInterval(() => {
+    const textEl = document.getElementById('guestbook-loading-text');
+    if(!textEl) return;
+    textEl.classList.add('changing');
+    setTimeout(() => {
+      const currentTextEl = document.getElementById('guestbook-loading-text');
+      if(!currentTextEl) return;
+      messageIndex = (messageIndex + 1) % GB_LOADING_MESSAGES.length;
+      currentTextEl.innerHTML = GB_LOADING_MESSAGES[messageIndex];
+      currentTextEl.classList.remove('changing');
+    }, 350);
+  }, 1800);
+}
+
+function stopGuestbookLoading(){
+  clearInterval(gbLoadingMessageTimer);
+  gbLoadingMessageTimer = null;
+}
+
+function showGuestbookLoadError(){
+  wrapEl.innerHTML = `<div class="msg-slide"><div class="msg-slide-card"><div class="msg-slide-empty">메시지를 불러오지 못했어요.<br>잠시 후 다시 시도할게요.</div></div></div>`;
+}
+
 async function loadGuestbook(){
   if(gbLoading) return;
   gbLoading = true;
+  if(!gbHasLoadedOnce) showGuestbookLoading();
   try{
     const res = await fetch(GUESTBOOK_API_URL);
     const data = await res.json();
@@ -1672,8 +1757,17 @@ async function loadGuestbook(){
         gbEntriesSignature = freshSignature;
         renderSlider();
       }
+      gbHasLoadedOnce = true;
+      stopGuestbookLoading();
+    }else if(!gbHasLoadedOnce){
+      stopGuestbookLoading();
+      showGuestbookLoadError();
     }
   }catch(err){
+    if(!gbHasLoadedOnce){
+      stopGuestbookLoading();
+      showGuestbookLoadError();
+    }
   }finally{
     gbLoading = false;
   }
@@ -1929,15 +2023,24 @@ function buildEnvelopeGrid(){
     }
     recentCovers.push(coverUrl);
     if(recentCovers.length > recentWindow) recentCovers.shift();
+    const entryDate = formatEntryDate(en);
+    const entryDateHtml = entryDate ? `<div class="envelope-date">${escapeHtml(entryDate)}</div>` : '';
+    const letterDateHtml = entryDate ? `<div class="envelope-letter-date">${escapeHtml(entryDate)}</div>` : '';
     return `
     <div class="envelope" data-idx="${i}" style="animation-delay:${Math.min(i * 0.09, 1.4)}s;">
       <div class="envelope-inner">
         <div class="envelope-face" style="background-image:url('${coverUrl}');">
-          <div class="envelope-name">${escapeHtml(en.name)}</div>
+          <div class="envelope-author">
+            <div class="envelope-name">${escapeHtml(en.name)}</div>
+            ${entryDateHtml}
+          </div>
         </div>
         <div class="envelope-letter">
           <div class="envelope-letter-text">${escapeHtml(en.message)}</div>
-          <div class="envelope-letter-name">${escapeHtml(en.name)}</div>
+          <div class="envelope-letter-author">
+            <div class="envelope-letter-name">${escapeHtml(en.name)}</div>
+            ${letterDateHtml}
+          </div>
         </div>
       </div>
       <div class="envelope-sparkle-layer"></div>
