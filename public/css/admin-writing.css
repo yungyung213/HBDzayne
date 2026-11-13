@@ -825,8 +825,8 @@ html:has(.admin-page) { scrollbar-gutter: stable both-edges; }
   pointer-events: none;
 }
 .admin-page .editor-settings .selected-values:not(:empty) {
-  margin-top: 9px;
-  gap: 6px;
+  padding-top: 12px;
+  gap: 4px;
 }
 .admin-page .selected-values .selection-remove {
   min-height: 25px;

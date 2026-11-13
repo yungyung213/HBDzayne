@@ -47,6 +47,7 @@ function storeSession(token){
 let connection, rows=[],settings={},postMedia=[],mainMedia=[],busy=false,dirty=false,revision='';
 let activePanel='posts';
 let supportsWriting=false;
+let supportsTitleOnly=false;
 let appearance=normalizeAppearance();
 const columnFilters=[...document.querySelectorAll('[data-column-filter]')];
 const activeFilters={category:new Set(),character:new Set(),status:new Set()};
@@ -159,7 +160,10 @@ async function api(name,input){
   ? await connection.saveArchive(input,revision,pendingUploads)
   : await connection.readArchive();
  revision=result.revision;
- if(!input)supportsWriting=result.supportsWriting===true;
+ if(!input){
+  supportsWriting=result.supportsWriting===true;
+  supportsTitleOnly=result.supportsTitleOnly===true;
+ }
  for(const [local, remote] of result.savedReplacements || []){
   if(previewURLs.has(local))previewURLs.set(remote,previewURLs.get(local));
  }
@@ -612,12 +616,12 @@ async function save(publish){
  feedback.dataset.error='true';
  const post=collect();
  const state=publish?$('#post-form').elements.visibility.value:'draft';
- if(publish&&!post.images.length&&(!post.title||!post.body)){
-  feedback.textContent='미디어 없이 게시하려면 제목과 본문을 입력하세요.';
+ if(publish&&!post.images.length&&!post.title){
+  feedback.textContent='미디어 없이 게시하려면 제목을 입력하세요.';
   return;
  }
- if(publish&&post.categories.some(value=>value.toUpperCase()==='TEXT')&&!post.body){
-  feedback.textContent='TEXT 카테고리로 게시하려면 Text에 본문을 입력하세요.';
+ if(publish&&!post.images.length&&!post.body&&!supportsTitleOnly){
+  feedback.textContent='제목만 게시하려면 Supabase에서 eru-admin 코드를 V40으로 업데이트한 뒤 다시 로그인하세요.';
   return;
  }
  if(!supportsWriting&&(post.title||post.body||post.categories.length>1)){
